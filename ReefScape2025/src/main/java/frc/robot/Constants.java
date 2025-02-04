@@ -13,7 +13,12 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    
+  public static class SwerveConstants{
+    public static final double frontLeftDegreeOffset = 258.22265625;
+    public static final double frontRightDegreeOffset = 230.80078125;
+    public static final double backLeftDegreeOffset = 14.0625;
+    public static final double backRightDegreeOffset = 113.466796875;
+    public static final double wheelRadius = 0.0508;//in meters;
+    public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
 }

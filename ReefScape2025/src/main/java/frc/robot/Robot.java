@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Command m_teleopCommand;
 
   private final RobotContainer m_robotContainer;
 
@@ -60,11 +63,20 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    // System.out.println(m_autonomousCommand.isFinished());
+    // if (m_autonomousCommand.isFinished()){
+    //   System.out.println("finished");
+    //   m_robotContainer.m_swerveSubsystem.velocityControlledDrive(new ChassisSpeeds(0,0,0));
+    // }
+    
+    //m_autonomousCommand.isFinished()
+  }
 
   @Override
   public void teleopInit() {
@@ -75,11 +87,14 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.getTeleopCommand().schedule();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotContainer.getTeleopCommand().schedule();
+  }
 
   @Override
   public void testInit() {

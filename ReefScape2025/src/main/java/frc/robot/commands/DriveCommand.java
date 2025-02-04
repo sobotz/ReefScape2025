@@ -4,28 +4,53 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Vector;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveCommand extends Command {
-  /** Creates a new DriveCommand. */
-  public DriveCommand() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  //SWERVE SUBSYSTEM FROM ROBOT CONTAINER
+  SwerveSubsystem m_swerveSubsystem;
+  //JOYSTICK FROM ROBOT CONTAINER
+  Joystick m_driverJoystick;
+  //DRIVING VECTORS
+  Vector strafeVector;
+  Vector rotationVector;
+  ChassisSpeeds chassisSpeed;
+
+  public DriveCommand(SwerveSubsystem swerveSubsystem, Joystick stick) {
+    this.m_swerveSubsystem = swerveSubsystem;
+    this.m_driverJoystick = stick;
+
+    strafeVector = new Vector(0,0);
+    rotationVector = new Vector(0,0);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    //JOYSTICK VALUES FROM LEFT JOYSTICK
+    strafeVector = new Vector(m_driverJoystick.getRawAxis(0),-m_driverJoystick.getRawAxis(1));
+    //JOYSTICK VALUES FROM THE RIGHT JOYSTICK
+    rotationVector = new Vector(m_driverJoystick.getRawAxis(4),-m_driverJoystick.getRawAxis(5));
+    //chassisSpeed = new ChassisSpeeds(0, 1,0);
+    chassisSpeed = new ChassisSpeeds(strafeVector.getX() * 2,strafeVector.getY() * 2,-rotationVector.getX() * 3);
+    //m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
+    //strafeVector = new Vector(0.5, 0);
+    //rotationVector = new Vector(0, 0);
+    m_swerveSubsystem.driverControlledDrive(strafeVector,rotationVector);
+    //m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
 
-  // Called once the command ends or is interrupted.
+    
+  }
+  
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
