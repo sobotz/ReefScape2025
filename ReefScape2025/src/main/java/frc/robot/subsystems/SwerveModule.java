@@ -46,7 +46,7 @@ public class SwerveModule {
         strafeVector = new Vector(0,0);
         rotationalVector = new Vector(0,0);
         //PID 
-        degreeController = new PIDController(0.01, 0.009,0.0012);/// tuned properly make sure the calculate is about 0
+        degreeController = new PIDController(0.011, 0.003,0.003);/// tuned properly make sure the calculate is about 0
         //degreeController.setTolerance(.05);
         degreeController.enableContinuousInput(0,360);
         //inverted module wheel direction and magnitude
@@ -109,8 +109,14 @@ public class SwerveModule {
         }
         //PID controller
         //System.out.println(degreeController.calculate(currentModuleDegree,targetModuleDegree));
-        turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
+        
+        if((driveVector.getMagnitude()== 0)&&(rotationalMagnitude==0)){
+            turnMotor.set(0);
+            driveMotor.set(0);
+        }else{
+         turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
         driveMotor.set(targetModuleMagnitude);
+        }
         //System.out.println(currentModuleDegree);
         
     }

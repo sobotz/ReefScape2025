@@ -92,14 +92,14 @@ public class SwerveSubsystem extends SubsystemBase {
    * yTranslational PID controller needs tuning
    * xVelocity PID controller needs tuning
    * yVelocity PID controller needs tuning
-   * rotationalVelocity PID controller needs tuning
+   * rotationalVelocity PID controller needs tuning -- DONE
    * drivetrain motors may need to be set to the correct canbus -- DONE
    * RotationalValueDegree inputted as a parameter into the swerve modules needs to be updated (robot is not square) -- DONE
    * ------------------------------
    * *******SWERVE MODULE*******
    * getPosition for drive motor needs to be checked
    * getVelocity for drive motor needs to be checked
-   * degree PID Controller needs to be tuned
+   * degree PID Controller needs to be tune -- DONE
    * ------------------------------
    * *******PATHPLANNER GUI*******
    * robot stats needs to be updated
