@@ -136,14 +136,14 @@ public class SwerveSubsystem extends SubsystemBase {
     //Allows for leeway if the current degree is not exactly on target
     angleCorrectionController.setTolerance(0.2);
 
-    rotationController = new PIDController(0.0043,0,0.00);
+    rotationController = new PIDController(0.0045,0,0);
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0.2);
 
-    xTranslationController = new PIDController(0,0,0);
+    xTranslationController = new PIDController(0.053,0,0);
     xTranslationController.setTolerance(0.01);
 
-    yTranslationController = new PIDController(0,0,0);
+    yTranslationController = new PIDController(0.053,0,0);
     yTranslationController.setTolerance(0.01);
 
     xVelocityController = new PIDController(0.023,0,0.001);
