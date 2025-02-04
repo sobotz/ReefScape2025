@@ -87,14 +87,14 @@ public class SwerveSubsystem extends SubsystemBase {
   RobotConfig config;
   /*Update requirements
    * *******SWERVE SUBSYSTEM*******
-   * ID every device
+   * ID every device -- DONE
    * xTranslational PID controller needs tuning  
    * yTranslational PID controller needs tuning
    * xVelocity PID controller needs tuning
    * yVelocity PID controller needs tuning
    * rotationalVelocity PID controller needs tuning
-   * drivetrain motors may need to be set to the correct canbus
-   * RotationalValueDegree inputted as a parameter into the swerve modules needs to be updated (robot is not square)
+   * drivetrain motors may need to be set to the correct canbus -- DONE
+   * RotationalValueDegree inputted as a parameter into the swerve modules needs to be updated (robot is not square) -- DONE
    * ------------------------------
    * *******SWERVE MODULE*******
    * getPosition for drive motor needs to be checked
@@ -109,26 +109,26 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveSubsystem() {
     //SWERVE MOTORS INSTANTIATION
-    frontLeftDriveMotor = new TalonFX(2);
-    frontLeftTurnMotor = new TalonFX(1);
-    frontRightDriveMotor = new TalonFX(4);
-    frontRightTurnMotor = new TalonFX(3);
-    backLeftDriveMotor = new TalonFX(8);
-    backLeftTurnMotor = new TalonFX(7);
-    backRightDriveMotor = new TalonFX(6);
-    backRightTurnMotor = new TalonFX(5);
+    frontLeftDriveMotor = new TalonFX(2,"Drivetrain");
+    frontLeftTurnMotor = new TalonFX(1,"Drivetrain");
+    frontRightDriveMotor = new TalonFX(4,"Drivetrain");
+    frontRightTurnMotor = new TalonFX(3,"Drivetrain");
+    backLeftDriveMotor = new TalonFX(8,"Drivetrain");
+    backLeftTurnMotor = new TalonFX(7,"Drivetrain");
+    backRightDriveMotor = new TalonFX(6,"Drivetrain");
+    backRightTurnMotor = new TalonFX(5,"Drivetrain");
     //ENCODER INSTANTIATION
-    frontLeftEncoder = new CANcoder(21);
-    frontRightEncoder = new CANcoder(22);
-    backLeftEncoder = new CANcoder(24);
-    backRightEncoder = new CANcoder(23);
+    frontLeftEncoder = new CANcoder(9,"Drivetrain");
+    frontRightEncoder = new CANcoder(10,"Drivetrain");
+    backLeftEncoder = new CANcoder(12,"Drivetrain" );
+    backRightEncoder = new CANcoder(11,"Drivetrain");
     //PIGEON2 INSTANTIATION
-    robotGyro = new Pigeon2(25);
+    robotGyro = new Pigeon2(0,"Drivetrain");
     //SWERVE MODULE INSTANTIATION
-    frontLeftSwerveModule = new SwerveModule(frontLeftDriveMotor,frontLeftTurnMotor,frontLeftEncoder,315,Constants.SwerveConstants.frontLeftDegreeOffset);
-    frontRightSwerveModule = new SwerveModule(frontRightDriveMotor,frontRightTurnMotor,frontRightEncoder,225,Constants.SwerveConstants.frontRightDegreeOffset);
-    backLeftSwerveModule = new SwerveModule(backLeftDriveMotor,backLeftTurnMotor,backLeftEncoder,45,Constants.SwerveConstants.backLeftDegreeOffset);
-    backRightSwerveModule = new SwerveModule(backRightDriveMotor,backRightTurnMotor,backRightEncoder,135,Constants.SwerveConstants.backRightDegreeOffset);
+    frontLeftSwerveModule = new SwerveModule(frontLeftDriveMotor,frontLeftTurnMotor,frontLeftEncoder,310.07289005,Constants.SwerveConstants.frontLeftDegreeOffset);
+    frontRightSwerveModule = new SwerveModule(frontRightDriveMotor,frontRightTurnMotor,frontRightEncoder,229.92710995,Constants.SwerveConstants.frontRightDegreeOffset);
+    backLeftSwerveModule = new SwerveModule(backLeftDriveMotor,backLeftTurnMotor,backLeftEncoder,49.92710995,Constants.SwerveConstants.backLeftDegreeOffset);
+    backRightSwerveModule = new SwerveModule(backRightDriveMotor,backRightTurnMotor,backRightEncoder,130.07289005,Constants.SwerveConstants.backRightDegreeOffset);
     //PID CONTROLLER INSTANTIATION
     angleCorrectionController = new PIDController(0,0,0);
     //Connects 0 degrees to 360 degrees to allow for the least distance error from current to target
