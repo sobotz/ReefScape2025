@@ -97,8 +97,8 @@ public class SwerveSubsystem extends SubsystemBase {
    * RotationalValueDegree inputted as a parameter into the swerve modules needs to be updated (robot is not square) -- DONE
    * ------------------------------
    * *******SWERVE MODULE*******
-   * getPosition for drive motor needs to be checked
-   * getVelocity for drive motor needs to be checked
+   * getPosition for drive motor needs to be checked -- DONE
+   * getVelocity for drive motor needs to be checked -- DONE
    * degree PID Controller needs to be tune -- DONE
    * ------------------------------
    * *******PATHPLANNER GUI*******
@@ -247,7 +247,25 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeftSwerveModule.drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree,true);
     backRightSwerveModule.drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree,true);
   }
-  public void reefControlledDrive(double xOffset, double yOffset, double xTarget, double yTarget){}
+  public void reefControlledDrive(double xOffset, double yOffset,double angleOffset, double xTarget, double yTarget,boolean enabled){
+     
+    Vector tvec = new Vector(-xTranslationController.calculate( xOffset,xTarget),yTranslationController.calculate(yOffset,yTarget));
+    Vector rvec = new Vector(1, 0, true);
+    //angleRotationController.
+    double rotationalMagnitude = -rotationController.calculate(angleOffset,rvec.getDegrees());
+    if (Math.abs(rotationalMagnitude) < 0.01){
+      rotationalMagnitude = 0;
+    } 
+    
+    if (enabled){ 
+      frontLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
+      frontRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
+      backLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
+      backRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
+    }else{
+      drive(new Vector(0, 0),new Vector(0, 0),true);
+    }
+  }
 
   public void drive(Vector strafeVector, Vector rotationVector,boolean relativeVelocityControlled){
     double rotationalMagnitude = -rotationController.calculate(currentRobotDegree,rotationVector.getDegrees());

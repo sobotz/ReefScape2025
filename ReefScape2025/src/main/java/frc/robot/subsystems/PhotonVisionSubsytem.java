@@ -1,0 +1,131 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems;
+
+import java.util.List;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class PhotonVisionSubsytem extends SubsystemBase {
+  //SwereSubsystem
+  SwerveSubsystem swerveSubsystem;
+  //Cameras
+   PhotonCamera leftCamera;
+   PhotonCamera rightCamera;
+   //Camera Data
+   PhotonPipelineResult leftCameraResult;
+   PhotonPipelineResult rightCameraResult;
+
+   Transform3d leftCameraTargetInfo;
+   Transform3d rightCameraTargetInfo;
+
+   double leftCameraxOffset;
+   double leftCamerayOffset;
+   double leftCameraAngleOffset;
+   double rightCameraxOffset;
+   double rightCamerayOffset;
+   double rightCameraAngleOffset;
+
+   List<PhotonTrackedTarget> leftCameraTargets;
+   List<PhotonTrackedTarget> rightCameraTargets;
+
+   PhotonTrackedTarget leftCameraCurrentTarget;
+   PhotonTrackedTarget rightCameraCurrentTarget;
+
+   boolean leftCameraHasTarget;
+   boolean rightCameraHasTarget;
+
+   int leftCameraTargetId;
+   int rightCameraTargetId;
+
+
+
+  public PhotonVisionSubsytem() {
+    swerveSubsystem = new SwerveSubsystem();
+
+    leftCamera = new PhotonCamera("Arducam_OV9281_USB_Camera (1)");
+    rightCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
+
+    
+
+  
+
+  }
+  public void alignToTarget(boolean enabled){
+    if (leftCameraHasTarget && rightCameraHasTarget && enabled){
+        rightCameraxOffset = rightCameraTargetInfo.getY();
+        rightCamerayOffset = rightCameraTargetInfo.getX();
+
+        if(rightCameraTargetInfo.getRotation().getZ() * (180/Math.PI)<0){
+          rightCameraAngleOffset = (-1)*(180+rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
+        }
+        else{
+          rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
+        }
+      swerveSubsystem.setDriveCommandDisabled(enabled);
+      swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0.28,1, enabled);
+    }else if (rightCameraHasTarget && enabled){
+      rightCameraxOffset = rightCameraTargetInfo.getY();
+      rightCamerayOffset = rightCameraTargetInfo.getX();
+
+      if(rightCameraTargetInfo.getRotation().getZ() * (180/Math.PI)<0){
+        rightCameraAngleOffset = (-1)*(180+rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
+      }
+      else{
+        rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
+      }
+    swerveSubsystem.setDriveCommandDisabled(enabled);
+    swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0.28,1, enabled);
+  }else if (leftCameraHasTarget && enabled){
+    leftCameraxOffset = leftCameraTargetInfo.getY();
+    leftCamerayOffset = leftCameraTargetInfo.getX();
+
+    if(leftCameraTargetInfo.getRotation().getZ() * (180/Math.PI)<0){
+      leftCameraAngleOffset = (-1)*(180+leftCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
+    }
+    else{
+      leftCameraAngleOffset = (-1)*(180-leftCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
+    }
+  swerveSubsystem.setDriveCommandDisabled(enabled);
+  swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,0.28,1, enabled);
+}
+    else{
+      swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
+    }
+  }
+  @Override
+  public void periodic() {
+    leftCameraResult = new PhotonPipelineResult();
+    rightCameraResult = new PhotonPipelineResult();
+
+    leftCameraTargets = leftCameraResult.getTargets();
+    rightCameraTargets = rightCameraResult.getTargets();
+  
+    leftCameraHasTarget = leftCameraResult.hasTargets();
+    rightCameraHasTarget = rightCameraResult.hasTargets();
+    if(leftCameraHasTarget){
+      leftCameraCurrentTarget = leftCameraTargets.get(0);
+      leftCameraTargetId = leftCameraCurrentTarget.getFiducialId();
+      leftCameraTargetInfo = leftCameraCurrentTarget.getBestCameraToTarget();
+    }
+    if(rightCameraHasTarget){
+      rightCameraCurrentTarget = rightCameraTargets.get(0);
+      rightCameraTargetId = leftCameraCurrentTarget.getFiducialId();
+      rightCameraTargetInfo = rightCameraCurrentTarget.getBestCameraToTarget();
+
+    }
+
+    
+    
+    
+    
+  }
+
+}

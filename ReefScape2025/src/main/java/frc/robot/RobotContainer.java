@@ -8,6 +8,8 @@ package frc.robot;
 
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
+import frc.robot.commands.PhotonVisionCommand;
+import frc.robot.subsystems.PhotonVisionSubsytem;
 import frc.robot.subsystems.SwerveSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -35,6 +38,9 @@ public class RobotContainer {
   DriveCommand m_driveCommand;
   private final SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
+  private final PhotonVisionSubsytem m_PhotonVisionSubsytem;
+  private PhotonVisionCommand m_PhotonVisionCommand;
+  JoystickButton photonVisionAlignButton;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -48,6 +54,8 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoPath = new PathPlannerAuto("TestAuto");
+    m_PhotonVisionSubsytem = new PhotonVisionSubsytem();
+    m_PhotonVisionCommand = new PhotonVisionCommand(m_PhotonVisionSubsytem);
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));
     configureBindings();
   }
@@ -75,6 +83,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    photonVisionAlignButton = new JoystickButton(stick, 10);
+    photonVisionAlignButton.whileTrue(m_PhotonVisionCommand);
   }
 
   /**
