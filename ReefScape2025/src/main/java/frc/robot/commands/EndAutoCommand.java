@@ -27,15 +27,13 @@ public class EndAutoCommand extends Command {
   public void initialize() {
     isFinished = false;
     timer.start();
-    System.out.println("finished");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (timer.get()<1){
-      m_swerveSubsystem.rotationMagnitudeDrive(new Vector(0, 0), 0, m_swerveSubsystem.getCurrentRobotDegree(), false);
-      
+      m_swerveSubsystem.drive(new Vector(0, 0),0,m_swerveSubsystem.getCurrentRobotDegree(), false);
     }
     else{
       isFinished = true;

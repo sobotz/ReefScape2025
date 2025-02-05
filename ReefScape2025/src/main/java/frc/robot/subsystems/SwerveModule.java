@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.swerve.SimSwerveDrivetrain;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -75,17 +74,10 @@ public class SwerveModule {
         }*/
 
         //combining vectors
-        //System.out.println(relativeVelocityControl);
         if(relativeVelocityControl == false){
-            
             strafeVector = new Vector(strafeVector.getMagnitude(),strafeVector.getDegrees()-currentRobotDegree,true);
         }
-        
-        //System.out.println(currentRobotDegree);
         driveVector = strafeVector.addVector(rotationalVector);
-        //driveVector = strafeVector;
-        //axisSensor.getAbsolutePosition();
-        //driveVector = strafeVector;
         //current wheel degree  0 offsetted
         currentModuleDegree = (((((axisSensor.getPosition().getValueAsDouble()) % 1) + 1) % 1) * 360);
         currentModuleDegree = (((currentModuleDegree - degreeOffset) + 360) % 360);
@@ -108,17 +100,13 @@ public class SwerveModule {
             inverted = !inverted;
         }
         //PID controller
-        //System.out.println(degreeController.calculate(currentModuleDegree,targetModuleDegree));
-        
-        if((driveVector.getMagnitude()== 0)&&(rotationalMagnitude==0)){
+        if((driveVector.getMagnitude() == 0)&&(rotationalMagnitude == 0)){
             turnMotor.set(0);
             driveMotor.set(0);
         }else{
-         turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
-        driveMotor.set(targetModuleMagnitude);
+            turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
+            driveMotor.set(targetModuleMagnitude);
         }
-        //System.out.println(currentModuleDegree);
-        
     }
     public double getRawValue(){
         return (((((axisSensor.getPosition().getValueAsDouble()) % 1) + 1) % 1) * 360);
