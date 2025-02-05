@@ -3,15 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-
-
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
 import frc.robot.subsystems.SwerveSubsystem;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -35,6 +33,7 @@ public class RobotContainer {
   DriveCommand m_driveCommand;
   private final SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
+  
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
