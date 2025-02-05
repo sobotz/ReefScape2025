@@ -11,6 +11,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVisionSubsytem extends SubsystemBase {
@@ -70,7 +71,8 @@ public class PhotonVisionSubsytem extends SubsystemBase {
           rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
         }
       swerveSubsystem.setDriveCommandDisabled(enabled);
-      swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0.28,1, enabled);
+      swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset+32.253,0.28,1, enabled);
+      System.out.println("Using Right Cam");
     }else if (rightCameraHasTarget && enabled){
       rightCameraxOffset = rightCameraTargetInfo.getY();
       rightCamerayOffset = rightCameraTargetInfo.getX();
@@ -82,7 +84,9 @@ public class PhotonVisionSubsytem extends SubsystemBase {
         rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
       }
     swerveSubsystem.setDriveCommandDisabled(enabled);
-    swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0.28,1, enabled);
+    swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset+32.253,0.28,1, enabled);
+    System.out.println("Using Right Cam");
+
   }else if (leftCameraHasTarget && enabled){
     leftCameraxOffset = leftCameraTargetInfo.getY();
     leftCamerayOffset = leftCameraTargetInfo.getX();
@@ -94,10 +98,12 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       leftCameraAngleOffset = (-1)*(180-leftCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
     }
   swerveSubsystem.setDriveCommandDisabled(enabled);
-  swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,0.28,1, enabled);
+  swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset-32.253,0.28,1, enabled);
+  System.out.println("Using Left Cam");
 }
     else{
       swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
+      System.out.println("NO TARGETS");
     }
   }
   @Override
@@ -114,12 +120,19 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       leftCameraCurrentTarget = leftCameraTargets.get(0);
       leftCameraTargetId = leftCameraCurrentTarget.getFiducialId();
       leftCameraTargetInfo = leftCameraCurrentTarget.getBestCameraToTarget();
+      SmartDashboard.putNumber("LEFT CAM XOFFSET", leftCameraxOffset);
+      SmartDashboard.putNumber("LEFT CAM YOFFSET", leftCamerayOffset);
+      SmartDashboard.putNumber("LEFT CAM ANGLE OFFSET",leftCameraAngleOffset);
+      SmartDashboard.putBoolean("LEFT CAM HAS TARGET", leftCameraHasTarget);
     }
     if(rightCameraHasTarget){
       rightCameraCurrentTarget = rightCameraTargets.get(0);
       rightCameraTargetId = leftCameraCurrentTarget.getFiducialId();
       rightCameraTargetInfo = rightCameraCurrentTarget.getBestCameraToTarget();
-
+      SmartDashboard.putNumber("RIGHT CAM XOFFSET", rightCameraxOffset);
+      SmartDashboard.putNumber("RIGHT CAM YOFFSET", rightCamerayOffset);
+      SmartDashboard.putNumber("RIGHT CAM ANGLE OFFSET",rightCameraAngleOffset);
+      SmartDashboard.putBoolean("RIGHT CAM HAS TARGET",rightCameraHasTarget);
     }
 
     
