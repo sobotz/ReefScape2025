@@ -323,6 +323,10 @@ public class SwerveSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("back left",backLeftSwerveModule.getSwerveModulePosition().angle.getDegrees());
     // SmartDashboard.putNumber("back Right",backRightSwerveModule.getSwerveModulePosition().angle.getDegrees());
     
+    SmartDashboard.putNumber("FrontLeft", ((((frontLeftEncoder.getPosition().getValueAsDouble()) % 1) + 1) % 1) * 360);
+    SmartDashboard.putNumber("FrontRight", ((((frontRightEncoder.getPosition().getValueAsDouble()) % 1) + 1) % 1) * 360);
+    SmartDashboard.putNumber("BackLeft", ((((backLeftEncoder.getPosition().getValueAsDouble()) % 1) + 1) % 1) * 360);
+    SmartDashboard.putNumber("BackRight", ((((backRightEncoder.getPosition().getValueAsDouble()) % 1) + 1) % 1) * 360);
     //SmartDashboard.putNumber("Front Left", frontLeftSwerveModule.getRawValue());
     //SmartDashboard.putNumber("Front Right", frontRightSwerveModule.getRawValue());
     //SmartDashboard.putNumber("Back Left", backLeftSwerveModule.getRawValue());

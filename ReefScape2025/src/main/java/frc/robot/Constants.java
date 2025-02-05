@@ -14,10 +14,10 @@ package frc.robot;
  */
 public final class Constants {
   public static class SwerveConstants{
-    public static final double frontLeftDegreeOffset = 132.1875;
-    public static final double frontRightDegreeOffset = 164.8828125;
-    public static final double backLeftDegreeOffset = 119.619140625;
-    public static final double backRightDegreeOffset = 83.759765625;
+    public static final double frontLeftDegreeOffset = 312.1875;
+    public static final double frontRightDegreeOffset = 7.20703125;
+    public static final double backLeftDegreeOffset = 46.0546875;
+    public static final double backRightDegreeOffset = 133.505859375;
     public static final double wheelRadius = 0.0508;//in meters;
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
