@@ -83,7 +83,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    photonVisionAlignButton = new JoystickButton(stick, 4);
+    photonVisionAlignButton = new JoystickButton(stick, 6);
     photonVisionAlignButton.whileTrue(m_PhotonVisionCommand);
   }
 
