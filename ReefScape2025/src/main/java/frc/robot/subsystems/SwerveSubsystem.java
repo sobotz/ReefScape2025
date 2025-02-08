@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.json.simple.parser.Yytoken;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -140,11 +142,11 @@ public class SwerveSubsystem extends SubsystemBase {
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0.2);
 
-    xTranslationController = new PIDController(0.053,0,0);
-    xTranslationController.setTolerance(0.01);
+    xTranslationController = new PIDController(0.5,0,0);
+    xTranslationController.setTolerance(0.1);
 
-    yTranslationController = new PIDController(0.053,0,0);
-    yTranslationController.setTolerance(0.01);
+    yTranslationController = new PIDController(0.5,0,0);
+    yTranslationController.setTolerance(0.1);
 
     xVelocityController = new PIDController(0.023,0,0.001);
     //xVelocityController.setTolerance(0.01);
@@ -248,22 +250,26 @@ public class SwerveSubsystem extends SubsystemBase {
     backRightSwerveModule.drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree,true);
   }
   public void reefControlledDrive(double xOffset, double yOffset,double angleOffset, double xTarget, double yTarget,boolean enabled){
-     
+    
     Vector tvec = new Vector(-xTranslationController.calculate( xOffset,xTarget),yTranslationController.calculate(yOffset,yTarget));
     Vector rvec = new Vector(1, 0, true);
     //angleRotationController.
-    double rotationalMagnitude = -rotationController.calculate(angleOffset,rvec.getDegrees());
-    if (Math.abs(rotationalMagnitude) < 0.01){
+    double rotationalMagnitude = rotationController.calculate(angleOffset,rvec.getDegrees());
+    
+    if (Math.abs(rotationalMagnitude) < 0.008){
       rotationalMagnitude = 0;
     } 
     
-    if (enabled){ 
-      frontLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
-      frontRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
-      backLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
-      backRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
+    
+    if (!xTranslationController.atSetpoint() && !yTranslationController.atSetpoint()){ 
+      frontLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+      frontRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+      backLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+      backRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+      
     }else{
-      drive(new Vector(0, 0),new Vector(0, 0),true);
+      System.out.println("at target");
+      drive(new Vector(0, 0),new Vector(0, 0),true);//CHANGE
     }
   }
 

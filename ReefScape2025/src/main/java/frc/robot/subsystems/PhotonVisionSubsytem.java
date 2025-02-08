@@ -54,10 +54,6 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     leftCamera = new PhotonCamera("Arducam_OV9281_USB_Camera (1)");
     rightCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
 
-    
-
-  
-
   }
   public void alignToTarget(boolean enabled){
     if (leftCameraHasTarget && rightCameraHasTarget && enabled){
@@ -69,8 +65,9 @@ public class PhotonVisionSubsytem extends SubsystemBase {
         else{
           rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
         }
+        rightCameraAngleOffset += 46.25;
       swerveSubsystem.setDriveCommandDisabled(enabled);
-      swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset+32.253,0.28,1, enabled);
+      swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,1, enabled);
       System.out.println("Using Right Cam");
     }else if (rightCameraHasTarget && enabled){
       rightCameraxOffset = rightCameraTargetInfo.getY();
@@ -82,8 +79,10 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       else{
         rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
       }
+      rightCameraAngleOffset += 46.25;
+      //32.253
     swerveSubsystem.setDriveCommandDisabled(enabled);
-    swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset+32.253,0.28,1, enabled);
+    swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,1, enabled);
     System.out.println("Using Right Cam");
   }else if (leftCameraHasTarget && enabled){
     leftCameraxOffset = leftCameraTargetInfo.getY();
@@ -94,8 +93,9 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     else{
       leftCameraAngleOffset = (-1)*(180-leftCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
     }
+    leftCameraAngleOffset -= 46.25;
   swerveSubsystem.setDriveCommandDisabled(enabled);
-  swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset-32.253,0.28,1, enabled);
+  swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,0,1, enabled);
   System.out.println("Using Left Cam");
 }
     else{
@@ -118,24 +118,26 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       leftCameraCurrentTarget = leftCameraTargets.get(0);
       leftCameraTargetInfo = leftCameraCurrentTarget.getBestCameraToTarget();
       leftCameraTargetId = leftCameraCurrentTarget.getFiducialId();
+      SmartDashboard.putNumber("LEFT CAM XOFFSET", leftCameraxOffset);
+      SmartDashboard.putNumber("LEFT CAM YOFFSET", leftCamerayOffset);
+      SmartDashboard.putNumber("LEFT CAM ANGLE OFFSET",leftCameraAngleOffset);
     }
     if(rightCameraHasTarget){
       rightCameraCurrentTarget = rightCameraTargets.get(0);
       rightCameraTargetInfo = rightCameraCurrentTarget.getBestCameraToTarget();
       rightCameraTargetId = rightCameraCurrentTarget.getFiducialId();
+      SmartDashboard.putNumber("RIGHT CAM XOFFSET", rightCameraxOffset);
+      SmartDashboard.putNumber("RIGHT CAM YOFFSET", rightCamerayOffset);
+      SmartDashboard.putNumber("RIGHT CAM ANGLE OFFSET",rightCameraAngleOffset);
     }
     
     //rightCameraTargetId = leftCameraCurrentTarget.getFiducialId();
     //leftCameraCurrentTarget = leftCameraTargets.get(0);
     
-    SmartDashboard.putNumber("LEFT CAM XOFFSET", leftCameraxOffset);
-    SmartDashboard.putNumber("LEFT CAM YOFFSET", leftCamerayOffset);
-    SmartDashboard.putNumber("LEFT CAM ANGLE OFFSET",leftCameraAngleOffset);
+    
     SmartDashboard.putBoolean("LEFT CAM HAS TARGET", leftCameraHasTarget);
-    SmartDashboard.putNumber("RIGHT CAM XOFFSET", rightCameraxOffset);
-    SmartDashboard.putNumber("RIGHT CAM YOFFSET", rightCamerayOffset);
-    SmartDashboard.putNumber("RIGHT CAM ANGLE OFFSET",rightCameraAngleOffset);
     SmartDashboard.putBoolean("RIGHT CAM HAS TARGET",rightCameraHasTarget);
+
     
     
     
