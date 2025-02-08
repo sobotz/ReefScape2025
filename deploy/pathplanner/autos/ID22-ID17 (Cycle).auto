@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CoralID22"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ID22-CS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CS-ID17"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ID17-CS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CS-ID17"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
