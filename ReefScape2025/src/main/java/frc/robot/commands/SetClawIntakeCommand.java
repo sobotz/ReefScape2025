@@ -22,6 +22,5 @@ public class SetClawIntakeCommand extends InstantCommand {
   @Override
   public void initialize() {
     m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
-
   }
 }
