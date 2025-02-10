@@ -4,11 +4,18 @@
 
 package frc.robot.subsystems;
 
+import org.json.simple.parser.Yytoken;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
-
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -92,8 +99,8 @@ public class SwerveSubsystem extends SubsystemBase {
    * RotationalValueDegree inputted as a parameter into the swerve modules needs to be updated (robot is not square) -- DONE
    * ------------------------------
    * *******SWERVE MODULE*******
-   * getPosition for drive motor needs to be checked
-   * getVelocity for drive motor needs to be checked
+   * getPosition for drive motor needs to be checked -- DONE
+   * getVelocity for drive motor needs to be checked -- DONE
    * degree PID Controller needs to be tune -- DONE
    * ------------------------------
    * *******PATHPLANNER GUI*******
@@ -135,11 +142,11 @@ public class SwerveSubsystem extends SubsystemBase {
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0.2);
 
-    xTranslationController = new PIDController(0.053,0,0);
-    xTranslationController.setTolerance(0.01);
+    xTranslationController = new PIDController(0.5,0,0);
+    xTranslationController.setTolerance(0.1);
 
-    yTranslationController = new PIDController(0.053,0,0);
-    yTranslationController.setTolerance(0.01);
+    yTranslationController = new PIDController(0.5,0,0);
+    yTranslationController.setTolerance(0.1);
 
     xVelocityController = new PIDController(0.023,0,0.001);
     //xVelocityController.setTolerance(0.01);
@@ -207,43 +214,80 @@ public class SwerveSubsystem extends SubsystemBase {
   public double getCurrentRobotDegree(){
     return currentRobotDegree;
   }
-
+  /*public void setCorrectionMode(boolean mode){
+    angleCorrectionMode = mode;
+  }*/
   public void setDriveCommandDisabled(boolean mode){
     driveCommandDisabled = mode;
   }
-
   public void driverControlledDrive(Vector strafeVector, Vector rotationVector){
     if (!driveCommandDisabled){
-      double rotationalMagnitude = -rotationController.calculate(currentRobotDegree,rotationVector.getDegrees());
-      if (Math.abs(rotationalMagnitude) < 0.01){
-        rotationalMagnitude = 0;
-        drive(strafeVector, rotationalMagnitude, currentRobotDegree, false);
-      }
+      drive(strafeVector,rotationVector,false);
     }
   }
-
   public void velocityControlledDrive(ChassisSpeeds targetSpeeds){
-    xVelocity += xVelocityController.calculate(getSpeeds().vxMetersPerSecond, targetSpeeds.vxMetersPerSecond);//ACTUTALY IN AUTO ITS FORWARD IS POSITIVE
-    yVelocity += yVelocityController.calculate(getSpeeds().vyMetersPerSecond, targetSpeeds.vyMetersPerSecond);//ACTUTALLY IN AUTO LEFT IS POSITIVE
-    
+    //System.out.println("VX: " + targetSpeeds.vxMetersPerSecond);
+    //System.out.println("VY: " + targetSpeeds.vyMetersPerSecond);
+    //System.out.println((Math.atan2(targetSpeeds.vyMetersPerSecond,targetSpeeds.vxMetersPerSecond)*(180/Math.PI)));
+    xVelocity += xVelocityController.calculate(getSpeeds().vxMetersPerSecond,targetSpeeds.vxMetersPerSecond);//ACTUTALY IN AUTO ITS FORWARD IS POSITIVE
+    yVelocity += yVelocityController.calculate(getSpeeds().vyMetersPerSecond,targetSpeeds.vyMetersPerSecond);//ACTUTALLY IN AUTO LEFT IS POSITIVE
+    //System.out.println("x Velocity: " + xVelocityController.calculate(getSpeeds().vxMetersPerSecond,targetSpeeds.vxMetersPerSecond));
+    //System.out.println("y Velocity: " + yVelocityController.calculate(getSpeeds().vyMetersPerSecond,targetSpeeds.vyMetersPerSecond));
+    //System.out.println(yVelocity);
+    System.out.println("current: " + getSpeeds().omegaRadiansPerSecond);
+    System.out.println("target: " + targetSpeeds.omegaRadiansPerSecond);
+    //System.out.println("CalcTEST: " + -degreeVelocityController.calculate(1,0.1));
+    System.out.println("calc: " + -degreeVelocityController.calculate(/*robotGyro.getAngularVelocityZWorld().getValueAsDouble() * (Math.PI/180)*/getSpeeds().omegaRadiansPerSecond,targetSpeeds.omegaRadiansPerSecond));
     Vector strafeVector = new Vector(-yVelocity, xVelocity);
-    rotationalVelocityMagnitude += -degreeVelocityController.calculate(getSpeeds().omegaRadiansPerSecond, targetSpeeds.omegaRadiansPerSecond);
-    if (targetSpeeds.vxMetersPerSecond == 0 &&
-        targetSpeeds.vyMetersPerSecond == 0 && 
-        targetSpeeds.omegaRadiansPerSecond == 0){
+    rotationalVelocityMagnitude += -degreeVelocityController.calculate(getSpeeds().omegaRadiansPerSecond,targetSpeeds.omegaRadiansPerSecond);
+    if (targetSpeeds.vxMetersPerSecond == 0 && targetSpeeds.vyMetersPerSecond == 0 && targetSpeeds.omegaRadiansPerSecond == 0){
       strafeVector = new Vector(0,0);
       rotationalVelocityMagnitude = 0;
     }
-    drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree, true);
+    frontLeftSwerveModule.drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree,true);
+    frontRightSwerveModule.drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree,true);
+    backLeftSwerveModule.drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree,true);
+    backRightSwerveModule.drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree,true);
+  }
+  public void reefControlledDrive(double xOffset, double yOffset,double angleOffset, double xTarget, double yTarget,boolean enabled){
+    
+    Vector tvec = new Vector(-xTranslationController.calculate( xOffset,xTarget),yTranslationController.calculate(yOffset,yTarget));
+    Vector rvec = new Vector(1, 0, true);
+    //angleRotationController.
+    double rotationalMagnitude = rotationController.calculate(angleOffset,rvec.getDegrees());
+    
+    if (Math.abs(rotationalMagnitude) < 0.008){
+      rotationalMagnitude = 0;
+    } 
+    
+    if (!xTranslationController.atSetpoint() && !yTranslationController.atSetpoint()){ 
+      frontLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+      frontRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+      backLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+      backRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+      
+    }else{
+      System.out.println("at target");
+      drive(new Vector(0, 0),new Vector(0, 0),true);//CHANGE
+    }
   }
 
-  public void drive(Vector strafeVector, double rotationalMagnitude,double currentRobotDegree, boolean relativeVelocityControlled){
+  public void drive(Vector strafeVector, Vector rotationVector,boolean relativeVelocityControlled){
+    double rotationalMagnitude = -rotationController.calculate(currentRobotDegree,rotationVector.getDegrees());
+    if (Math.abs(rotationalMagnitude) < 0.01){
+      rotationalMagnitude = 0;
+    }
     frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
     frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
     backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
     backRightSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
   }
-
+  public void rotationMagnitudeDrive(Vector strafeVector, double rotationalMagnitude, double currentRobotDegree, boolean relativeVelocityControlled){
+    frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
+    frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
+    backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
+    backRightSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
+  }
   public Pose2d getPose() {
     return m_odometer.getPoseMeters();
   }
@@ -259,7 +303,6 @@ public class SwerveSubsystem extends SubsystemBase {
       backLeftSwerveModule.getSwerveModulePosition(),
       backRightSwerveModule.getSwerveModulePosition()};
   }
-
   public SwerveModuleState[] getAllSwerveModuleStates(){
     return new SwerveModuleState[]{
       frontLeftSwerveModule.getSwerveModuleState(),
@@ -271,18 +314,20 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public ChassisSpeeds getSpeeds() {
     return m_kinematics.toChassisSpeeds(getAllSwerveModuleStates());
+    
   }
-
   @Override
   public void periodic() {
     ChassisSpeeds speed = getSpeeds();
-    chassisSpeed = speed;
     if (currentRobotDegree > 180){
       autoRobotDegree = new Rotation2d((currentRobotDegree - 360) * (Math.PI/180));
     }
     else{
       autoRobotDegree = new Rotation2d(currentRobotDegree * (Math.PI/180));
     }
+    //autoRobotDegree = new Rotation2d(currentRobotDegree * (Math.PI/180));
+    
+
     //Set the current degree of the robot 
     if (once){
       robotDegreeOffset = ((((robotGyro.getYaw().getValueAsDouble()) % 360) + 360) % 360);
@@ -296,6 +341,17 @@ public class SwerveSubsystem extends SubsystemBase {
       backLeftSwerveModule.getSwerveModulePosition(),
       backRightSwerveModule.getSwerveModulePosition()}
     );
+    // SmartDashboard.putNumber("front left",frontLeftSwerveModule.getSwerveModulePosition().angle.getDegrees());
+    // SmartDashboard.putNumber("front Right",frontRightSwerveModule.getSwerveModulePosition().angle.getDegrees());
+    // SmartDashboard.putNumber("back left",backLeftSwerveModule.getSwerveModulePosition().angle.getDegrees());
+    // SmartDashboard.putNumber("back Right",backRightSwerveModule.getSwerveModulePosition().angle.getDegrees());
+    
+    //SmartDashboard.putNumber("Front Left", frontLeftSwerveModule.getRawValue());
+    //SmartDashboard.putNumber("Front Right", frontRightSwerveModule.getRawValue());
+    //SmartDashboard.putNumber("Back Left", backLeftSwerveModule.getRawValue());
+    //SmartDashboard.putNumber("Back Right", backRightSwerveModule.getRawValue());
+    
+    //SmartDashboard.putNumber("degrees", autoRobotDegree.getDegrees());
     SmartDashboard.putNumber("x Trans", m_odometer.getPoseMeters().getX());
     SmartDashboard.putNumber("y Trans", m_odometer.getPoseMeters().getY());
     SmartDashboard.putNumber("x Vel", getSpeeds().vxMetersPerSecond);
@@ -304,5 +360,17 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Angular Velocity",robotGyro.getAngularVelocityZWorld().getValueAsDouble() * (Math.PI/180));
     SmartDashboard.putNumber("degree",currentRobotDegree);
     
+    // SmartDashboard.putNumber("Left Drive Encoder", frontLeftSwerveModule.getDriveSensorPosition());
+    //SmartDashboard.putNumber("Front Left Drive Position", frontLeftSwerveModule.getDriveSensorPosition());
+    //SmartDashboard.putNumber("Front Left Drive Velocity", frontLeftSwerveModule.getDriveSensorVelocity());
+    //SmartDashboard.putNumber("BackRight Degree:", backRightSwerveModule.get2dCurrentModuleDegree().getDegrees());
+    //System.out.println(backRightSwerveModule.get2dCurrentModuleDegree().getDegrees());
+    /*chassisSpeed = m_kinematics.toChassisSpeeds(
+      frontLeftSwerveModule.getSwerveModuleState(),
+      frontRightSwerveModule.getSwerveModuleState(),
+      backLeftSwerveModule.getSwerveModuleState(),
+      backRightSwerveModule.getSwerveModuleState()
+    );*/
+    chassisSpeed = speed;
   }
 }
