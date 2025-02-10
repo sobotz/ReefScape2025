@@ -33,7 +33,7 @@ public class EndAutoCommand extends Command {
   @Override
   public void execute() {
     if (timer.get()<1){
-      m_swerveSubsystem.drive(new Vector(0, 0),0,m_swerveSubsystem.getCurrentRobotDegree(), false);
+      m_swerveSubsystem.rotationMagnitudeDrive(new Vector(0, 0),0,0, false);
     }
     else{
       isFinished = true;

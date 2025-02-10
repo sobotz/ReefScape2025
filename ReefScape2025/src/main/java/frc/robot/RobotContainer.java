@@ -47,7 +47,7 @@ public class RobotContainer {
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    autoPath = new PathPlannerAuto("TestAuto");
+    autoPath = new PathPlannerAuto("Test Auto");
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));
     configureBindings();
   }
