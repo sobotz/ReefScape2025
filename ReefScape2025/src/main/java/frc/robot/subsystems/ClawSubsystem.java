@@ -42,7 +42,7 @@ public class ClawSubsystem extends SubsystemBase {
     targetPosition = ClawPosition.INTAKE;
     clawPIDCalculation = 0;
   }
-
+  
   public double getClawSensorPosition(){
     return clawSensor.getPosition().getValueAsDouble();
   }
