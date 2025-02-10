@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -16,7 +15,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.EnumElavatorPosition;
+
+import frc.robot.Constants.EnumElevatorPosition;
 import frc.robot.Constants.ElevatorPosition;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -31,16 +31,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** PID Controller for precise control */
   private final PIDController elevatorController;
 
-  /** Current Position Tracking */
-  private EnumElavatorPosition currentPosition;
-
   /** Mapping of Enum Positions to Heights */
-  private final Map<EnumElavatorPosition, Double> positionMap;
+  private final Map<EnumElevatorPosition, Double> positionMap;
 
   /** Motion Magic Control */
 
   private double elevatorPIDCalculation;
-  private ElevatorPosition targetPosition; 
+  private EnumElevatorPosition targetPosition; 
   /** PIDF Constants */
   private static final double kP = 0.1;
   private static final double kI = 0.0;
@@ -53,13 +50,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorSubsystem() {
     /** Initialize position mappings */
     
-    positionMap = new HashMap<EnumElavatorPosition, Double>(){{
-      put(EnumElavatorPosition.Rest, ElevatorPosition.Rest);
-      put(EnumElavatorPosition.L1, ElevatorPosition.L1);
-      put(EnumElavatorPosition.L2, ElevatorPosition.L2);
-      put(EnumElavatorPosition.L3, ElevatorPosition.L3);
-      put(EnumElavatorPosition.L4, ElevatorPosition.L4);
+    positionMap = new HashMap<EnumElevatorPosition, Double>(){{
+      put(EnumElevatorPosition.Rest, ElevatorPosition.Rest);
+      put(EnumElevatorPosition.L1, ElevatorPosition.L1);
+      put(EnumElevatorPosition.L2, ElevatorPosition.L2);
+      put(EnumElevatorPosition.L3, ElevatorPosition.L3);
+      put(EnumElevatorPosition.L4, ElevatorPosition.L4);
     }};
+
     /** Initialize motors */
     masterMotor = new TalonFX(0, "Drivetrain");
     
@@ -84,14 +82,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     return elevatorController.atSetpoint();
   }
 
-  public void setElevatorTargetPosition(ElevatorPosition position) {
+  public void setElevatorTargetPosition(EnumElevatorPosition position) {
     targetPosition = position;
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Manual Mode", manualMode);
-    SmartDashboard.putString("Current Elevator Position", currentPosition.toString());
 
     System.out.println("Manual Mode: " + manualMode);
     
