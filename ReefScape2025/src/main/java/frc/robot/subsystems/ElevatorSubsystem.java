@@ -26,10 +26,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final TalonFX slaveMotor;
 
   /** Encoder Sensor */
-  private final CANcoder sensor;
+  private final CANcoder elevatorSensor;
 
   /** PID Controller for precise control */
-  private final PIDController pidController;
+  private final PIDController elevatorController;
 
   /** Current Position Tracking */
   private EnumElavatorPosition currentPosition;
@@ -38,7 +38,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final Map<EnumElavatorPosition, Double> positionMap;
 
   /** Motion Magic Control */
-  private final MotionMagicVoltage motionControl;
+  private ElevatorPosition targetPosition;
+  private double elevatorPIDCalculation;
 
   /** PIDF Constants */
   private static final double kP = 0.1;
@@ -46,15 +47,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final double kD = 0.01;
   private static final double kF = 0.05;
 
-  /** Elevator Motion Limits */
-  private static final double MIN_HEIGHT = 0.0;    
-  private static final double MAX_HEIGHT = 100.0;  
-
   /** Manual Control Mode */
   private boolean manualMode;
 
   public ElevatorSubsystem() {
-
+    
     /** Initialize position mappings */
     positionMap = new HashMap<EnumElavatorPosition, Double>(){{
       put(EnumElavatorPosition.Rest, ElavatorPositions.Rest);
@@ -73,92 +70,30 @@ public class ElevatorSubsystem extends SubsystemBase {
     slaveMotor.setNeutralMode(NeutralModeValue.Brake);
     slaveMotor.set(masterMotor.get()); // Mirror master motor
 
-    /** Initialize sensor */
-    sensor = new CANcoder(0, "Drivetrain");
+
+    elevatorSensor = new CANcoder(0, "Drivetrain");
+
+    elevatorController = new PIDController(0.1, 0.0, 0.01);  // Tune these values as needed
+    elevatorController.setTolerance(0.001);
 
     /** Initialize Motion Magic Control */
-    motionControl = new MotionMagicVoltage(0);
-
-    /** Initialize PID Controller */
-    pidController = new PIDController(kP, kI, kD);
-    pidController.setTolerance(0.5);
-
-    /** Set default position */
-    currentPosition = EnumElavatorPosition.Rest;
-
-    /** Default to manual control mode */
-    manualMode = false;
+  
   }
 
-  /**
-   * Toggle manual mode for direct motor control
-   */
-  public void toggleManual() {
-    manualMode = !manualMode;
+  public double getElevatorSensorPosition() {
+    return elevatorSensor.getPosition().getValueAsDouble();
   }
 
-  /**
-   * Move the elevator to a predefined position using Motion Magic
-   * @param position The desired EnumElavatorPosition
-   */
-  public void moveToPosition(EnumElavatorPosition position) {
-    if (positionMap.containsKey(position)) {
-      double targetHeight = positionMap.get(position);
-      targetHeight = Math.max(MIN_HEIGHT, Math.min(targetHeight, MAX_HEIGHT));
-
-      motionControl.withPosition(targetHeight);
-      masterMotor.setControl(motionControl);
-
-      currentPosition = position;
-    } else {
-      System.err.println("Invalid elevator position requested: " + position);
-    }
+  public boolean elevatorAtTargetPosition() {
+    return elevatorController.atSetpoint();
   }
 
-  /**
-   * Manually control elevator with direct speed input
-   * @param speed The speed of the elevator (-1 to 1)
-   */
-  public void manualMove(double speed) {
-    if (manualMode) {
-      if (getCurrentHeight() <= MIN_HEIGHT && speed < 0) {
-        stop();
-      } else if (getCurrentHeight() >= MAX_HEIGHT && speed > 0) {
-        stop();
-      } else {
-        masterMotor.set(speed);
-        slaveMotor.set(speed);
-      }
-    }
-  }
-
-  /**
-   * Stops the elevator
-   */
-  public void stop() {
-    masterMotor.set(0);
-    slaveMotor.set(0);
-  }
-
-  /**
-   * Get the current elevator position in inches
-   * @return Current height
-   */
-  public double getCurrentHeight() {
-    return sensor.getPosition().getValueAsDouble();
-  }
-
-  /**
-   * Get the current set position
-   * @return EnumElavatorPosition
-   */
-  public EnumElavatorPosition getCurrentPosition() {
-    return currentPosition;
+  public void setElevatorTargetPosition(ElevatorPosition position) {
+    targetPosition = position;
   }
 
   @Override
   public void periodic() {
-    // Update SmartDashboard for debugging
     SmartDashboard.putBoolean("Manual Mode", manualMode);
     SmartDashboard.putString("Current Elevator Position", currentPosition.toString());
     SmartDashboard.putNumber("Elevator Height", getCurrentHeight());
@@ -166,5 +101,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     // Log values for debugging
     System.out.println("Elevator Height: " + getCurrentHeight());
     System.out.println("Manual Mode: " + manualMode);
+    // This method will be called once per scheduler run
+    elevatorPIDCalculation = elevatorController.calculate(getElevatorSensorPosition(), positionMap.get(targetPosition));
+    
+    if (!elevatorController.atSetpoint()) {
+      masterMotor.set(elevatorPIDCalculation);
+    } else {
+      masterMotor.set(0);
+    }
   }
 }
