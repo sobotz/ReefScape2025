@@ -21,4 +21,18 @@ public final class Constants {
     public static final double wheelRadius = 0.0508;//in meters;
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
+  public static enum EnumElavatorPosition {
+    Rest,
+    L1,
+    L2,
+    L3,
+    L4
+  }
+  public static final class ElavatorPositions {
+    public static final double Rest = 0;
+    public static final double L1 = 0;
+    public static final double L2 = 0;
+    public static final double L3 = 0;
+    public static final double L4 = 0;
+  }
 }
