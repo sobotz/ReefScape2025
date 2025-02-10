@@ -28,7 +28,7 @@ public final class Constants {
     L3,
     L4
   }
-  public static final class ElavatorPositions {
+  public static final class ElevatorPosition {
     public static final double Rest = 0;
     public static final double L1 = 0;
     public static final double L2 = 0;

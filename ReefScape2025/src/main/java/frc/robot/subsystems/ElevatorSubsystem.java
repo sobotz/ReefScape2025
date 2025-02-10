@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.EnumElavatorPosition;
-import frc.robot.Constants.ElavatorPositions;
+import frc.robot.Constants.ElevatorPosition;
 
 public class ElevatorSubsystem extends SubsystemBase {
   
@@ -38,9 +38,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final Map<EnumElavatorPosition, Double> positionMap;
 
   /** Motion Magic Control */
-  private ElevatorPosition targetPosition;
-  private double elevatorPIDCalculation;
 
+  private double elevatorPIDCalculation;
+  private ElevatorPosition targetPosition; 
   /** PIDF Constants */
   private static final double kP = 0.1;
   private static final double kI = 0.0;
@@ -51,18 +51,18 @@ public class ElevatorSubsystem extends SubsystemBase {
   private boolean manualMode;
 
   public ElevatorSubsystem() {
-    
     /** Initialize position mappings */
+    
     positionMap = new HashMap<EnumElavatorPosition, Double>(){{
-      put(EnumElavatorPosition.Rest, ElavatorPositions.Rest);
-      put(EnumElavatorPosition.L1, ElavatorPositions.L1);
-      put(EnumElavatorPosition.L2, ElavatorPositions.L2);
-      put(EnumElavatorPosition.L3, ElavatorPositions.L3);
-      put(EnumElavatorPosition.L4, ElavatorPositions.L4);
+      put(EnumElavatorPosition.Rest, ElevatorPosition.Rest);
+      put(EnumElavatorPosition.L1, ElevatorPosition.L1);
+      put(EnumElavatorPosition.L2, ElevatorPosition.L2);
+      put(EnumElavatorPosition.L3, ElevatorPosition.L3);
+      put(EnumElavatorPosition.L4, ElevatorPosition.L4);
     }};
-
     /** Initialize motors */
     masterMotor = new TalonFX(0, "Drivetrain");
+    
     slaveMotor = new TalonFX(0, "Drivetrain");
 
     /** Configure motors */
@@ -70,14 +70,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     slaveMotor.setNeutralMode(NeutralModeValue.Brake);
     slaveMotor.set(masterMotor.get()); // Mirror master motor
 
-
     elevatorSensor = new CANcoder(0, "Drivetrain");
 
-    elevatorController = new PIDController(0.1, 0.0, 0.01);  // Tune these values as needed
-    elevatorController.setTolerance(0.001);
-
-    /** Initialize Motion Magic Control */
-  
+    elevatorController = new PIDController(kP, kI, kD);  // Tune these values as needed
+    elevatorController.setTolerance(0.001);  
   }
 
   public double getElevatorSensorPosition() {
@@ -96,12 +92,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("Manual Mode", manualMode);
     SmartDashboard.putString("Current Elevator Position", currentPosition.toString());
-    SmartDashboard.putNumber("Elevator Height", getCurrentHeight());
 
-    // Log values for debugging
-    System.out.println("Elevator Height: " + getCurrentHeight());
     System.out.println("Manual Mode: " + manualMode);
-    // This method will be called once per scheduler run
+    
     elevatorPIDCalculation = elevatorController.calculate(getElevatorSensorPosition(), positionMap.get(targetPosition));
     
     if (!elevatorController.atSetpoint()) {
