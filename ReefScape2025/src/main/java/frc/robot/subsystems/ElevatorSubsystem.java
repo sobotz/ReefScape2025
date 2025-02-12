@@ -40,7 +40,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** PIDF Constants */
   private static final double kP = 0.1;
   private static final double kI = 0.0;
-  private static final double kD = 0.01;
+  private static final double kD = 0.0;
 
   /** Manual Control Mode */
   private boolean manualMode;
