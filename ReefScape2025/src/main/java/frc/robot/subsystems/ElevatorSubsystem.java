@@ -81,7 +81,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Manual Mode", manualMode);
-
     System.out.println("Manual Mode: " + manualMode);
     
     elevatorPIDCalculation = elevatorController.calculate(getElevatorSensorPosition(), positionMap.get(targetPosition));
