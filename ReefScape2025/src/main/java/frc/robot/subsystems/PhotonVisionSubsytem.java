@@ -63,7 +63,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
           rightCameraAngleOffset = (-1)*(180+rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
         }
         else{
-          rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
+          rightCameraAngleOffset = (180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
         }
         
       swerveSubsystem.setDriveCommandDisabled(enabled);
@@ -77,7 +77,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
         rightCameraAngleOffset = (-1)*(180+rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
       }
       else{
-        rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
+        rightCameraAngleOffset = (180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
       }
       
       //32.253
@@ -91,7 +91,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       leftCameraAngleOffset = (-1)*(180+leftCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
     }
     else{
-      leftCameraAngleOffset = (-1)*(180-leftCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
+      leftCameraAngleOffset = (180-leftCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
     }
     
   swerveSubsystem.setDriveCommandDisabled(enabled);
