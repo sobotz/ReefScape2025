@@ -252,7 +252,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public void reefControlledDrive(double xOffset, double yOffset,double angleOffset, double xTarget, double yTarget,boolean enabled){
     
     Vector tvec = new Vector(-xTranslationController.calculate( xOffset,xTarget),yTranslationController.calculate(yOffset,yTarget));
-    Vector rvec = new Vector(1, -32.253 , true);
+    Vector rvec = new Vector(1, 0 , true);
     //angleRotationController.
     double rotationalMagnitude = -rotationController.calculate(angleOffset,rvec.getDegrees());
     
