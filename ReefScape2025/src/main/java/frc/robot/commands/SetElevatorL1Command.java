@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ElevatorPosition;
-import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
