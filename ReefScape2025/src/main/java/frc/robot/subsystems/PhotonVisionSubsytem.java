@@ -65,7 +65,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
         else{
           rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
         }
-        rightCameraAngleOffset += 46.25;
+        
       swerveSubsystem.setDriveCommandDisabled(enabled);
       swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,1, enabled);
       System.out.println("Using Right Cam");
@@ -79,7 +79,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       else{
         rightCameraAngleOffset = (-1)*(180-rightCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
       }
-      rightCameraAngleOffset += 46.25;
+      
       //32.253
     swerveSubsystem.setDriveCommandDisabled(enabled);
     swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,1, enabled);
@@ -93,7 +93,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     else{
       leftCameraAngleOffset = (-1)*(180-leftCameraTargetInfo.getRotation().getZ()*(180/Math.PI));
     }
-    leftCameraAngleOffset -= 46.25;
+    
   swerveSubsystem.setDriveCommandDisabled(enabled);
   swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,0,1, enabled);
   System.out.println("Using Left Cam");
