@@ -22,14 +22,17 @@ public final class Constants {
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
   public static enum ElevatorPosition {
-    Rest,
+    INTAKE,
     L1,
     L2,
     L3,
     L4
   }
   public static final class ElevatorConstants {
-    public static final double Rest = 0;
+    public static final double kP = 0.1;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double INTAKE = 0;
     public static final double L1 = 0;
     public static final double L2 = 0;
     public static final double L3 = 0;

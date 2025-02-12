@@ -14,7 +14,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorPosition;
 
@@ -38,10 +38,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   private double elevatorPIDCalculation;
   private ElevatorPosition targetPosition; 
   /** PIDF Constants */
-  private static final double kP = 0.1;
-  private static final double kI = 0.0;
-  private static final double kD = 0.0;
-
   /** Manual Control Mode */
   private boolean manualMode;
 
@@ -49,7 +45,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     /** Initialize position mappings */
     
     positionMap = new HashMap<ElevatorPosition, Double>(){{
-      put(ElevatorPosition.Rest, ElevatorConstants.Rest);
+      put(ElevatorPosition.INTAKE, ElevatorConstants.INTAKE);
       put(ElevatorPosition.L1, ElevatorConstants.L1);
       put(ElevatorPosition.L2, ElevatorConstants.L2);
       put(ElevatorPosition.L3, ElevatorConstants.L3);
@@ -58,7 +54,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     /** Initialize motors */
     elevatorMotor = new TalonFX(1, "Drivetrain");
-    
     slaveMotor = new TalonFX(2, "Drivetrain");
 
     /** Configure motors */
@@ -67,7 +62,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     elevatorSensor = new CANcoder(3, "Drivetrain");
 
-    elevatorController = new PIDController(kP, kI, kD);  // Tune these values as needed
+    elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD);  // Tune these values as needed
     elevatorController.setTolerance(0.001);  
   }
 
