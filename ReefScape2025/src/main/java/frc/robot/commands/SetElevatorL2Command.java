@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.EnumElevatorPosition;
+import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -21,7 +21,7 @@ public class SetElevatorL2Command extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elavatorSubsystem.setElevatorTargetPosition(EnumElevatorPosition.L2);
+    m_elavatorSubsystem.setElevatorTargetPosition(ElevatorPosition.L2);
   }
 }
 

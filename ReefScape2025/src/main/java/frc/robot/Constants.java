@@ -21,14 +21,14 @@ public final class Constants {
     public static final double wheelRadius = 0.0508;//in meters;
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
-  public static enum EnumElevatorPosition {
+  public static enum ElevatorPosition {
     Rest,
     L1,
     L2,
     L3,
     L4
   }
-  public static final class ElevatorPosition {
+  public static final class ElevatorConstants {
     public static final double Rest = 0;
     public static final double L1 = 0;
     public static final double L2 = 0;

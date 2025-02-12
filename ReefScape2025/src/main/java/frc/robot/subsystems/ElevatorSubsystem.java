@@ -15,14 +15,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import frc.robot.Constants.EnumElevatorPosition;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorPosition;
 
 public class ElevatorSubsystem extends SubsystemBase {
   
   /** Elevator Motors */
-  private final TalonFX masterMotor;
+  private final TalonFX elevatorMotor;
   private final TalonFX slaveMotor;
 
   /** Encoder Sensor */
@@ -32,17 +31,16 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final PIDController elevatorController;
 
   /** Mapping of Enum Positions to Heights */
-  private final Map<EnumElevatorPosition, Double> positionMap;
+  private final Map<ElevatorPosition, Double> positionMap;
 
   /** Motion Magic Control */
 
   private double elevatorPIDCalculation;
-  private EnumElevatorPosition targetPosition; 
+  private ElevatorPosition targetPosition; 
   /** PIDF Constants */
   private static final double kP = 0.1;
   private static final double kI = 0.0;
   private static final double kD = 0.01;
-  private static final double kF = 0.05;
 
   /** Manual Control Mode */
   private boolean manualMode;
@@ -50,25 +48,24 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorSubsystem() {
     /** Initialize position mappings */
     
-    positionMap = new HashMap<EnumElevatorPosition, Double>(){{
-      put(EnumElevatorPosition.Rest, ElevatorPosition.Rest);
-      put(EnumElevatorPosition.L1, ElevatorPosition.L1);
-      put(EnumElevatorPosition.L2, ElevatorPosition.L2);
-      put(EnumElevatorPosition.L3, ElevatorPosition.L3);
-      put(EnumElevatorPosition.L4, ElevatorPosition.L4);
+    positionMap = new HashMap<ElevatorPosition, Double>(){{
+      put(ElevatorPosition.Rest, ElevatorConstants.Rest);
+      put(ElevatorPosition.L1, ElevatorConstants.L1);
+      put(ElevatorPosition.L2, ElevatorConstants.L2);
+      put(ElevatorPosition.L3, ElevatorConstants.L3);
+      put(ElevatorPosition.L4, ElevatorConstants.L4);
     }};
 
     /** Initialize motors */
-    masterMotor = new TalonFX(0, "Drivetrain");
+    elevatorMotor = new TalonFX(1, "Drivetrain");
     
-    slaveMotor = new TalonFX(0, "Drivetrain");
+    slaveMotor = new TalonFX(2, "Drivetrain");
 
     /** Configure motors */
-    masterMotor.setNeutralMode(NeutralModeValue.Brake);
+    elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     slaveMotor.setNeutralMode(NeutralModeValue.Brake);
-    slaveMotor.set(masterMotor.get()); // Mirror master motor
 
-    elevatorSensor = new CANcoder(0, "Drivetrain");
+    elevatorSensor = new CANcoder(3, "Drivetrain");
 
     elevatorController = new PIDController(kP, kI, kD);  // Tune these values as needed
     elevatorController.setTolerance(0.001);  
@@ -82,7 +79,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     return elevatorController.atSetpoint();
   }
 
-  public void setElevatorTargetPosition(EnumElevatorPosition position) {
+  public void setElevatorTargetPosition(ElevatorPosition position) {
     targetPosition = position;
   }
 
@@ -95,9 +92,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorPIDCalculation = elevatorController.calculate(getElevatorSensorPosition(), positionMap.get(targetPosition));
     
     if (!elevatorController.atSetpoint()) {
-      masterMotor.set(elevatorPIDCalculation);
+      elevatorMotor.set(elevatorPIDCalculation);
+      slaveMotor.set(elevatorPIDCalculation);
     } else {
-      masterMotor.set(0);
+      elevatorMotor.set(0);
+      slaveMotor.set(0);
     }
   }
 }
