@@ -29,13 +29,13 @@ public final class Constants {
     L4
   }
   public static final class ElevatorConstants {
-    public static final double kP = 0.1;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
-    public static final double INTAKE = 0;
-    public static final double L1 = 0;
-    public static final double L2 = 0;
-    public static final double L3 = 0;
-    public static final double L4 = 0;
+    public static final double kP = 0.1046;//.1047
+    public static final double kI = 0.334;//.335
+    public static final double kD = 0.0104;//.0106
+    public static final double INTAKE = 16;
+    public static final double L1 = 60;
+    public static final double L2 = 2;
+    public static final double L3 = 3;
+    public static final double L4 = 4;
   }
 }

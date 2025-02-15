@@ -7,11 +7,14 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,11 +24,10 @@ import frc.robot.Constants.ElevatorPosition;
 public class ElevatorSubsystem extends SubsystemBase {
   
   /** Elevator Motors */
-  private final TalonFX elevatorMotor;
-  private final TalonFX slaveMotor;
+  TalonFX elevatorMotor;
+  TalonFX slaveMotor;
+  CurrentLimitsConfigs limitConfigs;
 
-  /** Encoder Sensor */
-  private final CANcoder elevatorSensor;
 
   /** PID Controller for precise control */
   private final PIDController elevatorController;
@@ -40,6 +42,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** PIDF Constants */
   /** Manual Control Mode */
   private boolean manualMode;
+  boolean once;
 
   public ElevatorSubsystem() {
     /** Initialize position mappings */
@@ -53,21 +56,32 @@ public class ElevatorSubsystem extends SubsystemBase {
     }};
 
     /** Initialize motors */
-    elevatorMotor = new TalonFX(1, "Drivetrain");
-    slaveMotor = new TalonFX(2, "Drivetrain");
+    elevatorMotor = new TalonFX(15);
+    slaveMotor = new TalonFX(14);
 
     /** Configure motors */
-    elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
-    slaveMotor.setNeutralMode(NeutralModeValue.Brake);
+    limitConfigs = new CurrentLimitsConfigs();
+    limitConfigs.StatorCurrentLimit = 40;
+    limitConfigs.StatorCurrentLimitEnable = true;
+    
+    elevatorMotor.getConfigurator().apply(limitConfigs);
+    slaveMotor.getConfigurator().apply(limitConfigs);
+    
 
-    elevatorSensor = new CANcoder(3, "Drivetrain");
+    // enable stator current limit
+    
+    
+    
 
     elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD);  // Tune these values as needed
-    elevatorController.setTolerance(0.001);  
+    elevatorController.setTolerance(0.007); 
+    elevatorPIDCalculation = 0; 
+    targetPosition = ElevatorPosition.INTAKE;
+    once = true;
   }
 
   public double getElevatorSensorPosition() {
-    return elevatorSensor.getPosition().getValueAsDouble();
+    return elevatorMotor.getPosition().getValueAsDouble();
   }
 
   public boolean elevatorAtTargetPosition() {
@@ -80,15 +94,25 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Manual Mode", manualMode);
-    System.out.println("Manual Mode: " + manualMode);
+    if (once){
+      elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
+      slaveMotor.setNeutralMode(NeutralModeValue.Brake);
+      once = false;
+    }
+    //SmartDashboard.putBoolean("Manual Mode", manualMode);
+    //System.out.println("Manual Mode: " + manualMode);
     
     elevatorPIDCalculation = elevatorController.calculate(getElevatorSensorPosition(), positionMap.get(targetPosition));
     
+    //elevatorMotor.set(0.03);
+    //slaveMotor.set(-0.03);
     if (!elevatorController.atSetpoint()) {
+      System.out.println(elevatorController.getError());
+      //System.out.println(elevatorPIDCalculation);
       elevatorMotor.set(elevatorPIDCalculation);
-      slaveMotor.set(elevatorPIDCalculation);
+      slaveMotor.set(-elevatorPIDCalculation);
     } else {
+      System.out.println(true);
       elevatorMotor.set(0);
       slaveMotor.set(0);
     }

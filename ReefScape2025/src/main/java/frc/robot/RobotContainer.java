@@ -8,6 +8,9 @@ package frc.robot;
 
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
+import frc.robot.commands.SetElevatorIntakeCommand;
+import frc.robot.commands.SetElevatorL1Command;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -19,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -31,10 +35,14 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   
   Joystick stick;
+  Joystick testOperator;
   SwerveSubsystem m_swerveSubsystem;
   DriveCommand m_driveCommand;
   private final SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
+  ElevatorSubsystem m_elevatorSubsystem;
+  SetElevatorIntakeCommand m_elevatorIntakeCommand;
+  SetElevatorL1Command m_elevatorL1Command;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -43,11 +51,19 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     stick = new Joystick(0);
+    testOperator = new Joystick(1);
     m_swerveSubsystem = new SwerveSubsystem();
+    m_elevatorSubsystem = new ElevatorSubsystem();
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
+    m_elevatorIntakeCommand = new SetElevatorIntakeCommand(m_elevatorSubsystem);
+    m_elevatorL1Command = new SetElevatorL1Command(m_elevatorSubsystem);
+
+    
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoPath = new PathPlannerAuto("TestAuto");
+    
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));
     configureBindings();
   }
@@ -75,6 +91,11 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    JoystickButton elevatorIntakeButton = new JoystickButton(testOperator, 1);
+    elevatorIntakeButton.onTrue(m_elevatorIntakeCommand);
+    JoystickButton elevatorL1Button = new JoystickButton(testOperator, 2);
+    elevatorL1Button.onTrue(m_elevatorL1Command);
+
   }
 
   /**
