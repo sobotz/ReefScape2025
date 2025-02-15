@@ -87,13 +87,13 @@ public class RobotContainer {
     m_elevatorL3Command = new SetElevatorL3Command(m_elevatorSubsystem);
     m_elevatorL4Command = new SetElevatorL4Command(m_elevatorSubsystem);
 
-    m_clawSubsystem = new ClawSubsystem();
+    // m_clawSubsystem = new ClawSubsystem();
 
-    m_setClawIntakeCommand = new SetClawIntakeCommand(m_clawSubsystem);
-    m_setClawL1Command = new SetClawL1Command(m_clawSubsystem);
-    m_setClawL2Command = new SetClawL2Command(m_clawSubsystem);
-    m_setClawL3Command = new SetClawL3Command(m_clawSubsystem);
-    m_setClawL4Command = new SetClawL4Command(m_clawSubsystem);
+    // m_setClawIntakeCommand = new SetClawIntakeCommand(m_clawSubsystem);
+    // m_setClawL1Command = new SetClawL1Command(m_clawSubsystem);
+    // m_setClawL2Command = new SetClawL2Command(m_clawSubsystem);
+    // m_setClawL3Command = new SetClawL3Command(m_clawSubsystem);
+    // m_setClawL4Command = new SetClawL4Command(m_clawSubsystem);
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -133,21 +133,25 @@ public class RobotContainer {
     JoystickButton elevatorL1Button = new JoystickButton(testOperator, 2);
     elevatorL1Button.onTrue(m_elevatorL1Command);
     JoystickButton elevatorL2Button = new JoystickButton(testOperator, 3);
+    elevatorL2Button.onTrue(m_elevatorL2Command);
     JoystickButton elevatorL3Button = new JoystickButton(testOperator,4);
+    elevatorL3Button.onTrue(m_elevatorL3Command);
     JoystickButton elevatorL4Button = new JoystickButton(testOperator, 5);
+    elevatorL4Button.onTrue(m_elevatorL4Command);
 
 
-    JoystickButton clawIntakeButton = new JoystickButton(stick, 0);//CHANGE
-    JoystickButton clawL1Button = new JoystickButton(stick,1);//CHANGE
-    JoystickButton clawL2Button = new JoystickButton(stick, 2);//CHANGE
-    JoystickButton clawL3Button = new JoystickButton(stick, 3);//CHANGE
-    JoystickButton clawL4Button = new JoystickButton(stick,4);//CHANGE
 
-    clawIntakeButton.onTrue(m_setClawIntakeCommand);
-    clawL1Button.onTrue(m_setClawL1Command);
-    clawL2Button.onTrue(m_setClawL2Command);
-    clawL3Button.onTrue(m_setClawL3Command);
-    clawL4Button.onTrue(m_setClawL4Command);
+    // JoystickButton clawIntakeButton = new JoystickButton(stick, 6);//CHANGE
+    // JoystickButton clawL1Button = new JoystickButton(stick,7);//CHANGE
+    // JoystickButton clawL2Button = new JoystickButton(stick, 8);//CHANGE
+    // JoystickButton clawL3Button = new JoystickButton(stick, 9);//CHANGE
+    // JoystickButton clawL4Button = new JoystickButton(stick,10);//CHANGE
+
+    // clawIntakeButton.onTrue(m_setClawIntakeCommand);
+    // clawL1Button.onTrue(m_setClawL1Command);
+    // clawL2Button.onTrue(m_setClawL2Command);
+    // clawL3Button.onTrue(m_setClawL3Command);
+    // clawL4Button.onTrue(m_setClawL4Command);
 
   }
 

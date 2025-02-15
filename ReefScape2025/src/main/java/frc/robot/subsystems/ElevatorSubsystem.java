@@ -43,6 +43,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** Manual Control Mode */
   private boolean manualMode;
   boolean once;
+  boolean atTargetPosition;
 
   public ElevatorSubsystem() {
     /** Initialize position mappings */
@@ -74,10 +75,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     
 
     elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD);  // Tune these values as needed
-    elevatorController.setTolerance(0.007); 
+    elevatorController.setTolerance(0.005); 
     elevatorPIDCalculation = 0; 
     targetPosition = ElevatorPosition.INTAKE;
     once = true;
+    atTargetPosition = false;
   }
 
   public double getElevatorSensorPosition() {
@@ -107,14 +109,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     //elevatorMotor.set(0.03);
     //slaveMotor.set(-0.03);
     if (!elevatorController.atSetpoint()) {
-      System.out.println(elevatorPIDCalculation);
+      //System.out.println(elevatorController.getError());
       //System.out.println(elevatorPIDCalculation);
       elevatorMotor.set(elevatorPIDCalculation);
       slaveMotor.set(-elevatorPIDCalculation);
-    } else {
-      System.out.println(true);
-      elevatorMotor.set(0);
-      slaveMotor.set(0);
+    } 
+    if (Math.abs(elevatorController.getError())<0.3){
+      atTargetPosition = true;
     }
+    else{
+      atTargetPosition = false;
+    }
+    System.out.println(atTargetPosition);
   }
 }

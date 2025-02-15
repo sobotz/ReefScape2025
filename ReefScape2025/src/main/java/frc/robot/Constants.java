@@ -43,13 +43,18 @@ public final class Constants {
     L4
   }
   public static final class ElevatorConstants {
-    public static final double kP = 0.10;//.10
-    public static final double kI = 0.334;//.334
-    public static final double kD = 0.01031;//.01031
-    public static final double INTAKE = 16;
-    public static final double L1 = 60;
-    public static final double L2 = 2;
-    public static final double L3 = 3;
-    public static final double L4 = 4;
+    //I type PID CONTROLLER
+    // public static final double kP = 0.10;//.10
+    // public static final double kI = 0.334;//.334
+    // public static final double kD = 0.01031;//.01031
+    //P type PID Controller
+    public static final double kP = 0.15;
+    public static final double kI = 0;
+    public static final double kD = 0.006;
+    public static final double INTAKE = 5;
+    public static final double L1 = 20;
+    public static final double L2 = 35;
+    public static final double L3 = 50;
+    public static final double L4 = 65;
   }
 }
