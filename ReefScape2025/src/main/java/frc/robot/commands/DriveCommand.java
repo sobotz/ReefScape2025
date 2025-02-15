@@ -44,8 +44,6 @@ public class DriveCommand extends Command {
     //rotationVector = new Vector(0, 0);
     m_swerveSubsystem.driverControlledDrive(strafeVector,rotationVector);
     //m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
-
-    
   }
   
   @Override

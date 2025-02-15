@@ -8,12 +8,21 @@ package frc.robot;
 
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
+
 import frc.robot.commands.SetElevatorIntakeCommand;
 import frc.robot.commands.SetElevatorL1Command;
 import frc.robot.commands.SetElevatorL2Command;
 import frc.robot.commands.SetElevatorL3Command;
 import frc.robot.commands.SetElevatorL4Command;
 import frc.robot.subsystems.ElevatorSubsystem;
+
+import frc.robot.commands.SetClawIntakeCommand;
+import frc.robot.commands.SetClawL1Command;
+import frc.robot.commands.SetClawL2Command;
+import frc.robot.commands.SetClawL3Command;
+import frc.robot.commands.SetClawL4Command;
+import frc.robot.subsystems.ClawSubsystem;
+
 import frc.robot.subsystems.SwerveSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -40,8 +49,17 @@ public class RobotContainer {
   Joystick stick;
   Joystick testOperator;
   SwerveSubsystem m_swerveSubsystem;
+  ClawSubsystem m_clawSubsystem;
+
   DriveCommand m_driveCommand;
-  private final SendableChooser<Command> autoChooser;
+  SetClawIntakeCommand m_setClawIntakeCommand;
+  SetClawL1Command m_setClawL1Command;
+  SetClawL2Command m_setClawL2Command;
+  SetClawL3Command m_setClawL3Command;
+  SetClawL4Command m_setClawL4Command;
+
+
+  SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
   ElevatorSubsystem m_elevatorSubsystem;
   SetElevatorIntakeCommand m_elevatorIntakeCommand;
@@ -57,6 +75,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     stick = new Joystick(0);
+
     testOperator = new Joystick(1);
     m_swerveSubsystem = new SwerveSubsystem();
     m_elevatorSubsystem = new ElevatorSubsystem();
@@ -67,6 +86,15 @@ public class RobotContainer {
     m_elevatorL2Command = new SetElevatorL2Command(m_elevatorSubsystem);
     m_elevatorL3Command = new SetElevatorL3Command(m_elevatorSubsystem);
     m_elevatorL4Command = new SetElevatorL4Command(m_elevatorSubsystem);
+
+    m_clawSubsystem = new ClawSubsystem();
+
+    m_setClawIntakeCommand = new SetClawIntakeCommand(m_clawSubsystem);
+    m_setClawL1Command = new SetClawL1Command(m_clawSubsystem);
+    m_setClawL2Command = new SetClawL2Command(m_clawSubsystem);
+    m_setClawL3Command = new SetClawL3Command(m_clawSubsystem);
+    m_setClawL4Command = new SetClawL4Command(m_clawSubsystem);
+
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -99,6 +127,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+
     JoystickButton elevatorIntakeButton = new JoystickButton(testOperator, 1);
     elevatorIntakeButton.onTrue(m_elevatorIntakeCommand);
     JoystickButton elevatorL1Button = new JoystickButton(testOperator, 2);
@@ -106,6 +135,19 @@ public class RobotContainer {
     JoystickButton elevatorL2Button = new JoystickButton(testOperator, 3);
     JoystickButton elevatorL3Button = new JoystickButton(testOperator,4);
     JoystickButton elevatorL4Button = new JoystickButton(testOperator, 5);
+
+
+    JoystickButton clawIntakeButton = new JoystickButton(stick, 0);//CHANGE
+    JoystickButton clawL1Button = new JoystickButton(stick,1);//CHANGE
+    JoystickButton clawL2Button = new JoystickButton(stick, 2);//CHANGE
+    JoystickButton clawL3Button = new JoystickButton(stick, 3);//CHANGE
+    JoystickButton clawL4Button = new JoystickButton(stick,4);//CHANGE
+
+    clawIntakeButton.onTrue(m_setClawIntakeCommand);
+    clawL1Button.onTrue(m_setClawL1Command);
+    clawL2Button.onTrue(m_setClawL2Command);
+    clawL3Button.onTrue(m_setClawL3Command);
+    clawL4Button.onTrue(m_setClawL4Command);
 
   }
 

@@ -21,7 +21,14 @@ public final class Constants {
     public static final double wheelRadius = 0.0508;//in meters;
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
-  public static enum ElevatorPosition {
+  public static class ClawConstants{
+    public static final double intakeSensorPosition = 0;
+    public static final double L1SensorPosition = 1;
+    public static final double L2SensorPosition = 2;
+    public static final double L3SensorPosition = 3;
+    public static final double L4SensorPosition = 4;
+  }
+  public static enum ClawPosition{
     INTAKE,
     L1,
     L2,
