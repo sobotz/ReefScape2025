@@ -10,6 +10,9 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
 import frc.robot.commands.SetElevatorIntakeCommand;
 import frc.robot.commands.SetElevatorL1Command;
+import frc.robot.commands.SetElevatorL2Command;
+import frc.robot.commands.SetElevatorL3Command;
+import frc.robot.commands.SetElevatorL4Command;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -43,6 +46,9 @@ public class RobotContainer {
   ElevatorSubsystem m_elevatorSubsystem;
   SetElevatorIntakeCommand m_elevatorIntakeCommand;
   SetElevatorL1Command m_elevatorL1Command;
+  SetElevatorL2Command m_elevatorL2Command;
+  SetElevatorL3Command m_elevatorL3Command;
+  SetElevatorL4Command m_elevatorL4Command;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -55,10 +61,12 @@ public class RobotContainer {
     m_swerveSubsystem = new SwerveSubsystem();
     m_elevatorSubsystem = new ElevatorSubsystem();
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
+
     m_elevatorIntakeCommand = new SetElevatorIntakeCommand(m_elevatorSubsystem);
     m_elevatorL1Command = new SetElevatorL1Command(m_elevatorSubsystem);
-
-    
+    m_elevatorL2Command = new SetElevatorL2Command(m_elevatorSubsystem);
+    m_elevatorL3Command = new SetElevatorL3Command(m_elevatorSubsystem);
+    m_elevatorL4Command = new SetElevatorL4Command(m_elevatorSubsystem);
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -95,6 +103,9 @@ public class RobotContainer {
     elevatorIntakeButton.onTrue(m_elevatorIntakeCommand);
     JoystickButton elevatorL1Button = new JoystickButton(testOperator, 2);
     elevatorL1Button.onTrue(m_elevatorL1Command);
+    JoystickButton elevatorL2Button = new JoystickButton(testOperator, 3);
+    JoystickButton elevatorL3Button = new JoystickButton(testOperator,4);
+    JoystickButton elevatorL4Button = new JoystickButton(testOperator, 5);
 
   }
 
