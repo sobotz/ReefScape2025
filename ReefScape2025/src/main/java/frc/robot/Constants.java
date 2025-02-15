@@ -35,6 +35,13 @@ public final class Constants {
     L3,
     L4
   }
+  public static enum ElevatorPosition{
+    INTAKE,
+    L1,
+    L2,
+    L3,
+    L4
+  }
   public static final class ElevatorConstants {
     public static final double kP = 0.10;//.10
     public static final double kI = 0.334;//.334
