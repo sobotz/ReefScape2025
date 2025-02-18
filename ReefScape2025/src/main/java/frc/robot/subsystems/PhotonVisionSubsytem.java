@@ -52,7 +52,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     swerveSubsystem = new SwerveSubsystem();
 
     leftCamera = new PhotonCamera("Module_3_Arducam_OV2311");
-    rightCamera = new PhotonCamera("Module_3_Arducam_OV2311 (1)");
+    rightCamera = new PhotonCamera("Module_4_Arducam_OV2311");
 
   }
   public void alignToTarget(boolean enabled){
