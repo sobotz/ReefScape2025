@@ -111,8 +111,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     if (!elevatorController.atSetpoint()) {
       //System.out.println(elevatorController.getError());
       //System.out.println(elevatorPIDCalculation);
-      elevatorMotor.set(elevatorPIDCalculation);
-      slaveMotor.set(-elevatorPIDCalculation);
+      elevatorMotor.set((elevatorPIDCalculation)*0.5);
+      slaveMotor.set((-elevatorPIDCalculation)*0.5);
     } 
     if (Math.abs(elevatorController.getError())<0.3){
       atTargetPosition = true;
