@@ -11,9 +11,10 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {
-  IntakeSubsystem m_intake;
-  public IntakeCommand(IntakeSubsystem n_intake) {
-    m_intake = n_intake;
+  IntakeSubsystem m_IntakeSubsystem;
+  public IntakeCommand(IntakeSubsystem subsystem) {
+    m_IntakeSubsystem = subsystem;
+    addRequirements(m_IntakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -24,17 +25,15 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_intake.sensor()){
-      m_intake.setSpeed(0);
-    }else{
-      m_intake.setSpeed(1);
-    }
+    m_IntakeSubsystem.runIntake();
+
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.setSpeed(0);
+    
   }
 
   // Returns true when the command should end.

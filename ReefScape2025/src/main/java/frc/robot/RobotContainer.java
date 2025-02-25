@@ -8,6 +8,8 @@ package frc.robot;
 
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -35,7 +38,9 @@ public class RobotContainer {
   DriveCommand m_driveCommand;
   private final SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
-
+  IntakeSubsystem m_IntakeSubsystem;
+  IntakeCommand m_IntakeCommand;
+  JoystickButton intakeButton;
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
 
@@ -48,6 +53,8 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoPath = new PathPlannerAuto("TestAuto");
+    m_IntakeSubsystem = new IntakeSubsystem();
+    m_IntakeCommand = new IntakeCommand(m_IntakeSubsystem);
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));
     configureBindings();
   }
@@ -74,7 +81,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    intakeButton = new JoystickButton(stick, 0);
+    // Schedule `Exampl eCommand` when `exampleCondition` changes to `true`
   }
 
   /**
