@@ -8,31 +8,26 @@ package frc.robot;
 
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
-
-import frc.robot.commands.SetElevatorIntakeCommand;
-import frc.robot.commands.SetElevatorL1Command;
-import frc.robot.commands.SetElevatorL2Command;
-import frc.robot.commands.SetElevatorL3Command;
-import frc.robot.commands.SetElevatorL4Command;
-import frc.robot.subsystems.ElevatorSubsystem;
-
 import frc.robot.commands.SetClawIntakeCommand;
 import frc.robot.commands.SetClawL1Command;
 import frc.robot.commands.SetClawL2Command;
 import frc.robot.commands.SetClawL3Command;
 import frc.robot.commands.SetClawL4Command;
+import frc.robot.commands.SetElevatorIntakeCommand;
+import frc.robot.commands.SetElevatorL1Command;
+import frc.robot.commands.SetElevatorL2Command;
+import frc.robot.commands.SetElevatorL3Command;
+import frc.robot.commands.SetElevatorL4Command;
 import frc.robot.subsystems.ClawSubsystem;
-
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.wpilibj.DriverStation;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -62,11 +57,11 @@ public class RobotContainer {
   SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
   ElevatorSubsystem m_elevatorSubsystem;
-  SetElevatorIntakeCommand m_elevatorIntakeCommand;
-  SetElevatorL1Command m_elevatorL1Command;
-  SetElevatorL2Command m_elevatorL2Command;
-  SetElevatorL3Command m_elevatorL3Command;
-  SetElevatorL4Command m_elevatorL4Command;
+  SetElevatorIntakeCommand m_setElevatorIntakeCommand;
+  SetElevatorL1Command m_setElevatorL1Command;
+  SetElevatorL2Command m_setElevatorL2Command;
+  SetElevatorL3Command m_setElevatorL3Command;
+  SetElevatorL4Command m_setElevatorL4Command;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -81,19 +76,19 @@ public class RobotContainer {
     m_elevatorSubsystem = new ElevatorSubsystem();
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
 
-    m_elevatorIntakeCommand = new SetElevatorIntakeCommand(m_elevatorSubsystem);
-    m_elevatorL1Command = new SetElevatorL1Command(m_elevatorSubsystem);
-    m_elevatorL2Command = new SetElevatorL2Command(m_elevatorSubsystem);
-    m_elevatorL3Command = new SetElevatorL3Command(m_elevatorSubsystem);
-    m_elevatorL4Command = new SetElevatorL4Command(m_elevatorSubsystem);
+    m_setElevatorIntakeCommand = new SetElevatorIntakeCommand(m_elevatorSubsystem);
+    m_setElevatorL1Command = new SetElevatorL1Command(m_elevatorSubsystem);
+    m_setElevatorL2Command = new SetElevatorL2Command(m_elevatorSubsystem);
+    m_setElevatorL3Command = new SetElevatorL3Command(m_elevatorSubsystem);
+    m_setElevatorL4Command = new SetElevatorL4Command(m_elevatorSubsystem);
 
-    // m_clawSubsystem = new ClawSubsystem();
+    m_clawSubsystem = new ClawSubsystem();
 
-    // m_setClawIntakeCommand = new SetClawIntakeCommand(m_clawSubsystem);
-    // m_setClawL1Command = new SetClawL1Command(m_clawSubsystem);
-    // m_setClawL2Command = new SetClawL2Command(m_clawSubsystem);
-    // m_setClawL3Command = new SetClawL3Command(m_clawSubsystem);
-    // m_setClawL4Command = new SetClawL4Command(m_clawSubsystem);
+    m_setClawIntakeCommand = new SetClawIntakeCommand(m_clawSubsystem);
+    m_setClawL1Command = new SetClawL1Command(m_clawSubsystem);
+    m_setClawL2Command = new SetClawL2Command(m_clawSubsystem);
+    m_setClawL3Command = new SetClawL3Command(m_clawSubsystem);
+    m_setClawL4Command = new SetClawL4Command(m_clawSubsystem);
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -128,16 +123,16 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    JoystickButton elevatorIntakeButton = new JoystickButton(testOperator, 1);
-    elevatorIntakeButton.onTrue(m_elevatorIntakeCommand);
-    JoystickButton elevatorL1Button = new JoystickButton(testOperator, 2);
-    elevatorL1Button.onTrue(m_elevatorL1Command);
-    JoystickButton elevatorL2Button = new JoystickButton(testOperator, 3);
-    elevatorL2Button.onTrue(m_elevatorL2Command);
-    JoystickButton elevatorL3Button = new JoystickButton(testOperator,4);
-    elevatorL3Button.onTrue(m_elevatorL3Command);
-    JoystickButton elevatorL4Button = new JoystickButton(testOperator, 5);
-    elevatorL4Button.onTrue(m_elevatorL4Command);
+    JoystickButton IntakeButton = new JoystickButton(testOperator, 1);
+    IntakeButton.onTrue(m_setClawIntakeCommand);
+    JoystickButton L1Button = new JoystickButton(testOperator, 2);
+    L1Button.onTrue(m_setClawL1Command);
+    JoystickButton L2Button = new JoystickButton(testOperator, 3);
+    L2Button.onTrue(m_setClawL2Command);
+    JoystickButton L3Button = new JoystickButton(testOperator,4);
+    L3Button.onTrue(m_setClawL3Command);
+    JoystickButton L4Button = new JoystickButton(testOperator, 5);
+    L4Button.onTrue(m_setClawL4Command);
 
 
 

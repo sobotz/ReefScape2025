@@ -9,11 +9,11 @@ import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class SetElevatorL1Command extends Command {
-  /** Creates a new setElevatorL1Command. */
+public class SetElevatorL3Command extends Command {
+  /** Creates a new setElevatorL3Command. */
   private ElevatorSubsystem m_elevatorSubsystem;
   private boolean isFinished = false;
-  public SetElevatorL1Command(ElevatorSubsystem elevatorSubsystem) {
+  public SetElevatorL3Command(ElevatorSubsystem elevatorSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
   }
@@ -22,14 +22,14 @@ public class SetElevatorL1Command extends Command {
   @Override
   public void initialize() {
     isFinished = false;
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.L1);
+    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.L3);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if(m_elevatorSubsystem.elevatorAtTargetPosition()){
-        isFinished = true;
+      isFinished = true;
     }
   }
 

@@ -49,6 +49,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     /** Initialize position mappings */
     
     positionMap = new HashMap<ElevatorPosition, Double>(){{
+      put(ElevatorPosition.DEFAULT, ElevatorConstants.DEFAULT);
       put(ElevatorPosition.INTAKE, ElevatorConstants.INTAKE);
       put(ElevatorPosition.L1, ElevatorConstants.L1);
       put(ElevatorPosition.L2, ElevatorConstants.L2);
@@ -70,14 +71,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     
 
     // enable stator current limit
-    
-    
-    
 
     elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD);  // Tune these values as needed
     elevatorController.setTolerance(0.005); 
     elevatorPIDCalculation = 0; 
-    targetPosition = ElevatorPosition.INTAKE;
+    targetPosition = ElevatorPosition.DEFAULT;
     once = true;
     atTargetPosition = false;
   }
@@ -87,7 +85,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean elevatorAtTargetPosition() {
-    return elevatorController.atSetpoint();
+    if (Math.abs(elevatorController.getError())<0.17){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   public void setElevatorTargetPosition(ElevatorPosition position) {

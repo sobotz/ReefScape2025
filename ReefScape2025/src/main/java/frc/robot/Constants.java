@@ -23,12 +23,13 @@ public final class Constants {
   }
   public static class ClawConstants{
     public static final double intakeSensorPosition = 0;
-    public static final double L1SensorPosition = 1;
-    public static final double L2SensorPosition = 2;
-    public static final double L3SensorPosition = 3;
+    public static final double L1SensorPosition = 10;
+    public static final double L2SensorPosition = 20;
+    public static final double L3SensorPosition = 30;
     public static final double L4SensorPosition = 4;
   }
   public static enum ClawPosition{
+    DEFAULT,
     INTAKE,
     L1,
     L2,
@@ -36,6 +37,7 @@ public final class Constants {
     L4
   }
   public static enum ElevatorPosition{
+    DEFAULT,
     INTAKE,
     L1,
     L2,
@@ -51,6 +53,7 @@ public final class Constants {
     public static final double kP = 0.15;
     public static final double kI = 0;
     public static final double kD = 0.006;
+    public static final double DEFAULT = 13;
     public static final double INTAKE = 5;
     public static final double L1 = 20;
     public static final double L2 = 35;

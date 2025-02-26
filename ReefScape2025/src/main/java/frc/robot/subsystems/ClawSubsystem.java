@@ -18,7 +18,8 @@ import frc.robot.Constants.ClawPosition;
 
 public class ClawSubsystem extends SubsystemBase {
   /** Creates a new ClawSubsystem. */
-  TalonFX clawMotor;
+  TalonFX wristMotor;
+  TalonFX clawDriveMotor;
   CANcoder clawSensor;
   PIDController clawController;
   Map<ClawPosition, Double> positionMap;
@@ -26,25 +27,27 @@ public class ClawSubsystem extends SubsystemBase {
 
   double clawPIDCalculation;
   public ClawSubsystem() {
-    clawMotor = new TalonFX(20);//CHANGE
-    clawMotor.setNeutralMode(NeutralModeValue.Brake);
-    clawSensor = new CANcoder(21);//CHANGE
-    clawController = new PIDController(0, 0, 0);
+    wristMotor = new TalonFX(18);//CHANGE
+    wristMotor.setNeutralMode(NeutralModeValue.Brake);
+    clawDriveMotor = new TalonFX(16);
+    clawSensor = new CANcoder(17);//CHANGE
+    clawController = new PIDController(0.001, 0, 0);
     clawController.setTolerance(0.001);
 
     positionMap = new HashMap<ClawPosition, Double>(){{
+      put(ClawPosition.DEFAULT, ClawConstants.intakeSensorPosition);
       put(ClawPosition.INTAKE, ClawConstants.intakeSensorPosition);
       put(ClawPosition.L1, ClawConstants.L1SensorPosition);
       put(ClawPosition.L2, ClawConstants.L2SensorPosition);
       put(ClawPosition.L3, ClawConstants.L3SensorPosition);
       put(ClawPosition.L4, ClawConstants.L4SensorPosition);
     }};
-    targetPosition = ClawPosition.INTAKE;
+    targetPosition = ClawPosition.DEFAULT;
     clawPIDCalculation = 0;
   }
   
   public double getClawSensorPosition(){
-    return clawSensor.getPosition().getValueAsDouble();
+    return (((clawSensor.getPosition().getValueAsDouble()+1)%1)*360);
   }
 
   public boolean clawAtTargetPosition(){
@@ -54,16 +57,21 @@ public class ClawSubsystem extends SubsystemBase {
   public void setClawTargetPosition(ClawPosition position){
     targetPosition = position;
   }
+  public void setDriveMotor(double value){
+    clawDriveMotor.set(value);
+  }
 
   @Override
   public void periodic() {
+    System.out.println(getClawSensorPosition());
     // This method will be called once per scheduler run
     clawPIDCalculation = clawController.calculate(getClawSensorPosition(), (double)positionMap.get(targetPosition));
-    if (clawController.atSetpoint() == false){
-      clawMotor.set(clawPIDCalculation);
+    if (!clawController.atSetpoint()){
+      wristMotor.set(clawPIDCalculation);
     }
     else{
-      clawMotor.set(0);
+      wristMotor.set(0);
     }
+    
   }
 }
