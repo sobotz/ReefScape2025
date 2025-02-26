@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.ClawPosition;
@@ -22,10 +23,11 @@ public class ClawSubsystem extends SubsystemBase {
   TalonFX clawDriveMotor;
   CANcoder clawSensor;
   PIDController clawController;
-  Map<ClawPosition, Double> positionMap;
+  Map<ClawPosition, Double> clawPositionMap;
   ClawPosition clawTargetPosition;
 
   double clawPIDCalculation;
+  boolean atTarget;
   public ClawSubsystem() {
     wristMotor = new TalonFX(18);//CHANGE
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -36,7 +38,7 @@ public class ClawSubsystem extends SubsystemBase {
     clawController.enableContinuousInput(0,360);
     clawController.setTolerance(0.001);
 
-    positionMap = new HashMap<ClawPosition, Double>(){{
+    clawPositionMap = new HashMap<ClawPosition, Double>(){{
       put(ClawPosition.DEFAULT, ClawConstants.defaultSensorPosition);
       put(ClawPosition.INTAKE, ClawConstants.intakeSensorPosition);
       put(ClawPosition.L1, ClawConstants.L1SensorPosition);
@@ -46,6 +48,7 @@ public class ClawSubsystem extends SubsystemBase {
     }};
     clawTargetPosition = ClawPosition.DEFAULT;
     clawPIDCalculation = 0;
+    atTarget = false;
   }
   
   public double getClawSensorPosition(){
@@ -53,7 +56,14 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public boolean clawAtTargetPosition(){
-    return clawController.atSetpoint();
+    if (clawController.getError()<0.2){
+      atTarget = true;
+      return true;
+    }
+    else{
+      atTarget = false;
+      return false;
+    }
   }
   
   public void setClawTargetPosition(ClawPosition position){
@@ -68,14 +78,14 @@ public class ClawSubsystem extends SubsystemBase {
   public void periodic() {
     //System.out.println(getClawSensorPosition());
     // This method will be called once per scheduler run
-    clawPIDCalculation = clawController.calculate(getClawSensorPosition(), positionMap.get(clawTargetPosition));
-    System.out.println(positionMap.get(clawTargetPosition));
+    clawPIDCalculation = clawController.calculate(getClawSensorPosition(), clawPositionMap.get(clawTargetPosition));
+    System.out.println(clawPositionMap.get(clawTargetPosition));
+    //SmartDashboard.putNumber("getTargetPosition",clawPositionMap.get(clawTargetPosition));
     if (!clawController.atSetpoint()){
       wristMotor.set(clawPIDCalculation);
     }
     else{
       wristMotor.set(0);
     }
-    
   }
 }

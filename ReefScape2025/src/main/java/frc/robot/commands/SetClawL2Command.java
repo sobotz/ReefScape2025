@@ -16,7 +16,6 @@ public class SetClawL2Command extends Command {
   public SetClawL2Command(ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_ClawSubsystem = clawSubsystem;
-    addRequirements(m_ClawSubsystem);
   }
 
   // Called when the command is initially scheduled.

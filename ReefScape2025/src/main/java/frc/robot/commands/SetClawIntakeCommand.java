@@ -17,19 +17,18 @@ public class SetClawIntakeCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     m_clawSubsystem = new ClawSubsystem();
     isFinished = false;
-    addRequirements(m_clawSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     isFinished = false;
+    m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
     if (m_clawSubsystem.clawAtTargetPosition());
     isFinished = true;
   }

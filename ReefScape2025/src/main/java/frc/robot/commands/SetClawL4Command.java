@@ -15,7 +15,6 @@ public class SetClawL4Command extends Command {
   private boolean isFinished = false;
   public SetClawL4Command(ClawSubsystem clawSubsystem) {
     m_ClawSubsystem = clawSubsystem;
-    addRequirements(m_ClawSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
