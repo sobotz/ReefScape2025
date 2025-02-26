@@ -15,7 +15,7 @@ public class SetClawIntakeCommand extends Command {
   boolean isFinished;
   public SetClawIntakeCommand(ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_clawSubsystem = new ClawSubsystem();
+    m_clawSubsystem = clawSubsystem;
     isFinished = false;
   }
 
@@ -36,6 +36,7 @@ public class SetClawIntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("finished");
   }
 
   // Returns true when the command should end.

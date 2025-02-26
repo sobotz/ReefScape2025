@@ -34,7 +34,7 @@ public class ClawSubsystem extends SubsystemBase {
     clawDriveMotor = new TalonFX(16);
     clawSensor = new CANcoder(17);//CHANGE
 
-    clawController = new PIDController(0.006, 0, 0);
+    clawController = new PIDController(0.01, 0, 0.000);
     clawController.enableContinuousInput(0,360);
     clawController.setTolerance(0.001);
 
@@ -56,7 +56,7 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public boolean clawAtTargetPosition(){
-    if (clawController.getError()<0.2){
+    if (clawController.getError()<0.1){
       atTarget = true;
       return true;
     }
@@ -79,8 +79,9 @@ public class ClawSubsystem extends SubsystemBase {
     //System.out.println(getClawSensorPosition());
     // This method will be called once per scheduler run
     clawPIDCalculation = clawController.calculate(getClawSensorPosition(), clawPositionMap.get(clawTargetPosition));
-    System.out.println(clawPositionMap.get(clawTargetPosition));
+    //System.out.println(clawPositionMap.get(clawTargetPosition));
     //SmartDashboard.putNumber("getTargetPosition",clawPositionMap.get(clawTargetPosition));
+    System.out.println(clawController.getError());
     if (!clawController.atSetpoint()){
       wristMotor.set(clawPIDCalculation);
     }

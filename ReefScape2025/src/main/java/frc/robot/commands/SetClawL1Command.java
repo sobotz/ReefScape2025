@@ -29,9 +29,8 @@ public class SetClawL1Command extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("running l1");
+
     if(m_ClawSubsystem.clawAtTargetPosition()){
-      System.out.println("finished");
       isFinished = true;
     }
     //m_ClawSubsystem.setWristMotor(0.1);
@@ -40,6 +39,7 @@ public class SetClawL1Command extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("finished");
     //m_ClawSubsystem.setWristMotor(0);
   }
 

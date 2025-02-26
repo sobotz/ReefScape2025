@@ -15,6 +15,8 @@ import frc.robot.commands.SetElevatorL1Command;
 import frc.robot.commands.SetElevatorL2Command;
 import frc.robot.commands.SetElevatorL3Command;
 import frc.robot.commands.SetElevatorL4Command;
+import frc.robot.commands.TestClawDriveCommand;
+import frc.robot.commands.TestClawDriveReverseCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -46,6 +48,8 @@ public class RobotContainer {
   DriveCommand m_driveCommand;
   SetClawIntakeCommand m_setClawIntakeCommand;
   SetClawL1Command m_setClawL1Command;
+  TestClawDriveCommand m_clawDriveCommand;
+  TestClawDriveReverseCommand m_clawDriveReverseCommand;
   // SetClawL2Command m_setClawL2Command;
   // SetClawL3Command m_setClawL3Command;
   // SetClawL4Command m_setClawL4Command;
@@ -82,8 +86,10 @@ public class RobotContainer {
     m_setElevatorL4Command = new SetElevatorL4Command(m_elevatorSubsystem);
 
     
-    //m_setClawIntakeCommand = new SetClawIntakeCommand(m_clawSubsystem);
+    m_setClawIntakeCommand = new SetClawIntakeCommand(m_clawSubsystem);
+    m_clawDriveReverseCommand = new TestClawDriveReverseCommand(m_clawSubsystem);
     m_setClawL1Command = new SetClawL1Command(m_clawSubsystem);
+    m_clawDriveCommand = new TestClawDriveCommand(m_clawSubsystem);
     //m_setClawL2Command = new SetClawL2Command(m_clawSubsystem);
     //m_setClawL3Command = new SetClawL3Command(m_clawSubsystem);
     //m_setClawL4Command = new SetClawL4Command(m_clawSubsystem);
@@ -123,10 +129,14 @@ public class RobotContainer {
 
     // JoystickButton IntakeButton = new JoystickButton(testOperator, 1);
     // IntakeButton.toggleOnTrue(m_setClawIntakeCommand);
-    /*JoystickButton defaultButton = new JoystickButton(testOperator,1);
-    defaultButton.onTrue(m_setClawIntakeCommand);*/
+    JoystickButton driveReverseButton = new JoystickButton(testOperator, 4);
+    driveReverseButton.whileTrue(m_clawDriveReverseCommand);
+    JoystickButton defaultButton = new JoystickButton(testOperator,1);
+    defaultButton.onTrue(m_setClawIntakeCommand);
     JoystickButton L1Button = new JoystickButton(testOperator, 2);
     L1Button.onTrue(m_setClawL1Command);
+    JoystickButton driveButton = new JoystickButton(testOperator, 3);
+    driveButton.whileTrue(m_clawDriveCommand);
     // JoystickButton L2Button = new JoystickButton(testOperator, 3);
     // L2Button.toggleOnTrue(m_setClawL2Command);
     // JoystickButton L3Button = new JoystickButton(testOperator,4);
