@@ -74,6 +74,8 @@ public class RobotContainer {
     testOperator = new Joystick(1);
     m_swerveSubsystem = new SwerveSubsystem();
     m_elevatorSubsystem = new ElevatorSubsystem();
+    m_clawSubsystem = new ClawSubsystem();
+
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
 
     m_setElevatorIntakeCommand = new SetElevatorIntakeCommand(m_elevatorSubsystem);
@@ -82,8 +84,7 @@ public class RobotContainer {
     m_setElevatorL3Command = new SetElevatorL3Command(m_elevatorSubsystem);
     m_setElevatorL4Command = new SetElevatorL4Command(m_elevatorSubsystem);
 
-    m_clawSubsystem = new ClawSubsystem();
-
+    
     m_setClawIntakeCommand = new SetClawIntakeCommand(m_clawSubsystem);
     m_setClawL1Command = new SetClawL1Command(m_clawSubsystem);
     m_setClawL2Command = new SetClawL2Command(m_clawSubsystem);
@@ -124,15 +125,15 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     JoystickButton IntakeButton = new JoystickButton(testOperator, 1);
-    IntakeButton.onTrue(m_setClawIntakeCommand);
+    IntakeButton.toggleOnTrue(m_setClawIntakeCommand);
     JoystickButton L1Button = new JoystickButton(testOperator, 2);
-    L1Button.onTrue(m_setClawL1Command);
+    L1Button.toggleOnTrue(m_setClawL1Command);
     JoystickButton L2Button = new JoystickButton(testOperator, 3);
-    L2Button.onTrue(m_setClawL2Command);
+    L2Button.toggleOnTrue(m_setClawL2Command);
     JoystickButton L3Button = new JoystickButton(testOperator,4);
-    L3Button.onTrue(m_setClawL3Command);
+    L3Button.toggleOnTrue(m_setClawL3Command);
     JoystickButton L4Button = new JoystickButton(testOperator, 5);
-    L4Button.onTrue(m_setClawL4Command);
+    L4Button.toggleOnTrue(m_setClawL4Command);
 
 
 

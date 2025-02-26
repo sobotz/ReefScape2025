@@ -22,11 +22,12 @@ public final class Constants {
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
   public static class ClawConstants{
-    public static final double intakeSensorPosition = 0;
-    public static final double L1SensorPosition = 10;
-    public static final double L2SensorPosition = 20;
-    public static final double L3SensorPosition = 30;
-    public static final double L4SensorPosition = 4;
+    public static final double defaultSensorPosition = 160;
+    public static final double intakeSensorPosition = 160;
+    public static final double L1SensorPosition = 1;
+    public static final double L2SensorPosition = 40;
+    public static final double L3SensorPosition = 90;
+    public static final double L4SensorPosition = 260;
   }
   public static enum ClawPosition{
     DEFAULT,

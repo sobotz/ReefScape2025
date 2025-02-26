@@ -123,6 +123,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     else{
       atTargetPosition = false;
     }
-    System.out.println(atTargetPosition);
+    //System.out.println(atTargetPosition);
   }
 }

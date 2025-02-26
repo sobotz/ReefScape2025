@@ -22,13 +22,14 @@ public class SetClawL2Command extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_ClawSubsystem.setClawTargetPosition(ClawPosition.L2);
     isFinished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_ClawSubsystem.setClawTargetPosition(ClawPosition.L2);
+    
     System.out.println("L2 Running");
     if(m_ClawSubsystem.clawAtTargetPosition()){
       isFinished = true;

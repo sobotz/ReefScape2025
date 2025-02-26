@@ -15,7 +15,6 @@ public class SetClawL1Command extends Command {
   private boolean isFinished = false;
   public SetClawL1Command(ClawSubsystem clawSubsystem) {
     m_ClawSubsystem = clawSubsystem;
-    addRequirements(m_ClawSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -24,19 +23,25 @@ public class SetClawL1Command extends Command {
   public void initialize() {
     isFinished = false;
     m_ClawSubsystem.setClawTargetPosition(ClawPosition.L1);
+    //System.out.println("init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("running l1");
     if(m_ClawSubsystem.clawAtTargetPosition()){
+      System.out.println("finished");
       isFinished = true;
     }
+    //m_ClawSubsystem.setWristMotor(0.1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    //m_ClawSubsystem.setWristMotor(0);
+  }
 
   // Returns true when the command should end.
   @Override
