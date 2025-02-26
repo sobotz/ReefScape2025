@@ -34,8 +34,8 @@ public class ClawSubsystem extends SubsystemBase {
     clawDriveMotor = new TalonFX(16);
     clawSensor = new CANcoder(17);//CHANGE
 
-    clawController = new PIDController(0.01, 0, 0.000);
-    clawController.enableContinuousInput(0,360);
+    clawController = new PIDController(0.011, 0, 0.000);
+    //clawController.enableContinuousInput(0,360);
     clawController.setTolerance(0.001);
 
     clawPositionMap = new HashMap<ClawPosition, Double>(){{
@@ -52,7 +52,7 @@ public class ClawSubsystem extends SubsystemBase {
   }
   
   public double getClawSensorPosition(){
-    return 360-((((clawSensor.getPosition().getValueAsDouble()%1)+1)%1)*360);
+    return (-1 * (((clawSensor.getPosition().getValueAsDouble()+1)%1)*360))-170;
   }
 
   public boolean clawAtTargetPosition(){
