@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
-import org.opencv.core.Mat;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -77,7 +77,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
           leftCamerayOffset =getCameraOffsets(leftCameraTargetInfo, false)[1];
           leftCameraAngleOffset = getCameraOffsets(leftCameraTargetInfo, false)[2];
         swerveSubsystem.setDriveCommandDisabled(enabled);
-        if (leftCameraAngleOffset>rightCameraAngleOffset){
+        if (Math.abs(leftCameraAngleOffset)>Math.abs(rightCameraAngleOffset)){
         
         swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,0.5, enabled);
         System.out.println("Using Right Cam");
@@ -123,21 +123,21 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     }
   }
   public double[] getCameraOffsets(Transform3d targetInfo,boolean cameraIsParallel){
-    double x = targetInfo.getY();
-    double y = 0.0;
-    if (cameraIsParallel){
-     y = targetInfo.getX();
-    }else{
-      y = Math.sqrt(Math.pow(targetInfo.getY(), 2) - Math.pow(targetInfo.getX(), 2));
-    }
-    double angleOffset = 0.0;
-    if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
-       angleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
-    }else{
-       angleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
-    }
-     double[] info = {x,y,angleOffset};
-     return info;
+      double x = targetInfo.getY();
+      double y = 0.0;
+      if (cameraIsParallel){
+      y = targetInfo.getX();
+      }else{
+        y = Math.sqrt(Math.pow(targetInfo.getY(), 2) - Math.pow(targetInfo.getX(), 2));
+      }
+      double angleOffset = 0.0;
+      if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
+        angleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
+      }else{
+        angleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
+      }
+      double[] info = {x,y,angleOffset};
+      return info;
      
   }
   @Override
@@ -154,14 +154,18 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     rightCameraHasTarget = rightCameraResult.hasTargets();
     intakeCameraHasTarget = intakeCameraResult.hasTargets();
     
-    if (leftCameraHasTarget){
-      leftCameraCurrentTarget = leftCameraTargets.get(0);
-      leftCameraTargetInfo = leftCameraCurrentTarget.getBestCameraToTarget();
-      leftCameraTargetId = leftCameraCurrentTarget.getFiducialId();
-      SmartDashboard.putNumber("LEFT CAM XOFFSET", leftCameraxOffset);
-      SmartDashboard.putNumber("LEFT CAM YOFFSET", leftCamerayOffset);
-      SmartDashboard.putNumber("LEFT CAM ANGLE OFFSET",leftCameraAngleOffset);
-    }
+      try {
+        leftCameraCurrentTarget = leftCameraTargets.get(0);
+        leftCameraTargetInfo = leftCameraCurrentTarget.getBestCameraToTarget();
+        leftCameraTargetId = leftCameraCurrentTarget.getFiducialId();
+        SmartDashboard.putNumber("LEFT CAM XOFFSET", leftCameraxOffset);
+        SmartDashboard.putNumber("LEFT CAM YOFFSET", leftCamerayOffset);
+        SmartDashboard.putNumber("LEFT CAM ANGLE OFFSET",leftCameraAngleOffset);
+      } catch (Exception e) {
+        System.out.println(e);
+      }
+      
+    
     if(rightCameraHasTarget){
       rightCameraCurrentTarget = rightCameraTargets.get(0);
       rightCameraTargetInfo = rightCameraCurrentTarget.getBestCameraToTarget();
