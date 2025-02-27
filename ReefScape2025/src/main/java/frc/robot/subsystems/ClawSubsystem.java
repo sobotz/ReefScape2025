@@ -12,7 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.ClawPosition;
@@ -32,6 +32,8 @@ public class ClawSubsystem extends SubsystemBase {
     wristMotor = new TalonFX(18);//CHANGE
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
     clawDriveMotor = new TalonFX(16);
+    clawDriveMotor.setNeutralMode(NeutralModeValue.Coast);
+    
     clawSensor = new CANcoder(17);//CHANGE
 
     clawController = new PIDController(0.011, 0, 0.000);
@@ -39,12 +41,15 @@ public class ClawSubsystem extends SubsystemBase {
     clawController.setTolerance(0.001);
 
     clawPositionMap = new HashMap<ClawPosition, Double>(){{
-      put(ClawPosition.DEFAULT, ClawConstants.defaultSensorPosition);
-      put(ClawPosition.INTAKE, ClawConstants.intakeSensorPosition);
-      put(ClawPosition.L1, ClawConstants.L1SensorPosition);
-      put(ClawPosition.L2, ClawConstants.L2SensorPosition);
-      put(ClawPosition.L3, ClawConstants.L3SensorPosition);
-      put(ClawPosition.L4, ClawConstants.L4SensorPosition);
+      put(ClawPosition.DEFAULT, ClawConstants.DEFAULT);
+      put(ClawPosition.FLOORALGAE,ClawConstants.FLOORALGAE);
+      put(ClawPosition.REEFALGAE, ClawConstants.REEFALGAE);
+      put(ClawPosition.BARGE,ClawConstants.BARGE);
+      put(ClawPosition.INTAKE, ClawConstants.INTAKE);
+      put(ClawPosition.L1, ClawConstants.L1);
+      put(ClawPosition.L2, ClawConstants.L2);
+      put(ClawPosition.L3, ClawConstants.L3);
+      put(ClawPosition.L4, ClawConstants.L4);
     }};
     clawTargetPosition = ClawPosition.DEFAULT;
     clawPIDCalculation = 0;
@@ -83,10 +88,10 @@ public class ClawSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("getTargetPosition",clawPositionMap.get(clawTargetPosition));
     System.out.println(clawController.getError());
     if (!clawController.atSetpoint()){
-      wristMotor.set(clawPIDCalculation);
+      //wristMotor.set(clawPIDCalculation);
     }
     else{
-      wristMotor.set(0);
+      //wristMotor.set(0);
     }
   }
 }

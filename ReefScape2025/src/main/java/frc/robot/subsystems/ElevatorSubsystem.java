@@ -8,16 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorPosition;
 
@@ -51,6 +48,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     positionMap = new HashMap<ElevatorPosition, Double>(){{
       put(ElevatorPosition.DEFAULT, ElevatorConstants.DEFAULT);
       put(ElevatorPosition.INTAKE, ElevatorConstants.INTAKE);
+      put(ElevatorPosition.FLOORALGAE,ElevatorConstants.FLOORALGAE);
+      put(ElevatorPosition.LOWERALGAE,ElevatorConstants.LOWERALGAE);
+      put(ElevatorPosition.HIGHERALGAE, ElevatorConstants.HIGHERALGAE);
+      put(ElevatorPosition.BARGE, ElevatorConstants.BARGE);
       put(ElevatorPosition.L1, ElevatorConstants.L1);
       put(ElevatorPosition.L2, ElevatorConstants.L2);
       put(ElevatorPosition.L3, ElevatorConstants.L3);

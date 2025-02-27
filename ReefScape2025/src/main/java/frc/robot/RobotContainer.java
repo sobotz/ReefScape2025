@@ -6,19 +6,14 @@ package frc.robot;
 
 
 
+import frc.robot.Constants.ClawPosition;
+import frc.robot.Constants.ElevatorPosition;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
 import frc.robot.commands.SetActuatorL1Command;
-import frc.robot.commands.SetActuatorL2Command;
-import frc.robot.commands.SetActuatorL3Command;
-import frc.robot.commands.SetActuatorL4Command;
-import frc.robot.commands.SetClawIntakeCommand;
-import frc.robot.commands.SetClawL1Command;
-import frc.robot.commands.SetElevatorIntakeCommand;
-import frc.robot.commands.SetElevatorL1Command;
-import frc.robot.commands.SetElevatorL2Command;
-import frc.robot.commands.SetElevatorL3Command;
-import frc.robot.commands.SetElevatorL4Command;
+import frc.robot.commands.SetActuatorPositionCommand;
+import frc.robot.commands.SetClawPositionCommand;
+import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TestClawDriveCommand;
 import frc.robot.commands.TestClawDriveReverseCommand;
 import frc.robot.subsystems.ClawSubsystem;
@@ -46,31 +41,31 @@ public class RobotContainer {
   
   Joystick stick;
   Joystick testOperator;
+
   SwerveSubsystem m_swerveSubsystem;
+  ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
 
   DriveCommand m_driveCommand;
-  SetClawIntakeCommand m_setClawIntakeCommand;
-  SetClawL1Command m_setClawL1Command;
   TestClawDriveCommand m_clawDriveCommand;
   TestClawDriveReverseCommand m_clawDriveReverseCommand;
-  SetActuatorL1Command m_setActuatorL1Command;
-  SetActuatorL2Command m_setActuatorL2Command;
-  SetActuatorL3Command m_setActuatorL3Command;
-  SetActuatorL4Command m_setActuatorL4Command;
-  // SetClawL2Command m_setClawL2Command;
-  // SetClawL3Command m_setClawL3Command;
-  // SetClawL4Command m_setClawL4Command;
 
+  SetActuatorPositionCommand m_setActuatorDefaultCommand;
 
+  SetActuatorPositionCommand m_setActuatorCoralIntakeCommand;
+  SetActuatorPositionCommand m_setActuatorL1Command;
+  SetActuatorPositionCommand m_setActuatorL2Command;
+  SetActuatorPositionCommand m_setActuatorL3Command;
+  SetActuatorPositionCommand m_setActuatorL4Command;
+
+  SetActuatorPositionCommand m_setActuatorFloorAlgaeCommand;
+  SetActuatorPositionCommand m_setActuatorLowerAlgaeCommand;
+  SetActuatorPositionCommand m_setActuatorHigherAlgaeCommand;
+  SetActuatorPositionCommand m_setActuatorBargeCommand;
+  
   SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
-  ElevatorSubsystem m_elevatorSubsystem;
-  SetElevatorIntakeCommand m_setElevatorIntakeCommand;
-  SetElevatorL1Command m_setElevatorL1Command;
-  SetElevatorL2Command m_setElevatorL2Command;
-  SetElevatorL3Command m_setElevatorL3Command;
-  SetElevatorL4Command m_setElevatorL4Command;
+  
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -84,27 +79,23 @@ public class RobotContainer {
     m_swerveSubsystem = new SwerveSubsystem();
     m_elevatorSubsystem = new ElevatorSubsystem();
     m_clawSubsystem = new ClawSubsystem();
-
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
-
-    m_setElevatorIntakeCommand = new SetElevatorIntakeCommand(m_elevatorSubsystem);
-    m_setElevatorL1Command = new SetElevatorL1Command(m_elevatorSubsystem);
-    m_setElevatorL2Command = new SetElevatorL2Command(m_elevatorSubsystem);
-    m_setElevatorL3Command = new SetElevatorL3Command(m_elevatorSubsystem);
-    m_setElevatorL4Command = new SetElevatorL4Command(m_elevatorSubsystem);
-
-    
-    m_setClawIntakeCommand = new SetClawIntakeCommand(m_clawSubsystem);
     m_clawDriveReverseCommand = new TestClawDriveReverseCommand(m_clawSubsystem);
-    m_setClawL1Command = new SetClawL1Command(m_clawSubsystem);
     m_clawDriveCommand = new TestClawDriveCommand(m_clawSubsystem);
-    m_setActuatorL1Command = new SetActuatorL1Command(m_elevatorSubsystem, m_clawSubsystem);
-    m_setActuatorL2Command = new SetActuatorL2Command(m_elevatorSubsystem, m_clawSubsystem);
-    m_setActuatorL3Command = new SetActuatorL3Command(m_elevatorSubsystem, m_clawSubsystem);
-    m_setActuatorL4Command = new SetActuatorL4Command(m_elevatorSubsystem, m_clawSubsystem);
-    //m_setClawL2Command = new SetClawL2Command(m_clawSubsystem);
-    //m_setClawL3Command = new SetClawL3Command(m_clawSubsystem);
-    //m_setClawL4Command = new SetClawL4Command(m_clawSubsystem);
+
+    m_setActuatorDefaultCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT);
+    m_setActuatorCoralIntakeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE);
+    m_setActuatorL1Command = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1);
+    m_setActuatorL2Command = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L2, ClawPosition.L2);
+    m_setActuatorL3Command = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L3, ClawPosition.L3);
+    m_setActuatorL4Command = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4);
+
+    m_setActuatorFloorAlgaeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.FLOORALGAE, ClawPosition.FLOORALGAE);
+    m_setActuatorLowerAlgaeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.LOWERALGAE, ClawPosition.REEFALGAE);
+    m_setActuatorHigherAlgaeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.HIGHERALGAE, ClawPosition.REEFALGAE);
+    m_setActuatorBargeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.BARGE, ClawPosition.BARGE);
+    
+
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
