@@ -13,15 +13,17 @@ import frc.robot.subsystems.ElevatorSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
-  /** Creates a new ReefInteractionSequentialCommand. */
-  
-  public ReefInteractionSequentialCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, ElevatorPosition targetElevatorPosition, ClawPosition targetClawPosition, double id) {
+public class CoralPlacementSequenceCommand extends SequentialCommandGroup {
+  /** Creates a new CoralPlacementSequenceCommand. */
+  ElevatorPosition elevatorPosition;
+  ClawPosition clawPosition;
+  public CoralPlacementSequenceCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, targetElevatorPosition, targetClawPosition),
-      new ClawDriveCommand(clawSubsystem),
-      new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
+    elevatorPosition = elevatorSubsystem.getAutoPlacePosition();
+    clawPosition = clawSubsystem.getAutoPlacePosition();
+    addCommands(new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, elevatorPosition, clawPosition),
+      new ClawDriveCommand(clawSubsystem)
+      );
   }
 }

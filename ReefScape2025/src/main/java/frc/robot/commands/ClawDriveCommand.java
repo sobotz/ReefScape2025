@@ -6,20 +6,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ElevatorPosition;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ClawSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class SetElevatorPositionCommand extends Command {
-  /** Creates a new SetElevatorPositionCommand. */
-  ElevatorSubsystem m_elevatorSubsystem;
-  ElevatorPosition targetPosition;
-  boolean isFinished;
+public class ClawDriveCommand extends Command {
+  /** Creates a new ClawDriveCommand. */
+  ClawSubsystem m_clawSubsystem;
   Timer timer;
-  public SetElevatorPositionCommand(ElevatorSubsystem elevatorSubsystem, ElevatorPosition targetPosition) {
+  boolean isFinished;
+  public ClawDriveCommand(ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_elevatorSubsystem = elevatorSubsystem;
-    this.targetPosition = targetPosition;
+    m_clawSubsystem = clawSubsystem;
     isFinished = false;
     timer = new Timer();
   }
@@ -27,19 +24,18 @@ public class SetElevatorPositionCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.start();
     isFinished = false;
-    m_elevatorSubsystem.setElevatorTargetPosition(targetPosition);
-
+    timer.start();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_elevatorSubsystem.getElevatorPIDCalculate()<0.035 ){
-      isFinished = true;
+    if (timer.get()>0.15){
+      m_clawSubsystem.setDriveMotor(-0.8);
     }
-    if (timer.get()>3){
+    if (timer.get()>0.8){
       isFinished = true;
     }
   }
@@ -47,7 +43,7 @@ public class SetElevatorPositionCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Elevator Finished");
+    m_clawSubsystem.setDriveMotor(0);
     timer.reset();
     timer.stop();
   }

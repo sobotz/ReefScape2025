@@ -10,15 +10,19 @@ import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
-import frc.robot.commands.SetActuatorL1Command;
+import frc.robot.commands.ReefInteractionSequentialCommand;
 import frc.robot.commands.SetActuatorPositionCommand;
 import frc.robot.commands.SetClawPositionCommand;
-import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TestClawDriveCommand;
 import frc.robot.commands.TestClawDriveReverseCommand;
+import frc.robot.commands.TestIntakeCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+
+import java.lang.annotation.ElementType;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -45,10 +49,17 @@ public class RobotContainer {
   SwerveSubsystem m_swerveSubsystem;
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
+  IntakeSubsystem m_intakeSubsystem;
 
   DriveCommand m_driveCommand;
   TestClawDriveCommand m_clawDriveCommand;
   TestClawDriveReverseCommand m_clawDriveReverseCommand;
+  TestIntakeCommand testIntakeCommand;
+
+  SetClawPositionCommand testClaw1Command;
+  SetClawPositionCommand testClaw2Command;
+  SetClawPositionCommand testClaw3Command;
+  SetClawPositionCommand testClaw4Command;
 
   SetActuatorPositionCommand m_setActuatorDefaultCommand;
 
@@ -65,6 +76,8 @@ public class RobotContainer {
   
   SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
+
+  ReefInteractionSequentialCommand m_testReef;
   
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -79,6 +92,7 @@ public class RobotContainer {
     m_swerveSubsystem = new SwerveSubsystem();
     m_elevatorSubsystem = new ElevatorSubsystem();
     m_clawSubsystem = new ClawSubsystem();
+    m_intakeSubsystem = new IntakeSubsystem();
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
     m_clawDriveReverseCommand = new TestClawDriveReverseCommand(m_clawSubsystem);
     m_clawDriveCommand = new TestClawDriveCommand(m_clawSubsystem);
@@ -94,13 +108,16 @@ public class RobotContainer {
     m_setActuatorLowerAlgaeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.LOWERALGAE, ClawPosition.REEFALGAE);
     m_setActuatorHigherAlgaeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.HIGHERALGAE, ClawPosition.REEFALGAE);
     m_setActuatorBargeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.BARGE, ClawPosition.BARGE);
-    
 
+    testClaw1Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.DEFAULT);
+    testClaw2Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.L2);
+    testIntakeCommand = new TestIntakeCommand(m_intakeSubsystem);
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoPath = new PathPlannerAuto("TestAuto");
+    m_testReef = new ReefInteractionSequentialCommand(m_elevatorSubsystem, m_clawSubsystem);
     
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));
     configureBindings();
@@ -134,12 +151,23 @@ public class RobotContainer {
     // IntakeButton.toggleOnTrue(m_setClawIntakeCommand);
     JoystickButton driveReverseButton = new JoystickButton(testOperator, 5);
     driveReverseButton.whileTrue(m_clawDriveReverseCommand);
-    JoystickButton defaultButton = new JoystickButton(testOperator,1);
-    defaultButton.onTrue(m_setClawIntakeCommand);
-    JoystickButton L1Button = new JoystickButton(testOperator, 2);
-    L1Button.onTrue(m_setClawL1Command);
     JoystickButton driveButton = new JoystickButton(testOperator, 6);
     driveButton.whileTrue(m_clawDriveCommand);
+    JoystickButton defaultButton = new JoystickButton(testOperator,10);
+    defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
+    JoystickButton L1Button = new JoystickButton(testOperator, 1);
+    L1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1));
+    JoystickButton L2Button = new JoystickButton(testOperator,2);
+    L2Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L2, ClawPosition.L2));
+    JoystickButton L3Button = new JoystickButton(testOperator,3);
+    L3Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L3, ClawPosition.L3));
+    JoystickButton L4Button = new JoystickButton(testOperator,4);
+    L4Button.onTrue(new ReefInteractionSequentialCommand(m_elevatorSubsystem, m_clawSubsystem));//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));
+    JoystickButton intakeButton = new JoystickButton(testOperator,8);
+    intakeButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
+    JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
+    intakeDriveButton.whileTrue(testIntakeCommand);
+    
     // JoystickButton L2Button = new JoystickButton(testOperator, 3);
     // L2Button.toggleOnTrue(m_setClawL2Command);
     // JoystickButton L3Button = new JoystickButton(testOperator,4);

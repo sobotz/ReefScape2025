@@ -22,15 +22,15 @@ public final class Constants {
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
   public static class ClawConstants{
-    public static final double DEFAULT = 0;
-    public static final double INTAKE = 0;
+    public static final double DEFAULT = -90;
+    public static final double INTAKE = -90;
     public static final double FLOORALGAE = 200;
     public static final double REEFALGAE = -170;
     public static final double BARGE = 180;
-    public static final double L1 = 170;
-    public static final double L2 = -160;
-    public static final double L3= -160;
-    public static final double L4 = -140;
+    public static final double L1 = 50;
+    public static final double L2 = -236;
+    public static final double L3= -236;
+    public static final double L4 = -230;
   }
   public static enum ClawPosition{
     DEFAULT,
@@ -64,15 +64,15 @@ public final class Constants {
     public static final double kP = 0.15;
     public static final double kI = 0;
     public static final double kD = 0.006;
-    public static final double DEFAULT = 6;
-    public static final double INTAKE = 5;
+    public static final double DEFAULT = 10;
+    public static final double INTAKE = 20.3;
     public static final double FLOORALGAE = 4;
     public static final double LOWERALGAE = 20;
     public static final double HIGHERALGAE = 40;
     public static final double BARGE = 70;
-    public static final double L1 = 20;
-    public static final double L2 = 35;
-    public static final double L3 = 50;
-    public static final double L4 = 65;
+    public static final double L1 = 15;
+    public static final double L2 = 25;
+    public static final double L3 = 38;
+    public static final double L4 = 68;
   }
 }

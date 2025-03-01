@@ -70,6 +70,7 @@ public class SwerveSubsystem extends SubsystemBase {
   double xTranslation;
   double yTranslation;
   double rotationalVelocityMagnitude;
+  double targetID;
 
   boolean angleCorrectionMode;
   boolean once;
@@ -154,7 +155,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     degreeVelocityController = new PIDController(0.011,0.000,0.007);//d0.07
     //degreeVelocityController.setTolerance(0.01);
-
+    targetID = 0;
     once = true;
     robotDegreeOffset = 0;
     driveCommandDisabled = false;
@@ -215,6 +216,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void setDriveCommandDisabled(boolean mode){
     driveCommandDisabled = mode;
+  }
+  public double getTargetID(){
+    return targetID;
+  }
+  public void setTargetID(double id){
+    targetID = id;
   }
 
   public void driverControlledDrive(Vector strafeVector, Vector rotationVector){

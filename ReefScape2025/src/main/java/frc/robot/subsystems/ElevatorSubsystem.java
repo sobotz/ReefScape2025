@@ -12,7 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ElevatorConstants;
@@ -36,6 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private double elevatorPIDCalculation;
   private ElevatorPosition targetPosition; 
+  ElevatorPosition autoPlaceTargetElevatorPosition;
   /** PIDF Constants */
   /** Manual Control Mode */
   private boolean manualMode;
@@ -74,9 +75,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     // enable stator current limit
 
     elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD);  // Tune these values as needed
-    elevatorController.setTolerance(0.005); 
+    elevatorController.setTolerance(0.002); 
     elevatorPIDCalculation = 0; 
     targetPosition = ElevatorPosition.DEFAULT;
+    autoPlaceTargetElevatorPosition = ElevatorPosition.DEFAULT;
     once = true;
     atTargetPosition = false;
   }
@@ -86,16 +88,27 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean elevatorAtTargetPosition() {
-    if (Math.abs(elevatorController.getError())<0.17){
+    if (Math.abs(elevatorController.getError())<0.26){
+      atTargetPosition = true;
       return true;
     }
     else{
+      atTargetPosition = false;
       return false;
     }
+  }
+  public double getElevatorPIDCalculate(){
+    return elevatorPIDCalculation;
   }
 
   public void setElevatorTargetPosition(ElevatorPosition position) {
     targetPosition = position;
+  }
+  public ElevatorPosition getAutoPlacePosition(){
+    return autoPlaceTargetElevatorPosition;
+  }
+  public void setAutoPlaceClawTargetPosition(ElevatorPosition position){
+    autoPlaceTargetElevatorPosition = position;
   }
 
   @Override
@@ -115,15 +128,23 @@ public class ElevatorSubsystem extends SubsystemBase {
     if (!elevatorController.atSetpoint()) {
       //System.out.println(elevatorController.getError());
       //System.out.println(elevatorPIDCalculation);
-      elevatorMotor.set((elevatorPIDCalculation)*0.5);
-      slaveMotor.set((-elevatorPIDCalculation)*0.5);
-    } 
-    if (Math.abs(elevatorController.getError())<0.3){
-      atTargetPosition = true;
+      // if (elevatorPIDCalculation>0.5){
+      //   elevatorPIDCalculation = 0.5;
+      // }
+      // if (elevatorPIDCalculation<-0.5){
+      //   elevatorPIDCalculation = -0 .5;
+      // }
+      //System.out.println(elevatorPIDCalculation);
+      SmartDashboard.putNumber("Elevator Calculation", elevatorPIDCalculation);
+      SmartDashboard.putNumber("Elevator Error", elevatorController.getError());
+      elevatorMotor.set((elevatorPIDCalculation));
+      slaveMotor.set((-elevatorPIDCalculation));
     }
     else{
-      atTargetPosition = false;
+      elevatorMotor.set((0));
+      slaveMotor.set((0));
     }
+    
     //System.out.println(atTargetPosition);
   }
 }
