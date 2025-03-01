@@ -25,10 +25,10 @@ public final class Constants {
     public static final double DEFAULT = -90;
     public static final double HASALGAEDEFAULT = -360;
     public static final double INTAKE = -90;
-    public static final double FLOORALGAE = 200;
+    public static final double FLOORALGAE = -240;
     public static final double FACINGDOWNREEFALGAE = -170;
     public static final double FACINGUPREEFALGAE = -300;
-    public static final double BARGE = 180;
+    public static final double BARGE = -300;
     public static final double L1 = 50;
     public static final double L2 = -236;
     public static final double L3= -236;
@@ -69,7 +69,7 @@ public final class Constants {
     public static final double kD = 0.006;
     public static final double DEFAULT = 10;
     public static final double INTAKE = 20.3;
-    public static final double FLOORALGAE = 4;
+    public static final double FLOORALGAE = 8;
     public static final double LOWERALGAE = 20;
     public static final double HIGHERALGAE = 40;
     public static final double BARGE = 70;
