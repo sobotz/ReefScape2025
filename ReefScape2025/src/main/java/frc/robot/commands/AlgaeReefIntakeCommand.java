@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
@@ -13,16 +13,20 @@ import frc.robot.subsystems.ElevatorSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class CoralPlacementSequenceCommand extends SequentialCommandGroup {
-  /** Creates a new CoralPlacementSequenceCommand. */
+public class AlgaeReefIntakeCommand extends ParallelCommandGroup {
+  /** Creates a new AlgaeReefIntakeCommand. */
   ElevatorPosition elevatorPosition;
   ClawPosition clawPosition;
-  public CoralPlacementSequenceCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
+  public AlgaeReefIntakeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
+    if (elevatorSubsystem.getTargetElevatorPosition().compareTo(elevatorSubsystem.PredictedAlgaeElevatorPosition())>0){
+      clawPosition = ClawPosition.FACINGDOWNREEFALGAE;
+    }
+    else{
+      clawPosition = ClawPosition.FACINGUPREEFALGAE;
+    }
+    elevatorPosition = elevatorSubsystem.PredictedAlgaeElevatorPosition();
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    elevatorPosition = elevatorSubsystem.getAutoPlacePosition();
-    clawPosition = clawSubsystem.getAutoPlacePosition();
-    addCommands(new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, elevatorPosition, clawPosition),
-      new ClawDriveCommand(clawSubsystem));
+    addCommands(new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, elevatorPosition, clawPosition),new AlgaeReefGrabCommand(clawSubsystem));
   }
 }

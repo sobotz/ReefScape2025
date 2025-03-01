@@ -23,9 +23,11 @@ public final class Constants {
   }
   public static class ClawConstants{
     public static final double DEFAULT = -90;
+    public static final double HASALGAEDEFAULT = -360;
     public static final double INTAKE = -90;
     public static final double FLOORALGAE = 200;
-    public static final double REEFALGAE = -170;
+    public static final double FACINGDOWNREEFALGAE = -170;
+    public static final double FACINGUPREEFALGAE = -300;
     public static final double BARGE = 180;
     public static final double L1 = 50;
     public static final double L2 = -236;
@@ -36,7 +38,8 @@ public final class Constants {
     DEFAULT,
     INTAKE,
     FLOORALGAE,
-    REEFALGAE,
+    FACINGUPREEFALGAE,
+    FACINGDOWNREEFALGAE,
     BARGE,
     L1,
     L2,

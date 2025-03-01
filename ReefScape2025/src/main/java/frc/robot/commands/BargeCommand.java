@@ -7,48 +7,64 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ClawPosition;
+import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class SetClawPositionCommand extends Command {
-  /** Creates a new SetClawPositionCommand. */
+public class BargeCommand extends Command {
+  /** Creates a new BargeCommand. */
+  ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
-  ClawPosition targetPosition;
-  boolean isFinished;
   Timer timer;
-  public SetClawPositionCommand(ClawSubsystem clawSubsystem, ClawPosition targetPosition) {
+  Timer timer2;
+  boolean isFinished;
+  public BargeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
-    this.targetPosition = targetPosition;
-    isFinished = false;
     timer = new Timer();
+    timer2 = new Timer();
+    isFinished = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    isFinished = false;
-    m_clawSubsystem.setClawTargetPosition(targetPosition);
+    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.BARGE);
+    m_clawSubsystem.setClawTargetPosition(ClawPosition.BARGE);
     timer.start();
+    isFinished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_clawSubsystem.clawAtTargetPosition()){
+    if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_clawSubsystem.clawAtTargetPosition()){
+      m_clawSubsystem.setDriveMotor(0.5);
+      timer2.start();
+    }
+    else if(timer.get()>4){
+      timer2.start();
+      m_clawSubsystem.setDriveMotor(0.5);
+    }
+    if (timer2.get()>0.5){
       isFinished = true;
     }
-    if (timer.get()>3){
-      isFinished = true;
-    }
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("claw Finished");
     timer.reset();
     timer.stop();
+    timer2.reset();
+    timer2.stop();
+    m_clawSubsystem.setHasAlgae(false);
+    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
+    m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    m_clawSubsystem.setDriveMotor(0);
   }
 
   // Returns true when the command should end.

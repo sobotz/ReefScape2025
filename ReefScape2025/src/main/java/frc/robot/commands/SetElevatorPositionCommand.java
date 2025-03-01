@@ -36,7 +36,7 @@ public class SetElevatorPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_elevatorSubsystem.getElevatorPIDCalculate()<0.035 ){
+    if (m_elevatorSubsystem.elevatorAtTargetPosition()){
       isFinished = true;
     }
     if (timer.get()>3){

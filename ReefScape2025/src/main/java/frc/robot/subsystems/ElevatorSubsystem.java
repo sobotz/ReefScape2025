@@ -19,7 +19,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorPosition;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  
+  SwerveSubsystem m_swerveSubsystem;
   /** Elevator Motors */
   TalonFX elevatorMotor;
   TalonFX slaveMotor;
@@ -43,8 +43,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   boolean once;
   boolean atTargetPosition;
 
-  public ElevatorSubsystem() {
+  public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
     /** Initialize position mappings */
+    m_swerveSubsystem = swerveSubsystem;
     
     positionMap = new HashMap<ElevatorPosition, Double>(){{
       put(ElevatorPosition.DEFAULT, ElevatorConstants.DEFAULT);
@@ -88,7 +89,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean elevatorAtTargetPosition() {
-    if (Math.abs(elevatorController.getError())<0.26){
+    if (Math.abs(elevatorController.getError())<0.26 && elevatorPIDCalculation<0.035){
       atTargetPosition = true;
       return true;
     }
@@ -100,10 +101,22 @@ public class ElevatorSubsystem extends SubsystemBase {
   public double getElevatorPIDCalculate(){
     return elevatorPIDCalculation;
   }
-
+  public ElevatorPosition getTargetElevatorPosition(){
+    return targetPosition;
+  }
   public void setElevatorTargetPosition(ElevatorPosition position) {
     targetPosition = position;
   }
+  public ElevatorPosition PredictedAlgaeElevatorPosition(){
+    if(m_swerveSubsystem.getTargetID()%2 == 0){
+      return ElevatorPosition.LOWERALGAE;
+    }
+    else{
+      return ElevatorPosition.HIGHERALGAE;
+    }
+  }
+  
+  
   public ElevatorPosition getAutoPlacePosition(){
     return autoPlaceTargetElevatorPosition;
   }
