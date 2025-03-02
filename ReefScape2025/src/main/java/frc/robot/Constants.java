@@ -21,4 +21,11 @@ public final class Constants {
     public static final double wheelRadius = 0.0508;//in meters;
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
+  public static class PhotonVisionConstants{
+    public static double rightCameraCenterOffset = 50.0;
+    public static double leftCameraCenterOffset = -50.0;
+    public static String leftCameraName = "4";
+    public static String rightCameraName = "3";
+  
+}
 }

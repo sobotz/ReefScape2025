@@ -14,7 +14,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
 public class PhotonVisionSubsytem extends SubsystemBase {
   //SwereSubsystem
   SwerveSubsystem swerveSubsystem;
@@ -62,9 +62,9 @@ public class PhotonVisionSubsytem extends SubsystemBase {
   public PhotonVisionSubsytem() {
     swerveSubsystem = new SwerveSubsystem();
 
-    leftCamera = new PhotonCamera("x");
-    rightCamera = new PhotonCamera("y");
-    intakeCamera = new PhotonCamera("z");
+    leftCamera = new PhotonCamera(Constants.PhotonVisionConstants.leftCameraName);
+    rightCamera = new PhotonCamera(Constants.PhotonVisionConstants.rightCameraName);
+    intakeCamera = new PhotonCamera(Constants.PhotonVisionConstants.rightCameraName);
 
   }
   public void alignToTarget(boolean enabled, boolean isAtomonous){
@@ -122,24 +122,44 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     }
     }
   }
-  public double[] getCameraOffsets(Transform3d targetInfo,boolean cameraIsParallel){
-      
+  public double[] getCameraOffsets(Transform3d targetInfo,boolean cameraIsParallel,boolean isLeftCamera){
+      if (isLeftCamera){
       double zAngleOffset = 0.0;
+      double angleoffset = 0;
+       angleoffset =targetInfo.getRotation().getAngle();
       if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
         zAngleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
       }else{
         zAngleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
       }
-      double x = targetInfo.getX()*Math.sin();//d1
+      double x = targetInfo.getX()*Math.sin(angleoffset+Constants.PhotonVisionConstants.leftCameraCenterOffset);//d1
       double y = 0.0;
       if (cameraIsParallel){
       y = targetInfo.getX();
       }else{
-        y = targetInfo.getX()*Math.cos();//d2
+        y = targetInfo.getX()*Math.cos(angleoffset+Constants.PhotonVisionConstants.leftCameraCenterOffset);//d2
       }
-      double[] info = {x,y,angleOffset};
+      double[] info = {x,y,zAngleOffset};
       return info;
-     
+    }else{
+      double zAngleOffset = 0.0;
+      double angleoffset = 0;
+       angleoffset =targetInfo.getRotation().getAngle();
+      if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
+        zAngleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
+      }else{
+        zAngleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
+      }
+      double x = targetInfo.getX()*Math.sin(angleoffset+Constants.PhotonVisionConstants.rightCameraCenterOffset);//d1
+      double y = 0.0;
+      if (cameraIsParallel){
+      y = targetInfo.getX();
+      }else{
+        y = targetInfo.getX()*Math.cos(angleoffset+Constants.PhotonVisionConstants.rightCameraCenterOffset);//d2
+      }
+      double[] info = {x,y,zAngleOffset};
+      return info;
+    }
   }
   @Override
   public void periodic() {
