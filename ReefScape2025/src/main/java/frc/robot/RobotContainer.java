@@ -12,6 +12,7 @@ import frc.robot.commands.CoralLevelButtonCommand;
 import frc.robot.commands.CoralPlacementSequenceCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
+
 import frc.robot.commands.ReefInteractionSequentialCommand;
 import frc.robot.commands.SetActuatorPositionCommand;
 import frc.robot.commands.SetClawPositionCommand;
@@ -23,6 +24,10 @@ import frc.robot.commands.ToggleStationIntakeCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+
+import frc.robot.commands.PhotonVisionCommand;
+import frc.robot.subsystems.PhotonVisionSubsytem;
+
 import frc.robot.subsystems.SwerveSubsystem;
 
 import java.lang.annotation.ElementType;
@@ -85,6 +90,9 @@ public class RobotContainer {
   
   SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
+  private final PhotonVisionSubsytem m_PhotonVisionSubsytem;
+  private PhotonVisionCommand m_PhotonVisionCommand;
+  JoystickButton photonVisionAlignButton;
 
   ReefInteractionSequentialCommand m_testReef;
   
@@ -130,7 +138,10 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoPath = new PathPlannerAuto("TestAuto");
-    
+
+    m_PhotonVisionSubsytem = new PhotonVisionSubsytem();
+    m_PhotonVisionCommand = new PhotonVisionCommand(m_PhotonVisionSubsytem);
+
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));
     configureBindings();
   }
@@ -157,6 +168,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
     //LEVEL BUTTONS
     JoystickButton L1Button = new JoystickButton(A2,1);
     L1Button.onTrue(new CoralLevelButtonCommand(m_elevatorSubsystem, m_clawSubsystem, 1));
@@ -216,8 +228,12 @@ public class RobotContainer {
     JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
     intakeDriveButton.whileTrue(testIntakeCommand);
     
-  }
 
+    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    photonVisionAlignButton = new JoystickButton(stick, 6);
+    photonVisionAlignButton.whileTrue(m_PhotonVisionCommand);
+
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

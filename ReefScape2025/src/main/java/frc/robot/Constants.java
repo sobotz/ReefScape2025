@@ -21,6 +21,7 @@ public final class Constants {
     public static final double wheelRadius = 0.0508;//in meters;
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
+
   public static class ClawConstants{
     public static final double DEFAULT = -90;
     public static final double HASALGAEDEFAULT = -360;
@@ -78,4 +79,13 @@ public final class Constants {
     public static final double L3 = 40;
     public static final double L4 = 70;
   }
+
+  public static class PhotonVisionConstants{
+    public static double rightCameraCenterOffset = 50.0;
+    public static double leftCameraCenterOffset = -50.0;
+    public static String leftCameraName = "4";
+    public static String rightCameraName = "3";
+  
+  }
+
 }
