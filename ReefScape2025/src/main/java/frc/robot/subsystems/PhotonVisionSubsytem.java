@@ -123,18 +123,19 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     }
   }
   public double[] getCameraOffsets(Transform3d targetInfo,boolean cameraIsParallel){
-      double x = targetInfo.getY();
+      
+      double zAngleOffset = 0.0;
+      if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
+        zAngleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
+      }else{
+        zAngleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
+      }
+      double x = targetInfo.getX()*Math.sin();//d1
       double y = 0.0;
       if (cameraIsParallel){
       y = targetInfo.getX();
       }else{
-        y = Math.sqrt(Math.pow(targetInfo.getY(), 2) - Math.pow(targetInfo.getX(), 2));
-      }
-      double angleOffset = 0.0;
-      if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
-        angleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
-      }else{
-        angleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
+        y = targetInfo.getX()*Math.cos();//d2
       }
       double[] info = {x,y,angleOffset};
       return info;

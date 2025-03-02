@@ -116,8 +116,8 @@ public class SwerveModule {
         }       
 
         else{
-            turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
-            driveMotor.set(targetModuleMagnitude);
+            //turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
+            //driveMotor.set(targetModuleMagnitude);
         }
         
     }
