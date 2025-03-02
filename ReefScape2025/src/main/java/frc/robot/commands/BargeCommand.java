@@ -40,7 +40,7 @@ public class BargeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_clawSubsystem.clawAtTargetPosition()){
+    /*if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_clawSubsystem.clawAtTargetPosition()){
       m_clawSubsystem.setDriveMotor(0.5);
       timer2.start();
     }
@@ -50,7 +50,7 @@ public class BargeCommand extends Command {
     }
     if (timer2.get()>0.5){
       isFinished = true;
-    }
+    }*/
     
   }
 

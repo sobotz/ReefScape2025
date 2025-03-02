@@ -172,6 +172,8 @@ public class SwerveSubsystem extends SubsystemBase {
     robotGyro.reset();
     m_odometer = new SwerveDriveOdometry(
       m_kinematics,
+
+      
       autoRobotDegree,
       new SwerveModulePosition[]{
       frontLeftSwerveModule.getSwerveModulePosition(),

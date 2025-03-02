@@ -67,7 +67,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     intakeCamera = new PhotonCamera(Constants.PhotonVisionConstants.rightCameraName);
 
   }
-  public void alignToTarget(boolean enabled, boolean isAtomonous){
+  public void alignToTarget(boolean enabled, boolean isAtomonous,int targetID,double leftRightOffset,double forwardBackOffset){
     if (!isAtomonous){
       if (leftCameraHasTarget && rightCameraHasTarget && enabled){
           rightCameraxOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[0];
@@ -76,14 +76,19 @@ public class PhotonVisionSubsytem extends SubsystemBase {
           leftCameraxOffset = getCameraOffsets(leftCameraTargetInfo, false,false)[0];
           leftCamerayOffset =getCameraOffsets(leftCameraTargetInfo, false,false)[1];
           leftCameraAngleOffset = getCameraOffsets(leftCameraTargetInfo, false,false)[2];
-        swerveSubsystem.setDriveCommandDisabled(enabled);
+        
         if (Math.abs(leftCameraAngleOffset)>Math.abs(rightCameraAngleOffset)){
-        swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,0.5, enabled);
-        System.out.println("Using Right Cam");
+          if (rightCameraTargetId==targetID){
+            swerveSubsystem.setDriveCommandDisabled(enabled);
+            swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,leftRightOffset,forwardBackOffset, enabled);
+            System.out.println("Using Right Cam");
+          }
         }else{
-          swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,0,0.5, enabled);
+          if(leftCameraTargetId==targetID){
+          swerveSubsystem.setDriveCommandDisabled(enabled);
+          swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,leftRightOffset,forwardBackOffset, enabled);
           System.out.println("Using Left Cam");
-
+          }
         }
       }else if (rightCameraHasTarget && enabled){
         rightCameraxOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[0];
@@ -91,17 +96,21 @@ public class PhotonVisionSubsytem extends SubsystemBase {
         rightCameraAngleOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[2];
         
         //32.253
-      swerveSubsystem.setDriveCommandDisabled(enabled);
-      swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,0.5, enabled);
-      System.out.println("Using Right Cam");
+        if (rightCameraTargetId==targetID){
+          swerveSubsystem.setDriveCommandDisabled(enabled);
+          swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,leftRightOffset,forwardBackOffset, enabled);
+          System.out.println("Using Right Cam");
+        }
     }else if (leftCameraHasTarget && enabled){
       leftCameraxOffset = getCameraOffsets(leftCameraTargetInfo, false,true)[0];
       leftCamerayOffset =getCameraOffsets(leftCameraTargetInfo, false,true)[1];
       leftCameraAngleOffset = getCameraOffsets(leftCameraTargetInfo, false,true)[2];
       
-    swerveSubsystem.setDriveCommandDisabled(enabled);
-    swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,0,0.5, enabled);
-    System.out.println("Using Left Cam");
+      if(leftCameraTargetId==targetID){
+        swerveSubsystem.setDriveCommandDisabled(enabled);
+        swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,leftRightOffset,forwardBackOffset, enabled);
+        System.out.println("Using Left Cam");
+        }
   }
       else{
         swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
@@ -112,9 +121,11 @@ public class PhotonVisionSubsytem extends SubsystemBase {
         intakeCameraxOffset = getCameraOffsets(intakeCameraTargetInfo,true,false)[0];
         intakeCamerayOffset = getCameraOffsets(intakeCameraTargetInfo,true,false)[1];
         intakeCameraAngleOffset = getCameraOffsets(intakeCameraTargetInfo,true,false)[2];
+        if(intakeCameraTargetId==targetID){
         swerveSubsystem.setDriveCommandDisabled(enabled);
-        swerveSubsystem.reefControlledDrive(intakeCameraxOffset, intakeCamerayOffset,intakeCameraAngleOffset,0,0.5, enabled);
+        swerveSubsystem.reefControlledDrive(intakeCameraxOffset, intakeCamerayOffset,intakeCameraAngleOffset,leftRightOffset,forwardBackOffset, enabled);
         System.out.println("Using Intake Cam");
+        }
     }else{
       swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
       System.out.println("NO TARGETS");
@@ -123,41 +134,41 @@ public class PhotonVisionSubsytem extends SubsystemBase {
   }
   public double[] getCameraOffsets(Transform3d targetInfo,boolean cameraIsParallel,boolean isLeftCamera){
       if (isLeftCamera){
-      double zAngleOffset = 0.0;
-      double angleoffset = 0;
-       angleoffset =targetInfo.getRotation().getAngle();
-      if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
-        zAngleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
-      }else{
-        zAngleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
-      }
-      double x = targetInfo.getX()*Math.sin(angleoffset+Constants.PhotonVisionConstants.leftCameraCenterOffset);//d1
-      double y = 0.0;
-      if (cameraIsParallel){
-      y = targetInfo.getX();
-      }else{
-        y = targetInfo.getX()*Math.cos(angleoffset+Constants.PhotonVisionConstants.leftCameraCenterOffset);//d2
-      }
-      double[] info = {x,y,zAngleOffset};
-      return info;
+          double zAngleOffset = 0.0;
+          double angleoffset = 0;
+          angleoffset =targetInfo.getRotation().getAngle();
+          if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
+            zAngleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
+          }else{
+            zAngleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
+          }
+          double x = targetInfo.getX()*Math.sin(angleoffset+Constants.PhotonVisionConstants.leftCameraCenterOffset);//d1
+          double y = 0.0;
+          if (cameraIsParallel){
+          y = targetInfo.getX();
+          }else{
+            y = targetInfo.getX()*Math.cos(angleoffset+Constants.PhotonVisionConstants.leftCameraCenterOffset);//d2
+          }
+          double[] info = {x,y,zAngleOffset};
+          return info;
     }else{
-      double zAngleOffset = 0.0;
-      double angleoffset = 0;
-       angleoffset =targetInfo.getRotation().getAngle();
-      if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
-        zAngleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
-      }else{
-        zAngleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
-      }
-      double x = targetInfo.getX()*Math.sin(angleoffset+Constants.PhotonVisionConstants.rightCameraCenterOffset);//d1
-      double y = 0.0;
-      if (cameraIsParallel){
-      y = targetInfo.getX();
-      }else{
-        y = targetInfo.getX()*Math.cos(angleoffset+Constants.PhotonVisionConstants.rightCameraCenterOffset);//d2
-      }
-      double[] info = {x,y,zAngleOffset};
-      return info;
+          double zAngleOffset = 0.0;
+          double angleoffset = 0;
+          angleoffset =targetInfo.getRotation().getAngle();
+          if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
+            zAngleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
+          }else{
+            zAngleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
+          }
+          double x = targetInfo.getX()*Math.sin(angleoffset+Constants.PhotonVisionConstants.rightCameraCenterOffset);//d1
+          double y = 0.0;
+          if (cameraIsParallel){
+          y = targetInfo.getX();
+          }else{
+            y = targetInfo.getX()*Math.cos(angleoffset+Constants.PhotonVisionConstants.rightCameraCenterOffset);//d2
+          }
+          double[] info = {x,y,zAngleOffset};
+          return info;
     }
   }
   @Override

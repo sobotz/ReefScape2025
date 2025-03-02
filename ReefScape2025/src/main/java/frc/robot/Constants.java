@@ -23,17 +23,17 @@ public final class Constants {
   }
 
   public static class ClawConstants{
-    public static final double DEFAULT = -90;
+    public static final double DEFAULT = -97;
     public static final double HASALGAEDEFAULT = -320;
-    public static final double INTAKE = -90;
-    public static final double FLOORALGAE = -240;
-    public static final double FACINGDOWNREEFALGAE = -270;
-    public static final double FACINGUPREEFALGAE = -270;
-    public static final double BARGE = -300;
+    public static final double INTAKE = -97;
+    public static final double FLOORALGAE = -208;
+    public static final double FACINGDOWNREEFALGAE = -250;
+    public static final double FACINGUPREEFALGAE = -250;
+    public static final double BARGE = -290;
     public static final double L1 = 50;
-    public static final double L2 = -236;
-    public static final double L3= -236;
-    public static final double L4 = -205;
+    public static final double L2 = -216;
+    public static final double L3= -216;
+    public static final double L4 = -195;
   }
   public static enum ClawPosition{
     DEFAULT,
@@ -70,10 +70,10 @@ public final class Constants {
     public static final double kD = 0.006;
     public static final double DEFAULT = 10;
     public static final double INTAKE = 20.3;
-    public static final double FLOORALGAE = 8;
-    public static final double LOWERALGAE = 31;
-    public static final double HIGHERALGAE = 43;
-    public static final double BARGE = 70;
+    public static final double FLOORALGAE = 4;
+    public static final double LOWERALGAE = 26;
+    public static final double HIGHERALGAE = 39;
+    public static final double BARGE = 75;
     public static final double L1 = 15;
     public static final double L2 = 29;
     public static final double L3 = 40;
@@ -83,8 +83,8 @@ public final class Constants {
   public static class PhotonVisionConstants{
     public static double rightCameraCenterOffset = 50.0;
     public static double leftCameraCenterOffset = -50.0;
-    public static String leftCameraName = "4";
-    public static String rightCameraName = "3";
+    public static String leftCameraName = "Module_4_Arducam_OV2311";
+    public static String rightCameraName = "Module_3_Arducam_OV2311";
   
   }
 

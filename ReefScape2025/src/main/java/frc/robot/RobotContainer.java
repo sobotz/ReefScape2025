@@ -8,6 +8,7 @@ package frc.robot;
 
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
+import frc.robot.commands.BargeCommand;
 import frc.robot.commands.CoralLevelButtonCommand;
 import frc.robot.commands.CoralPlacementSequenceCommand;
 import frc.robot.commands.DriveCommand;
@@ -70,9 +71,11 @@ public class RobotContainer {
 
   ToggleStationIntakeCommand m_toggleStationIntakeCommand;
   ToggleFloorAlgaeIntakeCommand m_toggleFloorAlgaeIntakeCommand;
+  BargeCommand m_bargeCommand;
 
   GrabHigherAlgaeCommand m_grabHigherAlgaeCommand;
   GrabLowerAlgaeCommand m_grabLowerAlgaeCommand;
+  ToggleFloorAlgaeIntakeCommand m_toogleFloorAlgaeIntakeCommand;
 
   SetClawPositionCommand testClaw1Command;
   SetClawPositionCommand testClaw2Command;
@@ -135,6 +138,8 @@ public class RobotContainer {
     m_setActuatorBargeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.BARGE, ClawPosition.BARGE);
     m_grabHigherAlgaeCommand = new GrabHigherAlgaeCommand(m_elevatorSubsystem, m_clawSubsystem);
     m_grabLowerAlgaeCommand = new GrabLowerAlgaeCommand(m_elevatorSubsystem, m_clawSubsystem);
+    m_bargeCommand = new BargeCommand(m_elevatorSubsystem, m_clawSubsystem);
+    m_toggleFloorAlgaeIntakeCommand = new ToggleFloorAlgaeIntakeCommand(m_elevatorSubsystem, m_clawSubsystem);
 
     testClaw1Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.DEFAULT);
     testClaw2Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.L2);
@@ -237,6 +242,10 @@ public class RobotContainer {
     grabHigherAlgaeButton.toggleOnTrue(m_grabHigherAlgaeCommand);
     JoystickButton grabLowerAlgaeButton = new JoystickButton(A1,4);
     grabLowerAlgaeButton.toggleOnTrue(m_grabLowerAlgaeCommand);
+    JoystickButton bargeButton = new JoystickButton(A2, 9);
+    bargeButton.toggleOnTrue(m_bargeCommand);
+    JoystickButton floorAlgaeButton = new JoystickButton(A2, 8);//CHANGE
+    floorAlgaeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);
 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     //photonVisionAlignButton = new JoystickButton(stick, 6);
