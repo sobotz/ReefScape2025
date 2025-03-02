@@ -119,7 +119,7 @@ public class ClawSubsystem extends SubsystemBase {
   }
   public void setHasAlgae(boolean hasAlgae){
     this.hasAlgae = hasAlgae;
-    if (hasAlgae = true){
+    if (this.hasAlgae == true){
       clawPositionMap.put(ClawPosition.DEFAULT,ClawConstants.HASALGAEDEFAULT);
     }
     else{
@@ -181,8 +181,8 @@ public class ClawSubsystem extends SubsystemBase {
     else{
       wristMotor.set(0);      
     }
-    if (hasAlgae && !driveMotorIsControlled){
+    /*if (hasAlgae && !driveMotorIsControlled){
       clawDriveMotor.set(retainAlgaeController.calculate(getClawDriveMotorPosition(),algaeRetainPosition));
-    }
+    }*/
   }
 }

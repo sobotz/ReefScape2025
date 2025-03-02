@@ -273,7 +273,7 @@ public class SwerveSubsystem extends SubsystemBase {
       
     }else{
       System.out.println("at target");
-      drive(new Vector(0, 0),new Vector(0, 0),true);//CHANGE
+      drive(new Vector(0, 0),0,currentRobotDegree,true);//CHANGE
     }
   }
 

@@ -12,7 +12,8 @@ import frc.robot.commands.CoralLevelButtonCommand;
 import frc.robot.commands.CoralPlacementSequenceCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
-
+import frc.robot.commands.GrabHigherAlgaeCommand;
+import frc.robot.commands.GrabLowerAlgaeCommand;
 import frc.robot.commands.ReefInteractionSequentialCommand;
 import frc.robot.commands.SetActuatorPositionCommand;
 import frc.robot.commands.SetClawPositionCommand;
@@ -69,6 +70,9 @@ public class RobotContainer {
 
   ToggleStationIntakeCommand m_toggleStationIntakeCommand;
   ToggleFloorAlgaeIntakeCommand m_toggleFloorAlgaeIntakeCommand;
+
+  GrabHigherAlgaeCommand m_grabHigherAlgaeCommand;
+  GrabLowerAlgaeCommand m_grabLowerAlgaeCommand;
 
   SetClawPositionCommand testClaw1Command;
   SetClawPositionCommand testClaw2Command;
@@ -129,6 +133,8 @@ public class RobotContainer {
     m_setActuatorFloorAlgaeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.FLOORALGAE, ClawPosition.FLOORALGAE);
 
     m_setActuatorBargeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.BARGE, ClawPosition.BARGE);
+    m_grabHigherAlgaeCommand = new GrabHigherAlgaeCommand(m_elevatorSubsystem, m_clawSubsystem);
+    m_grabLowerAlgaeCommand = new GrabLowerAlgaeCommand(m_elevatorSubsystem, m_clawSubsystem);
 
     testClaw1Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.DEFAULT);
     testClaw2Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.L2);
@@ -170,7 +176,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     //LEVEL BUTTONS
-    JoystickButton L1Button = new JoystickButton(A2,1);
+    /*JoystickButton L1Button = new JoystickButton(A2,1);
     L1Button.onTrue(new CoralLevelButtonCommand(m_elevatorSubsystem, m_clawSubsystem, 1));
     JoystickButton L2Button = new JoystickButton(A2,2);
     L2Button.onTrue(new CoralLevelButtonCommand(m_elevatorSubsystem, m_clawSubsystem, 2));
@@ -207,33 +213,36 @@ public class RobotContainer {
     JoystickButton toggleIntakeButton = new JoystickButton(A2, 4);
     toggleIntakeButton.toggleOnTrue(m_toggleStationIntakeCommand);
     JoystickButton toggleFloorAlgaeIntakeButton = new JoystickButton(A2,5);
-    toggleFloorAlgaeIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);
+    toggleFloorAlgaeIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);*/
 
-    JoystickButton driveReverseButton = new JoystickButton(testOperator, 5);
+    JoystickButton driveReverseButton = new JoystickButton(A2, 5);
     driveReverseButton.whileTrue(m_clawDriveReverseCommand);
-    JoystickButton driveButton = new JoystickButton(testOperator, 6);
+    JoystickButton driveButton = new JoystickButton(A2, 6);
     driveButton.whileTrue(m_clawDriveCommand);
-    JoystickButton defaultButton = new JoystickButton(testOperator,10);
+    JoystickButton defaultButton = new JoystickButton(A2,11);
     defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
-    JoystickButton testL1Button = new JoystickButton(testOperator, 1);
+    JoystickButton testL1Button = new JoystickButton(A2, 1);
     testL1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1));
-    JoystickButton testL2Button = new JoystickButton(testOperator,2);
+    JoystickButton testL2Button = new JoystickButton(A2,2);
     testL2Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L2, ClawPosition.L2));
-    JoystickButton testL3Button = new JoystickButton(testOperator,3);
+    JoystickButton testL3Button = new JoystickButton(A2,3);
     testL3Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L3, ClawPosition.L3));
-    JoystickButton testL4Button = new JoystickButton(testOperator,4);
+    JoystickButton testL4Button = new JoystickButton(A2,4);
     testL4Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));//new ReefInteractionSequentialCommand(m_elevatorSubsystem, m_clawSubsystem,ElevatorPosition.L3,ClawPosition.L3,21));//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));
-    JoystickButton intakeButton = new JoystickButton(testOperator,8);
-    intakeButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
-    JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
-    intakeDriveButton.whileTrue(testIntakeCommand);
-    
+    JoystickButton intakeButton = new JoystickButton(A2,7);
+    intakeButton.toggleOnTrue(m_toggleStationIntakeCommand);//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
+    /*JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
+    intakeDriveButton.whileTrue(testIntakeCommand);*/
+    JoystickButton grabHigherAlgaeButton = new JoystickButton(A1,5);
+    grabHigherAlgaeButton.toggleOnTrue(m_grabHigherAlgaeCommand);
+    JoystickButton grabLowerAlgaeButton = new JoystickButton(A1,4);
+    grabLowerAlgaeButton.toggleOnTrue(m_grabLowerAlgaeCommand);
 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    photonVisionAlignButton = new JoystickButton(stick, 6);
-    photonVisionAlignButton.whileTrue(m_PhotonVisionCommand);
+    //photonVisionAlignButton = new JoystickButton(stick, 6);
+    //photonVisionAlignButton.whileTrue(m_PhotonVisionCommand);
 
-  
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

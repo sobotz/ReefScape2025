@@ -53,6 +53,7 @@ public class ToggleStationIntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_clawSubsystem.setHasAlgae(false);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_clawSubsystem.setDriveMotor(0);

@@ -70,15 +70,14 @@ public class PhotonVisionSubsytem extends SubsystemBase {
   public void alignToTarget(boolean enabled, boolean isAtomonous){
     if (!isAtomonous){
       if (leftCameraHasTarget && rightCameraHasTarget && enabled){
-          rightCameraxOffset = getCameraOffsets(rightCameraTargetInfo, false)[0];
-          rightCamerayOffset =getCameraOffsets(rightCameraTargetInfo, false)[1];
-          rightCameraAngleOffset = getCameraOffsets(rightCameraTargetInfo, false)[2];
-          leftCameraxOffset = getCameraOffsets(leftCameraTargetInfo, false)[0];
-          leftCamerayOffset =getCameraOffsets(leftCameraTargetInfo, false)[1];
-          leftCameraAngleOffset = getCameraOffsets(leftCameraTargetInfo, false)[2];
+          rightCameraxOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[0];
+          rightCamerayOffset =getCameraOffsets(rightCameraTargetInfo, false,false)[1];
+          rightCameraAngleOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[2];
+          leftCameraxOffset = getCameraOffsets(leftCameraTargetInfo, false,false)[0];
+          leftCamerayOffset =getCameraOffsets(leftCameraTargetInfo, false,false)[1];
+          leftCameraAngleOffset = getCameraOffsets(leftCameraTargetInfo, false,false)[2];
         swerveSubsystem.setDriveCommandDisabled(enabled);
         if (Math.abs(leftCameraAngleOffset)>Math.abs(rightCameraAngleOffset)){
-        
         swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,0.5, enabled);
         System.out.println("Using Right Cam");
         }else{
@@ -87,18 +86,18 @@ public class PhotonVisionSubsytem extends SubsystemBase {
 
         }
       }else if (rightCameraHasTarget && enabled){
-        rightCameraxOffset = getCameraOffsets(rightCameraTargetInfo, false)[0];
-        rightCamerayOffset =getCameraOffsets(rightCameraTargetInfo, false)[1];
-        rightCameraAngleOffset = getCameraOffsets(rightCameraTargetInfo, false)[2];
+        rightCameraxOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[0];
+        rightCamerayOffset =getCameraOffsets(rightCameraTargetInfo, false,false)[1];
+        rightCameraAngleOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[2];
         
         //32.253
       swerveSubsystem.setDriveCommandDisabled(enabled);
       swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,0.5, enabled);
       System.out.println("Using Right Cam");
     }else if (leftCameraHasTarget && enabled){
-      leftCameraxOffset = getCameraOffsets(leftCameraTargetInfo, false)[0];
-      leftCamerayOffset =getCameraOffsets(leftCameraTargetInfo, false)[1];
-      leftCameraAngleOffset = getCameraOffsets(leftCameraTargetInfo, false)[2];
+      leftCameraxOffset = getCameraOffsets(leftCameraTargetInfo, false,true)[0];
+      leftCamerayOffset =getCameraOffsets(leftCameraTargetInfo, false,true)[1];
+      leftCameraAngleOffset = getCameraOffsets(leftCameraTargetInfo, false,true)[2];
       
     swerveSubsystem.setDriveCommandDisabled(enabled);
     swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,0,0.5, enabled);
@@ -110,9 +109,9 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       }
     }else{
       if (intakeCameraHasTarget && enabled){
-        intakeCameraxOffset = getCameraOffsets(intakeCameraTargetInfo,true)[0];
-        intakeCamerayOffset = getCameraOffsets(intakeCameraTargetInfo,true)[1];
-        intakeCameraAngleOffset = getCameraOffsets(intakeCameraTargetInfo,true)[2];
+        intakeCameraxOffset = getCameraOffsets(intakeCameraTargetInfo,true,false)[0];
+        intakeCamerayOffset = getCameraOffsets(intakeCameraTargetInfo,true,false)[1];
+        intakeCameraAngleOffset = getCameraOffsets(intakeCameraTargetInfo,true,false)[2];
         swerveSubsystem.setDriveCommandDisabled(enabled);
         swerveSubsystem.reefControlledDrive(intakeCameraxOffset, intakeCamerayOffset,intakeCameraAngleOffset,0,0.5, enabled);
         System.out.println("Using Intake Cam");
