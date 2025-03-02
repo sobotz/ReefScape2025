@@ -39,7 +39,7 @@ public class SetElevatorPositionCommand extends Command {
     if (m_elevatorSubsystem.elevatorAtTargetPosition()){
       isFinished = true;
     }
-    if (timer.get()>3){
+    if (timer.get()>5){
       isFinished = true;
     }
   }

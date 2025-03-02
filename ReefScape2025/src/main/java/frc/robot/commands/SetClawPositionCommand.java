@@ -38,7 +38,7 @@ public class SetClawPositionCommand extends Command {
     if (m_clawSubsystem.clawAtTargetPosition()){
       isFinished = true;
     }
-    if (timer.get()>3){
+    if (timer.get()>5){
       isFinished = true;
     }
   }

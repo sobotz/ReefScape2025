@@ -95,9 +95,11 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    stick = new Joystick(0);
+    A1 = new Joystick(0);
+    A2 = new Joystick(1);
+    stick = new Joystick(2);
 
-    testOperator = new Joystick(1);
+    testOperator = new Joystick(3);
     m_swerveSubsystem = new SwerveSubsystem();
     m_elevatorSubsystem = new ElevatorSubsystem(m_swerveSubsystem);
     m_clawSubsystem = new ClawSubsystem();
@@ -195,26 +197,25 @@ public class RobotContainer {
     JoystickButton toggleFloorAlgaeIntakeButton = new JoystickButton(A2,5);
     toggleFloorAlgaeIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);
 
-    // JoystickButton driveReverseButton = new JoystickButton(testOperator, 5);
-    // driveReverseButton.whileTrue(m_clawDriveReverseCommand);
-    // JoystickButton driveButton = new JoystickButton(testOperator, 6);
-    // driveButton.whileTrue(m_clawDriveCommand);
-    // JoystickButton defaultButton = new JoystickButton(testOperator,10);
-    // defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
-    // JoystickButton L1Button = new JoystickButton(testOperator, 1);
-    // L1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1));
-    // JoystickButton L2Button = new JoystickButton(testOperator,2);
-    // L2Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L2, ClawPosition.L2));
-    // JoystickButton L3Button = new JoystickButton(testOperator,3);
-    // L3Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L3, ClawPosition.L3));
-    // JoystickButton L4Button = new JoystickButton(testOperator,4);
-    // L4Button.onTrue(new ReefInteractionSequentialCommand(m_elevatorSubsystem, m_clawSubsystem));//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));
-    // JoystickButton intakeButton = new JoystickButton(testOperator,8);
-    // intakeButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
-    // JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
-    // intakeDriveButton.whileTrue(testIntakeCommand);
+    JoystickButton driveReverseButton = new JoystickButton(testOperator, 5);
+    driveReverseButton.whileTrue(m_clawDriveReverseCommand);
+    JoystickButton driveButton = new JoystickButton(testOperator, 6);
+    driveButton.whileTrue(m_clawDriveCommand);
+    JoystickButton defaultButton = new JoystickButton(testOperator,10);
+    defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
+    JoystickButton testL1Button = new JoystickButton(testOperator, 1);
+    testL1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1));
+    JoystickButton testL2Button = new JoystickButton(testOperator,2);
+    testL2Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L2, ClawPosition.L2));
+    JoystickButton testL3Button = new JoystickButton(testOperator,3);
+    testL3Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L3, ClawPosition.L3));
+    JoystickButton testL4Button = new JoystickButton(testOperator,4);
+    testL4Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));//new ReefInteractionSequentialCommand(m_elevatorSubsystem, m_clawSubsystem,ElevatorPosition.L3,ClawPosition.L3,21));//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));
+    JoystickButton intakeButton = new JoystickButton(testOperator,8);
+    intakeButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
+    JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
+    intakeDriveButton.whileTrue(testIntakeCommand);
     
-
   }
 
   /**

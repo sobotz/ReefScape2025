@@ -32,7 +32,7 @@ public final class Constants {
     public static final double L1 = 50;
     public static final double L2 = -236;
     public static final double L3= -236;
-    public static final double L4 = -230;
+    public static final double L4 = -205;
   }
   public static enum ClawPosition{
     DEFAULT,
@@ -74,8 +74,8 @@ public final class Constants {
     public static final double HIGHERALGAE = 40;
     public static final double BARGE = 70;
     public static final double L1 = 15;
-    public static final double L2 = 25;
-    public static final double L3 = 38;
-    public static final double L4 = 68;
+    public static final double L2 = 29;
+    public static final double L3 = 40;
+    public static final double L4 = 70;
   }
 }

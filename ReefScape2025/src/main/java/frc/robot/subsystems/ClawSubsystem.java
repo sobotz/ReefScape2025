@@ -48,7 +48,7 @@ public class ClawSubsystem extends SubsystemBase {
     
     clawSensor = new CANcoder(17);//CHANGE
 
-    clawController = new PIDController(0.012, 0.0000, 0.000);//P0.0155 d 0.00017
+    clawController = new PIDController(0.010, 0.0000, 0.000);//P0.0155 d 0.00017
     //clawController.enableContinuousInput(0,360);
     clawController.setTolerance(0.0);
 
@@ -77,11 +77,11 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public double getClawSensorPosition(){
-    return (-1 * ((clawSensor.getPosition().getValueAsDouble()*360)-60.02148438));
+    return (-1 * ((clawSensor.getPosition().getValueAsDouble()*360)-75.02148438));
   }
 
   public boolean clawAtTargetPosition(){
-    if ((Math.abs(clawController.getError())<0.79) && clawPIDCalculation<0.011){
+    if ((Math.abs(clawController.getError())<0.2) && clawPIDCalculation<0.008){
       atTarget = true;
       return true;
     }
@@ -152,9 +152,23 @@ public class ClawSubsystem extends SubsystemBase {
       else if (clawPIDCalculation < -0.75){
         clawPIDCalculation = -0.75;
       }
-      if (Math.abs(clawPIDCalculation)<0.2){
-        clawPIDCalculation = clawPIDCalculation * 1.031;
+      // if (Math.abs(clawPIDCalculation)<0.1){
+      //   clawPIDCalculation = clawPIDCalculation * 1.032;
+      // }
+      /*if (Math.abs(clawPIDCalculation)<0.1){
+        clawPIDCalculation = clawPIDCalculation * .95;
+      }*/
+      if (Math.abs(clawPIDCalculation)<0.01){
+        clawPIDCalculation = clawPIDCalculation * 4;
+        //System.out.println("activated");
       }
+      else if (Math.abs(clawPIDCalculation)<0.02){
+        clawPIDCalculation = clawPIDCalculation * 1.7;
+        //System.out.println("first Activation");
+      }
+      /*else if (Math.abs(clawPIDCalculation)<0.025){
+        clawPIDCalculation = clawPIDCalculation * 1.02;
+      }*/
       
       // if (clawPIDCalculation < 0.05 && clawPIDCalculation > 0){
       //   clawPIDCalculation ;

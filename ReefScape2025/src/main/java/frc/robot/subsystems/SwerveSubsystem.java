@@ -229,8 +229,9 @@ public class SwerveSubsystem extends SubsystemBase {
       double rotationalMagnitude = -rotationController.calculate(currentRobotDegree,rotationVector.getDegrees());
       if (Math.abs(rotationalMagnitude) < 0.01){
         rotationalMagnitude = 0;
-        drive(strafeVector, rotationalMagnitude, currentRobotDegree, false);
+        
       }
+      drive(strafeVector, rotationalMagnitude, currentRobotDegree, false);
     }
   }
 

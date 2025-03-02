@@ -20,8 +20,7 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, targetElevatorPosition, targetClawPosition),
-      new ClawDriveCommand(clawSubsystem),
+      new CoralPlacementSequenceCommand(elevatorSubsystem, clawSubsystem),
       new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
   }
 }
