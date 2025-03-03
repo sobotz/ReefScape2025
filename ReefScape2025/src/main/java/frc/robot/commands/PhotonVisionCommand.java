@@ -6,15 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PhotonVisionSubsytem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PhotonVisionCommand extends Command {
   /** Creates a new PhotonVisionCommand. */
   PhotonVisionSubsytem m_PhotonVisionSubsytem;
-  public PhotonVisionCommand(PhotonVisionSubsytem subsytem) {
-    m_PhotonVisionSubsytem = subsytem;
+  SwerveSubsystem m_SwerveSubsystem;
+  public PhotonVisionCommand(PhotonVisionSubsytem photonsubsytem,SwerveSubsystem swervesubsystem) {
+    m_PhotonVisionSubsytem = photonsubsytem;
+    m_SwerveSubsystem = swervesubsystem;
 
-    addRequirements(m_PhotonVisionSubsytem);
+    addRequirements(m_PhotonVisionSubsytem,m_SwerveSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,13 +28,13 @@ public class PhotonVisionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_PhotonVisionSubsytem.alignToTarget(true,false);
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_PhotonVisionSubsytem.alignToTarget(false,false);
+    
   }
 
   // Returns true when the command should end.

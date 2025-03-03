@@ -119,7 +119,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
           tempXOffset = target.getBestCameraToTarget().getX();//distance to target front back
           tempYOffset = target.getBestCameraToTarget().getY();//distance to target left right
           tempAngleOffset3D = target.getBestCameraToTarget().getRotation().getZ();
-          tempAngleOffset2D = target.getBestCameraToTarget().getRotation().getAngle() * (180/Math.PI);//????
+          tempAngleOffset2D = target.getBestCameraToTarget().getRotation().getAngle() * (180/Math.PI);//CHECK IF GET ANGLE WORKS AS INTENDED
           tempHasTarget = 1;});
     }
     else{
@@ -132,7 +132,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     double[] returnList ={tempXOffset,tempYOffset,cameraAngleOffset3D,cameraAngleOffset2D, tempHasTarget};
     return returnList; 
   }
-  public void align(double x, double y){
+  public void align(double x, double y,boolean enanbled){
     
     if (Math.abs(m3TargetData[3])<Math.abs(m4TargetData[3])){
       hasTarget = true;
@@ -164,18 +164,18 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     double z = Math.sqrt(Math.pow(cameraXOffset,2) + Math.pow(cameraYOffset,2));
     if (usingM3Camera){
       robotYOffset = z * Math.cos(cameraAngleOffset2D - 50);
-      robotXOffset = z * Math.sin(cameraAngleOffset2D - 50) + 0.3;//0.3 meters offset from the center
+      robotXOffset = z * Math.sin(cameraAngleOffset2D - 50) + 0.28;//0.3 meters offset from the center//CHANGE TO REAL METER OFFSET
       robotAngleOffset = cameraAngleOffset3D - 50;
     }
     else{
       robotYOffset = z * Math.cos(cameraAngleOffset2D + 50);
-      robotXOffset = z * Math.sin(cameraAngleOffset2D + 50) - 0.3;
+      robotXOffset = z * Math.sin(cameraAngleOffset2D + 50) - 0.28;
       robotAngleOffset = cameraAngleOffset3D + 50;
     }
-    if (hasTarget){
-      m_swerveSubsystem.reefControlledDrive(robotXOffset,robotYOffset,robotAngleOffset,xTarget,yTarget,true);
+    if (hasTarget && enanbled){
+      m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, xTarget, yTarget,true);
     }
-    m_swerveSubsystem.reefControlledDrive(robotXOffset,robotYOffset,robotAngleOffset,xTarget,yTarget,false);
+    m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, yTarget,false);
     
   }
   @Override
