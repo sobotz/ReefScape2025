@@ -24,8 +24,8 @@ public final class Constants {
   public static class PhotonVisionConstants{
     public static double rightCameraCenterOffset = 50.0;
     public static double leftCameraCenterOffset = -50.0;
-    public static String leftCameraName = "4";
-    public static String rightCameraName = "3";
+    public static String leftCameraName = "Module_4_Arducam_OV2311";
+    public static String rightCameraName = "Module_3_Arducam_OV2311";
   
 }
 }
