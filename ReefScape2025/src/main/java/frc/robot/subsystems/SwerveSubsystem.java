@@ -72,7 +72,7 @@ public class SwerveSubsystem extends SubsystemBase {
   double xTranslation;
   double yTranslation;
   double rotationalVelocityMagnitude;
-  double targetID;
+  int targetID;
 
   boolean angleCorrectionMode;
   boolean once;
@@ -219,10 +219,10 @@ public class SwerveSubsystem extends SubsystemBase {
   public void setDriveCommandDisabled(boolean mode){
     driveCommandDisabled = mode;
   }
-  public double getTargetID(){
+  public int getTargetID(){
     return targetID;
   }
-  public void setTargetID(double id){
+  public void setTargetID(int id){
     targetID = id;
   }
 
@@ -258,21 +258,15 @@ public class SwerveSubsystem extends SubsystemBase {
     Vector rvec = new Vector(1, 0 , true);
     //angleRotationController.
     double rotationalMagnitude = -rotationController.calculate(angleOffset,rvec.getDegrees());
-    
     if (Math.abs(rotationalMagnitude) < 0.01){
       rotationalMagnitude = 0;
-
     } 
-    
-    
-    if (!xTranslationController.atSetpoint() && !yTranslationController.atSetpoint()){ 
-      frontLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
-      frontRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
-      backLeftSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
-      backRightSwerveModule.drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,true);
-      
+
+    if (!xTranslationController.atSetpoint() && !yTranslationController.atSetpoint() && enabled){ 
+      setDriveCommandDisabled(true);
+      drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
     }else{
-      System.out.println("at target");
+      setDriveCommandDisabled(false);
       drive(new Vector(0, 0),0,currentRobotDegree,true);//CHANGE
     }
   }

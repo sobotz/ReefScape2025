@@ -1,9 +1,10 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copym4 (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -17,202 +18,175 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 public class PhotonVisionSubsytem extends SubsystemBase {
   //SwereSubsystem
-  SwerveSubsystem swerveSubsystem;
+  SwerveSubsystem m_swerveSubsystem;
   //Cameras
-   PhotonCamera leftCamera;
-   PhotonCamera rightCamera;
+   PhotonCamera m3Camera;
+   PhotonCamera m4Camera;
    PhotonCamera intakeCamera;
    //Camera Data
-   PhotonPipelineResult leftCameraResult;
-   PhotonPipelineResult rightCameraResult;
+   PhotonPipelineResult m3CameraResult;
+   PhotonPipelineResult m4CameraResult;
    PhotonPipelineResult intakeCameraResult;
 
-   Transform3d leftCameraTargetInfo;
-   Transform3d rightCameraTargetInfo;
+   Transform3d m3CameraTargetInfo;
+   Transform3d m4CameraTargetInfo;
    Transform3d intakeCameraTargetInfo;
 
-   double leftCameraxOffset;
-   double leftCamerayOffset;
-   double leftCameraAngleOffset;
-   double rightCameraxOffset;
-   double rightCamerayOffset;
-   double rightCameraAngleOffset;
+   double cameraXOffset;
+   double cameraYOffset;
+   double cameraAngleOffset3D;
+   double cameraAngleOffset2D;
+
+   double robotXOffset;
+   double robotYOffset;
+   double robotAngleOffset;
+  
+   double[] m3TargetData;
+   double[] m4TargetData;
+   double[] intakeTargetData;
+  
    double intakeCameraxOffset;
    double intakeCamerayOffset;
-   double  intakeCameraAngleOffset;
+   double intakeCameraAngleOffset3D;
+   double intakeCameraAngleOffset2D;
 
-   List<PhotonTrackedTarget> leftCameraTargets;
-   List<PhotonTrackedTarget> rightCameraTargets;
+   List<PhotonTrackedTarget> m3CameraTargets;
+   List<PhotonTrackedTarget> m4CameraTargets;
    List<PhotonTrackedTarget> intakeCameraTargets;
 
-   PhotonTrackedTarget leftCameraCurrentTarget;
-   PhotonTrackedTarget rightCameraCurrentTarget;
+   PhotonTrackedTarget m3CameraCurrentTarget;
+   PhotonTrackedTarget m4CameraCurrentTarget;
    PhotonTrackedTarget intakeCameraCurrentTarget;
 
-   boolean leftCameraHasTarget;
-   boolean rightCameraHasTarget;
-   boolean intakeCameraHasTarget;
+   double tempXOffset;
+   double tempYOffset;
+   double tempAngleOffset3D;
+   double tempAngleOffset2D;
+   double tempHasTarget;
 
-   int leftCameraTargetId;
-   int rightCameraTargetId;
+   boolean hasTarget;
+
+
+   int m3CameraTargetId;
+   int m4CameraTargetId;
    int intakeCameraTargetId;
+   int id;
+   boolean usingM3Camera;
+
+   double xTarget;
+   double yTarget;
 
 
 
-  public PhotonVisionSubsytem() {
-    swerveSubsystem = new SwerveSubsystem();
+  public PhotonVisionSubsytem(SwerveSubsystem subsystem) {
+    m_swerveSubsystem = subsystem;
+    m3Camera = new PhotonCamera(Constants.PhotonVisionConstants.m3CameraName);
+    m4Camera = new PhotonCamera(Constants.PhotonVisionConstants.m4CameraName);
+    intakeCamera = new PhotonCamera(Constants.PhotonVisionConstants.m4CameraName);
+    id = 1;
+    cameraXOffset = 0;
+    cameraYOffset = 0;
+    cameraAngleOffset3D = 0;
+    cameraAngleOffset2D = 0;
 
-    leftCamera = new PhotonCamera(Constants.PhotonVisionConstants.leftCameraName);
-    rightCamera = new PhotonCamera(Constants.PhotonVisionConstants.rightCameraName);
-    intakeCamera = new PhotonCamera(Constants.PhotonVisionConstants.rightCameraName);
+    tempXOffset = 0;
+    tempYOffset = 0;
+    tempAngleOffset3D = 0;
+    tempAngleOffset2D = 0;
+
+    robotXOffset = 0;
+    robotYOffset = 0;
+    robotAngleOffset = 0;
+
+    usingM3Camera = false;
+    xTarget = 0;
+    yTarget = 0;
+    
 
   }
-  public void alignToTarget(boolean enabled, boolean isAtomonous){
-    if (!isAtomonous){
-      if (leftCameraHasTarget && rightCameraHasTarget && enabled){
-          rightCameraxOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[0];
-          rightCamerayOffset =getCameraOffsets(rightCameraTargetInfo, false,false)[1];
-          rightCameraAngleOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[2];
-          leftCameraxOffset = getCameraOffsets(leftCameraTargetInfo, false,false)[0];
-          leftCamerayOffset =getCameraOffsets(leftCameraTargetInfo, false,false)[1];
-          leftCameraAngleOffset = getCameraOffsets(leftCameraTargetInfo, false,false)[2];
-        swerveSubsystem.setDriveCommandDisabled(enabled);
-        if (Math.abs(leftCameraAngleOffset)>Math.abs(rightCameraAngleOffset)){
-        swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,0.5, enabled);
-        System.out.println("Using Right Cam");
-        }else{
-          swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,0,0.5, enabled);
-          System.out.println("Using Left Cam");
-
-        }
-      }else if (rightCameraHasTarget && enabled){
-        rightCameraxOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[0];
-        rightCamerayOffset =getCameraOffsets(rightCameraTargetInfo, false,false)[1];
-        rightCameraAngleOffset = getCameraOffsets(rightCameraTargetInfo, false,false)[2];
-        
-        //32.253
-      swerveSubsystem.setDriveCommandDisabled(enabled);
-      swerveSubsystem.reefControlledDrive(rightCameraxOffset, rightCamerayOffset,rightCameraAngleOffset,0,0.5, enabled);
-      System.out.println("Using Right Cam");
-    }else if (leftCameraHasTarget && enabled){
-      leftCameraxOffset = getCameraOffsets(leftCameraTargetInfo, false,true)[0];
-      leftCamerayOffset =getCameraOffsets(leftCameraTargetInfo, false,true)[1];
-      leftCameraAngleOffset = getCameraOffsets(leftCameraTargetInfo, false,true)[2];
-      
-    swerveSubsystem.setDriveCommandDisabled(enabled);
-    swerveSubsystem.reefControlledDrive(leftCameraxOffset, leftCamerayOffset,leftCameraAngleOffset,0,0.5, enabled);
-    System.out.println("Using Left Cam");
+  public void setTargetPosition(double x,double y){
+    xTarget = x;
+    yTarget = y;
   }
-      else{
-        swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
-        System.out.println("NO TARGETS");
-      }
-    }else{
-      if (intakeCameraHasTarget && enabled){
-        intakeCameraxOffset = getCameraOffsets(intakeCameraTargetInfo,true,false)[0];
-        intakeCamerayOffset = getCameraOffsets(intakeCameraTargetInfo,true,false)[1];
-        intakeCameraAngleOffset = getCameraOffsets(intakeCameraTargetInfo,true,false)[2];
-        swerveSubsystem.setDriveCommandDisabled(enabled);
-        swerveSubsystem.reefControlledDrive(intakeCameraxOffset, intakeCamerayOffset,intakeCameraAngleOffset,0,0.5, enabled);
-        System.out.println("Using Intake Cam");
-    }else{
-      swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
-      System.out.println("NO TARGETS");
+  public double[] getData(PhotonPipelineResult result){
+    if(m3CameraResult.hasTargets() && m3CameraResult.getTargets().stream().anyMatch(t -> Arrays.asList(id).contains(t.getFiducialId()))){
+      // get all targets
+      m3CameraResult.getTargets().stream()
+        // filter out all except id
+        .filter(t -> Arrays.asList(id).contains(t.getFiducialId()))
+        // set offsets of id
+        .forEach(target -> {
+          tempXOffset = target.getBestCameraToTarget().getX();//distance to target front back
+          tempYOffset = target.getBestCameraToTarget().getY();//distance to target left right
+          tempAngleOffset3D = target.getBestCameraToTarget().getRotation().getZ();
+          tempAngleOffset2D = target.getBestCameraToTarget().getRotation().getAngle() * (180/Math.PI);//????
+          tempHasTarget = 1;});
     }
+    else{
+      tempXOffset = 0;
+      tempYOffset = 0;
+      tempAngleOffset3D = 0;
+      tempAngleOffset2D = 0;
+      tempHasTarget = 0;
     }
+    double[] returnList ={tempXOffset,tempYOffset,cameraAngleOffset3D,cameraAngleOffset2D, tempHasTarget};
+    return returnList; 
   }
-  public double[] getCameraOffsets(Transform3d targetInfo,boolean cameraIsParallel,boolean isLeftCamera){
-      if (isLeftCamera){
-      double zAngleOffset = 0.0;
-      double angleoffset = 0;
-       angleoffset =targetInfo.getRotation().getAngle();
-      if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
-        zAngleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
-      }else{
-        zAngleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
-      }
-      double x = targetInfo.getX()*Math.sin(angleoffset+Constants.PhotonVisionConstants.leftCameraCenterOffset);//d1
-      double y = 0.0;
-      if (cameraIsParallel){
-      y = targetInfo.getX();
-      }else{
-        y = targetInfo.getX()*Math.cos(angleoffset+Constants.PhotonVisionConstants.leftCameraCenterOffset);//d2
-      }
-      double[] info = {x,y,zAngleOffset};
-      return info;
-    }else{
-      double zAngleOffset = 0.0;
-      double angleoffset = 0;
-       angleoffset =targetInfo.getRotation().getAngle();
-      if (targetInfo.getRotation().getZ() * (180/Math.PI)<0){
-        zAngleOffset = (-1)*(180+targetInfo.getRotation().getZ()*(180/Math.PI));
-      }else{
-        zAngleOffset = (180-targetInfo.getRotation().getZ()*(180/Math.PI));
-      }
-      double x = targetInfo.getX()*Math.sin(angleoffset+Constants.PhotonVisionConstants.rightCameraCenterOffset);//d1
-      double y = 0.0;
-      if (cameraIsParallel){
-      y = targetInfo.getX();
-      }else{
-        y = targetInfo.getX()*Math.cos(angleoffset+Constants.PhotonVisionConstants.rightCameraCenterOffset);//d2
-      }
-      double[] info = {x,y,zAngleOffset};
-      return info;
+  public void align(double x, double y){
+    
+    if (Math.abs(m3TargetData[3])<Math.abs(m4TargetData[3])){
+      hasTarget = true;
+      usingM3Camera = true;
+      cameraXOffset = m3TargetData[0];
+      cameraYOffset = m3TargetData[1];
+      cameraAngleOffset3D = m3TargetData[2];
+      cameraAngleOffset2D = m3TargetData[3];
     }
+    else if (Math.abs(m3TargetData[3])>Math.abs(m4TargetData[3])){
+      hasTarget = true;
+      usingM3Camera = false;
+      cameraXOffset = m4TargetData[0];
+      cameraYOffset = m4TargetData[1];
+      cameraAngleOffset3D = m4TargetData[2];
+      cameraAngleOffset2D = m4TargetData[3];
+    }
+    else if ((Math.abs(m3TargetData[3]) == Math.abs(m4TargetData[3])) && m3TargetData[3] != 0){
+      hasTarget = true;
+      usingM3Camera = true;
+      cameraXOffset = m3TargetData[0];
+      cameraYOffset = m3TargetData[1];
+      cameraAngleOffset3D = m3TargetData[2];
+      cameraAngleOffset2D = m3TargetData[3];
+    }
+    else{
+      hasTarget = false;
+    }
+    double z = Math.sqrt(Math.pow(cameraXOffset,2) + Math.pow(cameraYOffset,2));
+    if (usingM3Camera){
+      robotYOffset = z * Math.cos(cameraAngleOffset2D - 50);
+      robotXOffset = z * Math.sin(cameraAngleOffset2D - 50) + 0.3;//0.3 meters offset from the center
+      robotAngleOffset = cameraAngleOffset3D - 50;
+    }
+    else{
+      robotYOffset = z * Math.cos(cameraAngleOffset2D + 50);
+      robotXOffset = z * Math.sin(cameraAngleOffset2D + 50) - 0.3;
+      robotAngleOffset = cameraAngleOffset3D + 50;
+    }
+    if (hasTarget){
+      m_swerveSubsystem.reefControlledDrive(robotXOffset,robotYOffset,robotAngleOffset,xTarget,yTarget,true);
+    }
+    m_swerveSubsystem.reefControlledDrive(robotXOffset,robotYOffset,robotAngleOffset,xTarget,yTarget,false);
+    
   }
   @Override
   public void periodic() {
-    leftCameraResult = leftCamera.getLatestResult();
-    rightCameraResult = rightCamera.getLatestResult();
+    id = m_swerveSubsystem.getTargetID();
+    m3CameraResult = m3Camera.getLatestResult();
+    m4CameraResult = m4Camera.getLatestResult();
     intakeCameraResult = intakeCamera.getLatestResult();
-
-    leftCameraTargets = leftCameraResult.getTargets();
-    rightCameraTargets = rightCameraResult.getTargets();
-    intakeCameraTargets = intakeCameraResult.getTargets();
-
-    leftCameraHasTarget = leftCameraResult.hasTargets();
-    rightCameraHasTarget = rightCameraResult.hasTargets();
-    intakeCameraHasTarget = intakeCameraResult.hasTargets();
-    
-      try {
-        leftCameraCurrentTarget = leftCameraTargets.get(0);
-        leftCameraTargetInfo = leftCameraCurrentTarget.getBestCameraToTarget();
-        leftCameraTargetId = leftCameraCurrentTarget.getFiducialId();
-        SmartDashboard.putNumber("LEFT CAM XOFFSET", leftCameraxOffset);
-        SmartDashboard.putNumber("LEFT CAM YOFFSET", leftCamerayOffset);
-        SmartDashboard.putNumber("LEFT CAM ANGLE OFFSET",leftCameraAngleOffset);
-      } catch (Exception e) {
-        System.out.println(e);
-      }
-      
-    
-    if(rightCameraHasTarget){
-      rightCameraCurrentTarget = rightCameraTargets.get(0);
-      rightCameraTargetInfo = rightCameraCurrentTarget.getBestCameraToTarget();
-      rightCameraTargetId = rightCameraCurrentTarget.getFiducialId();
-      SmartDashboard.putNumber("RIGHT CAM XOFFSET", rightCameraxOffset);
-      SmartDashboard.putNumber("RIGHT CAM YOFFSET", rightCamerayOffset);
-      SmartDashboard.putNumber("RIGHT CAM ANGLE OFFSET",rightCameraAngleOffset);
-    }
-    if (intakeCameraHasTarget){
-      intakeCameraCurrentTarget = intakeCameraTargets.get(0);
-      intakeCameraTargetInfo = intakeCameraCurrentTarget.getBestCameraToTarget();
-      intakeCameraTargetId = intakeCameraCurrentTarget.getFiducialId();
-      SmartDashboard.putNumber("INTAKE CAM XOFFSET", intakeCameraxOffset);
-      SmartDashboard.putNumber("INTAKE CAM YOFFSET", intakeCamerayOffset);
-      SmartDashboard.putNumber("INTAKE CAM ANGLE OFFSET",intakeCameraAngleOffset);
-    }
-    //rightCameraTargetId = leftCameraCurrentTarget.getFiducialId();
-    //leftCameraCurrentTarget = leftCameraTargets.get(0);
-    
-    
-    SmartDashboard.putBoolean("LEFT CAM HAS TARGET", leftCameraHasTarget);
-    SmartDashboard.putBoolean("RIGHT CAM HAS TARGET",rightCameraHasTarget);
-    SmartDashboard.putBoolean("INTAKE CAM HAS TARGET",intakeCameraHasTarget);
-
-    
-    
-    
+    m3TargetData = getData(m3CameraResult);
+    m4TargetData = getData(m4CameraResult);
+    intakeTargetData = getData(intakeCameraResult);
   }
 
 }
