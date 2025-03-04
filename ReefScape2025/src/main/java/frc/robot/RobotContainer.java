@@ -8,12 +8,12 @@ package frc.robot;
 
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
-import frc.robot.commands.CoralLevelButtonCommand;
-import frc.robot.commands.CoralPlacementSequenceCommand;
+
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
 import frc.robot.commands.GrabHigherAlgaeCommand;
 import frc.robot.commands.GrabLowerAlgaeCommand;
+import frc.robot.commands.PhotonVisionCommand;
 import frc.robot.commands.ReefInteractionSequentialCommand;
 import frc.robot.commands.SetActuatorPositionCommand;
 import frc.robot.commands.SetClawPositionCommand;
@@ -26,12 +26,10 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-import frc.robot.commands.PhotonVisionCommand;
 import frc.robot.subsystems.PhotonVisionSubsytem;
 
 import frc.robot.subsystems.SwerveSubsystem;
 
-import java.lang.annotation.ElementType;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -95,9 +93,9 @@ public class RobotContainer {
   SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
   private final PhotonVisionSubsytem m_PhotonVisionSubsytem;
-  private PhotonVisionCommand m_PhotonVisionCommand;
-  JoystickButton photonVisionAlignButton;
-
+ 
+  PhotonVisionCommand m_photonVisionCommand;
+  PhotonVisionSubsytem m_photonVisionSubsystem;
   ReefInteractionSequentialCommand m_testReef;
   
 
@@ -116,6 +114,7 @@ public class RobotContainer {
     m_elevatorSubsystem = new ElevatorSubsystem(m_swerveSubsystem);
     m_clawSubsystem = new ClawSubsystem();
     m_intakeSubsystem = new IntakeSubsystem();
+    m_photonVisionSubsystem = new PhotonVisionSubsytem(m_swerveSubsystem);
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
     m_clawDriveReverseCommand = new TestClawDriveReverseCommand(m_clawSubsystem);
     m_clawDriveCommand = new TestClawDriveCommand(m_clawSubsystem);
@@ -139,14 +138,15 @@ public class RobotContainer {
     testClaw1Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.DEFAULT);
     testClaw2Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.L2);
     testIntakeCommand = new TestIntakeCommand(m_intakeSubsystem);
+    m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem, m_swerveSubsystem);
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoPath = new PathPlannerAuto("TestAuto");
 
-    m_PhotonVisionSubsytem = new PhotonVisionSubsytem();
-    m_PhotonVisionCommand = new PhotonVisionCommand(m_PhotonVisionSubsytem);
+    m_PhotonVisionSubsytem = new PhotonVisionSubsytem(m_swerveSubsystem);
+    
 
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));
     configureBindings();
@@ -219,15 +219,15 @@ public class RobotContainer {
     driveReverseButton.whileTrue(m_clawDriveReverseCommand);
     JoystickButton driveButton = new JoystickButton(A2, 6);
     driveButton.whileTrue(m_clawDriveCommand);
-    JoystickButton defaultButton = new JoystickButton(A2,11);
+    JoystickButton defaultButton = new JoystickButton(testOperator,8);
     defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
-    JoystickButton testL1Button = new JoystickButton(A2, 1);
+    JoystickButton testL1Button = new JoystickButton(testOperator, 1);
     testL1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1));
-    JoystickButton testL2Button = new JoystickButton(A2,2);
+    JoystickButton testL2Button = new JoystickButton(testOperator,2);
     testL2Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L2, ClawPosition.L2));
-    JoystickButton testL3Button = new JoystickButton(A2,3);
+    JoystickButton testL3Button = new JoystickButton(testOperator,3);
     testL3Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L3, ClawPosition.L3));
-    JoystickButton testL4Button = new JoystickButton(A2,4);
+    JoystickButton testL4Button = new JoystickButton(testOperator,4);
     testL4Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));//new ReefInteractionSequentialCommand(m_elevatorSubsystem, m_clawSubsystem,ElevatorPosition.L3,ClawPosition.L3,21));//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));
     JoystickButton intakeButton = new JoystickButton(A2,7);
     intakeButton.toggleOnTrue(m_toggleStationIntakeCommand);//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
@@ -237,6 +237,8 @@ public class RobotContainer {
     grabHigherAlgaeButton.toggleOnTrue(m_grabHigherAlgaeCommand);
     JoystickButton grabLowerAlgaeButton = new JoystickButton(A1,4);
     grabLowerAlgaeButton.toggleOnTrue(m_grabLowerAlgaeCommand);
+    JoystickButton photonAlignButton = new JoystickButton(stick,6);
+    photonAlignButton.whileTrue(m_photonVisionCommand);
 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     //photonVisionAlignButton = new JoystickButton(stick, 6);

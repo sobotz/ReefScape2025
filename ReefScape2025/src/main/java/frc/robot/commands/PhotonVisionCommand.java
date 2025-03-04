@@ -17,7 +17,7 @@ public class PhotonVisionCommand extends Command {
     m_PhotonVisionSubsytem = photonsubsytem;
     m_SwerveSubsystem = swervesubsystem;
 
-    addRequirements(m_PhotonVisionSubsytem,m_SwerveSubsystem);
+    
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -28,13 +28,14 @@ public class PhotonVisionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    //System.out.println("weeee");
+    m_PhotonVisionSubsytem.align(0, 1, 20,true); 
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    m_PhotonVisionSubsytem.align(0, 0, 0,false);
   }
 
   // Returns true when the command should end.
