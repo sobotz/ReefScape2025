@@ -5,41 +5,42 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PhotonVisionSubsytem;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.Constants.ClawPosition;
+import frc.robot.subsystems.ClawSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PhotonVisionCommand extends Command {
-  /** Creates a new PhotonVisionCommand. */
-  PhotonVisionSubsytem m_PhotonVisionSubsytem;
-  SwerveSubsystem m_SwerveSubsystem;
-  public PhotonVisionCommand(PhotonVisionSubsytem photonsubsytem,SwerveSubsystem swervesubsystem) {
-    m_PhotonVisionSubsytem = photonsubsytem;
-    m_SwerveSubsystem = swervesubsystem;
-
-    addRequirements(m_PhotonVisionSubsytem,m_SwerveSubsystem);
+public class SetClawIntakeCommand extends Command {
+  /** Creates a new SetClawIntakeCommand. */
+  ClawSubsystem m_clawSubsystem;
+  boolean isFinished;
+  public SetClawIntakeCommand(ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_clawSubsystem = clawSubsystem;
+    isFinished = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    isFinished = false;
+    m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_PhotonVisionSubsytem.align(0,0.5,13,true);
+    if (m_clawSubsystem.clawAtTargetPosition());
+    isFinished = true;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_PhotonVisionSubsytem.align(0,0.5,13,false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }

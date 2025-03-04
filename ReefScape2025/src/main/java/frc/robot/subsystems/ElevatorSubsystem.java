@@ -104,6 +104,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorPosition getTargetElevatorPosition(){
     return targetPosition;
   }
+  
   public void setElevatorTargetPosition(ElevatorPosition position) {
     targetPosition = position;
   }

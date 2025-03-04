@@ -206,8 +206,14 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       robotAngleOffset = cameraAngleOffset3D + 40;
       //System.out.println(robotAngleOffset);
       Vector vx = new Vector(cameraXOffset,(320  + robotAngleOffset) % 360,true);
-      Vector vy = new Vector(Math.abs(cameraYOffset),(50 + robotAngleOffset),true);
-      //System.out.println(vy.getX());
+      System.out.println(vx.getX());
+      Vector vy = new Vector(0,0,true);
+      if (cameraYOffset<0){
+        vy = new Vector(Math.abs(cameraYOffset),50 + robotAngleOffset,true);
+      }
+      else if (cameraYOffset>0){
+        vy = new Vector(Math.abs(cameraYOffset),230 + robotAngleOffset,true);
+      }
       Vector combinedVector = vx.addVector(vy);
       robotYOffset = combinedVector.getY();
       robotXOffset = combinedVector.getX()-0.28;
@@ -219,9 +225,14 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     }
     else{
       robotAngleOffset = cameraAngleOffset3D - 40;
-      //System.out.println(robotAngleOffset);
-      Vector vx = new Vector(Math.abs(cameraXOffset), (40 + robotAngleOffset + 360) % 360,true);
-      Vector vy = new Vector(Math.abs(cameraYOffset), (130 + robotAngleOffset),true);
+      Vector vx = new Vector(cameraXOffset, 40 + robotAngleOffset,true);
+      Vector vy = new Vector(0,0,true);
+      if (cameraYOffset<0){
+        vy = new Vector(Math.abs(cameraYOffset),130 + robotAngleOffset,true);
+      }
+      else if (cameraYOffset>0){
+        vy = new Vector(Math.abs(cameraYOffset),310 + robotAngleOffset,true);
+      }
       Vector combinedVector = vx.addVector(vy);
       robotYOffset = combinedVector.getY();
       robotXOffset = combinedVector.getX() + 0.28;
@@ -233,12 +244,12 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     //System.out.println(hasTarget);
     if (hasTarget && enabled){
       
-      //m_swerveSubsystem.setDriveCommandDisabled(enabled);
-      //m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, xTarget, yTarget,enabled);
+      m_swerveSubsystem.setDriveCommandDisabled(enabled);
+      m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, xTarget, yTarget,enabled);
     }else{
     
-    //m_swerveSubsystem.setDriveCommandDisabled(false);
-    //m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, yTarget,false);
+    m_swerveSubsystem.setDriveCommandDisabled(false);
+    m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, yTarget,false);
     }
     
   }
@@ -258,7 +269,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     m3TargetData = getData(m3CameraResult);
     m4TargetData = getData(m4CameraResult);
     intakeTargetData = getData(intakeCameraResult);
-    align(0,1,13,true);
+    //align(0,1,13,true);
     //System.out.println(m3Camera.getLatestResult().getTargets().get(0).getYaw());
     SmartDashboard.putNumber("xrobot", robotXOffset);
     SmartDashboard.putNumber("yrobot",robotYOffset);
