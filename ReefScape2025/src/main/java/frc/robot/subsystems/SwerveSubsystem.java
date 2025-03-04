@@ -143,11 +143,11 @@ public class SwerveSubsystem extends SubsystemBase {
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0.2);
 
-    xTranslationController = new PIDController(0.53,0.053,0.003);
-    xTranslationController.setTolerance(0.2);
+    xTranslationController = new PIDController(0.03,0,0);
+    xTranslationController.setTolerance(0);
 
-    yTranslationController = new PIDController(0.53,0.053,0.003);
-    yTranslationController.setTolerance(0.2);
+    yTranslationController = new PIDController(0.03,0,0);
+    yTranslationController.setTolerance(0);
 
     xVelocityController = new PIDController(0.023,0,0.001);
     //xVelocityController.setTolerance(0.01);
@@ -257,14 +257,16 @@ public class SwerveSubsystem extends SubsystemBase {
     Vector tvec = new Vector(-xTranslationController.calculate( xOffset,xTarget),yTranslationController.calculate(yOffset,yTarget));
     Vector rvec = new Vector(1, 0 , true);
     //angleRotationController.
+    //System.out.println(rvec.getMagnitude());
     double rotationalMagnitude = -rotationController.calculate(angleOffset,rvec.getDegrees());
     if (Math.abs(rotationalMagnitude) < 0.01){
       rotationalMagnitude = 0;
-    } 
-
-    if (!xTranslationController.atSetpoint() && !yTranslationController.atSetpoint() && enabled){ 
-      setDriveCommandDisabled(true);
-      drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+    }
+    rotationalMagnitude = 0;
+    //System.out.println(enabled);
+    if ( enabled){ 
+      System.out.println("Jaywonathan");
+      drive(tvec, rotationalMagnitude,currentRobotDegree /*(angleOffset + 360) % 360*/,false);
     }else{
       setDriveCommandDisabled(false);
       drive(new Vector(0, 0),0,currentRobotDegree,true);//CHANGE
@@ -273,6 +275,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
   public void drive(Vector strafeVector, double rotationalMagnitude,double currentRobotDegree, boolean relativeVelocityControlled){
+    //System.out.println(strafeVector.getMagnitude());
     frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
     frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
     backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
