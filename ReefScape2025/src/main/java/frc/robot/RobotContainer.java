@@ -145,8 +145,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoPath = new PathPlannerAuto("TestAuto");
 
-    m_PhotonVisionSubsytem = new PhotonVisionSubsytem();
-    m_PhotonVisionCommand = new PhotonVisionCommand(m_PhotonVisionSubsytem);
+    m_PhotonVisionSubsytem = new PhotonVisionSubsytem(m_swerveSubsystem);
+    m_PhotonVisionCommand = new PhotonVisionCommand(m_PhotonVisionSubsytem, m_swerveSubsystem);
 
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));
     configureBindings();

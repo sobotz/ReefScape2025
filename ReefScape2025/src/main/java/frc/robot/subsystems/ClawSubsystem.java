@@ -32,10 +32,13 @@ public class ClawSubsystem extends SubsystemBase {
 
   double clawPIDCalculation;
   double algaeRetainPosition;
+  double originalCanCoderPosition;
   boolean atTarget;
   boolean hasCoral;
   boolean hasAlgae;
   boolean driveMotorIsControlled;
+  boolean once;
+
   public ClawSubsystem() {
     wristMotor = new TalonFX(18);//CHANGE
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -47,7 +50,7 @@ public class ClawSubsystem extends SubsystemBase {
     clawDriveMotor.setNeutralMode(NeutralModeValue.Brake);
     
     clawSensor = new CANcoder(17);//CHANGE
-
+    
     clawController = new PIDController(0.010, 0.0000, 0.000);//P0.0155 d 0.00017
     //clawController.enableContinuousInput(0,360);
     clawController.setTolerance(0.0);
@@ -74,10 +77,12 @@ public class ClawSubsystem extends SubsystemBase {
     hasAlgae = false;
     driveMotorIsControlled = false;
     algaeRetainPosition = 0;
+    once = true;
+    originalCanCoderPosition = 0;
   }
 
   public double getClawSensorPosition(){
-    return (-1 * ((clawSensor.getPosition().getValueAsDouble()*360)-75.02148438));
+    return (((wristMotor.getPosition().getValueAsDouble()*6) + originalCanCoderPosition)-110);
   }
 
   public boolean clawAtTargetPosition(){
@@ -133,7 +138,10 @@ public class ClawSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
+    if (once){
+      originalCanCoderPosition =  (-1 * (clawSensor.getPosition().getValueAsDouble())) * 360;
+      once = false;
+    }
     //System.out.println(getClawSensorPosition());
     SmartDashboard.putNumber("clawSensorPosition",getClawSensorPosition());
     //System.out.println(getClawSensorPosition());
