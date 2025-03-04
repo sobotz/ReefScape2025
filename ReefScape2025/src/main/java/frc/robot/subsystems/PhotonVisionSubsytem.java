@@ -204,7 +204,13 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       //System.out.println(cameraAngleOffset3D);
       Vector vx = new Vector(cameraXOffset,(320  + robotAngleOffset) % 360,true);
       System.out.println(vx.getX());
-      Vector vy = new Vector(cameraYOffset,50 + robotAngleOffset,true);
+      Vector vy = new Vector(0,0,true);
+      if (cameraYOffset<0){
+        vy = new Vector(Math.abs(cameraYOffset),50 + robotAngleOffset,true);
+      }
+      else if (cameraYOffset>0){
+        vy = new Vector(Math.abs(cameraYOffset),230 + robotAngleOffset,true);
+      }
       Vector combinedVector = vx.addVector(vy);
       robotYOffset = combinedVector.getY();
       robotXOffset = combinedVector.getX()-0.28;
@@ -216,8 +222,14 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     }
     else{
       robotAngleOffset = cameraAngleOffset3D - 40;
-      Vector vx = new Vector(cameraXOffset, 130 + robotAngleOffset,true);
-      Vector vy = new Vector(cameraYOffset, 130 + 90 + robotAngleOffset,true);
+      Vector vx = new Vector(cameraXOffset, 40 + robotAngleOffset,true);
+      Vector vy = new Vector(0,0,true);
+      if (cameraYOffset<0){
+        vy = new Vector(Math.abs(cameraYOffset),130 + robotAngleOffset,true);
+      }
+      else if (cameraYOffset>0){
+        vy = new Vector(Math.abs(cameraYOffset),310 + robotAngleOffset,true);
+      }
       Vector combinedVector = vx.addVector(vy);
       robotYOffset = combinedVector.getY();
       robotXOffset = combinedVector.getX();
