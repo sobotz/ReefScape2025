@@ -8,12 +8,13 @@ package frc.robot;
 
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
+import frc.robot.commands.BargeCommand;
 import frc.robot.commands.CoralLevelButtonCommand;
 import frc.robot.commands.CoralPlacementSequenceCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
 import frc.robot.commands.GrabAlgaeCommand;
-import frc.robot.commands.GrabLowerAlgaeCommand;
+
 import frc.robot.commands.ReefInteractionSequentialCommand;
 import frc.robot.commands.SetActuatorPositionCommand;
 import frc.robot.commands.SetClawPositionCommand;
@@ -27,6 +28,9 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 import frc.robot.commands.PhotonVisionCommand;
+import frc.robot.commands.ProcessorCommand;
+import frc.robot.commands.ReefAlgaeGrabButton;
+import frc.robot.commands.ReefCoralPlacementButton;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 
 import frc.robot.subsystems.SwerveSubsystem;
@@ -72,7 +76,7 @@ public class RobotContainer {
   ToggleFloorAlgaeIntakeCommand m_toggleFloorAlgaeIntakeCommand;
 
   GrabAlgaeCommand m_grabHigherAlgaeCommand;
-  GrabLowerAlgaeCommand m_grabLowerAlgaeCommand;
+
 
   SetClawPositionCommand testClaw1Command;
   SetClawPositionCommand testClaw2Command;
@@ -99,6 +103,11 @@ public class RobotContainer {
   JoystickButton photonVisionAlignButton;
 
   ReefInteractionSequentialCommand m_testReef;
+
+  ReefCoralPlacementButton m_reefCoralPlacementCommand;
+  ReefAlgaeGrabButton m_ReefAlgaeGrabCommand;
+  ProcessorCommand m_processorCommand;
+  BargeCommand m_bargeCommand;
   
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -133,8 +142,7 @@ public class RobotContainer {
     m_setActuatorFloorAlgaeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.FLOORALGAE, ClawPosition.FLOORALGAE);
 
     m_setActuatorBargeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.BARGE, ClawPosition.BARGE);
-    m_grabHigherAlgaeCommand = new GrabAlgaeCommand(m_elevatorSubsystem, m_clawSubsystem);
-    m_grabLowerAlgaeCommand = new GrabLowerAlgaeCommand(m_elevatorSubsystem, m_clawSubsystem);
+
 
     testClaw1Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.DEFAULT);
     testClaw2Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.L2);
@@ -146,6 +154,11 @@ public class RobotContainer {
 
     m_PhotonVisionSubsytem = new PhotonVisionSubsystem(m_swerveSubsystem);
     m_PhotonVisionCommand = new PhotonVisionCommand(m_PhotonVisionSubsytem, m_swerveSubsystem);
+
+    m_reefCoralPlacementCommand = new ReefCoralPlacementButton(m_clawSubsystem);
+    m_ReefAlgaeGrabCommand = new ReefAlgaeGrabButton(m_clawSubsystem);
+    m_processorCommand = new ProcessorCommand(m_elevatorSubsystem, m_clawSubsystem);
+    m_bargeCommand = new BargeCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem);
 
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));
     configureBindings();
@@ -175,44 +188,54 @@ public class RobotContainer {
   private void configureBindings() {
 
     //LEVEL BUTTONS
-    /*JoystickButton L1Button = new JoystickButton(A2,1);
+    JoystickButton L1Button = new JoystickButton(A1,1);
     L1Button.onTrue(new CoralLevelButtonCommand(m_elevatorSubsystem, m_clawSubsystem, 1));
-    JoystickButton L2Button = new JoystickButton(A2,2);
+    JoystickButton L2Button = new JoystickButton(A1,2);
     L2Button.onTrue(new CoralLevelButtonCommand(m_elevatorSubsystem, m_clawSubsystem, 2));
-    JoystickButton L3Button = new JoystickButton(A2,3);
+    JoystickButton L3Button = new JoystickButton(A1,3);
     L3Button.onTrue(new CoralLevelButtonCommand(m_elevatorSubsystem, m_clawSubsystem, 3));
-    JoystickButton L4Button = new JoystickButton(A2,4);
+    JoystickButton L4Button = new JoystickButton(A1,4);
     L4Button.onTrue(new CoralLevelButtonCommand(m_elevatorSubsystem, m_clawSubsystem, 4));
+
+    //REEF TYPE BUTTON
+    JoystickButton reefCoralPlacementButton = new JoystickButton(A1, 5);
+    reefCoralPlacementButton.onTrue(m_reefCoralPlacementCommand);
+    JoystickButton reefAlgaeGrabButton = new JoystickButton(A1,6);
+    reefAlgaeGrabButton.onTrue(m_ReefAlgaeGrabCommand);
     //REEF BUTTONS
-    JoystickButton reef1Button = new JoystickButton(A1,1);
-    reef1Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef2Button = new JoystickButton(A1, 2);
-    reef2Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef3Button = new JoystickButton(A1,3);
-    reef3Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef4Button = new JoystickButton(A1,4);
-    reef4Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef5Button = new JoystickButton(A1,5);
-    reef5Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef6Button = new JoystickButton(A1,6);
-    reef6Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef7Button = new JoystickButton(A1,7);
-    reef7Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef8Button = new JoystickButton(A1,8);
-    reef8Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef9Button = new JoystickButton(A1,9);
-    reef9Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef10Button = new JoystickButton(A1,10);
-    reef10Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef11Button = new JoystickButton(A1,11);
-    reef11Button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton reef12button = new JoystickButton(A1,12);
-    reef12button.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefAButton = new JoystickButton(A2,1);
+    reefAButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefBButton = new JoystickButton(A2, 2);
+    reefBButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefCButton = new JoystickButton(A2,3);
+    reefCButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefDButton = new JoystickButton(A2,4);
+    reefDButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefEButton = new JoystickButton(A2,5);
+    reefEButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefFButton = new JoystickButton(A2,6);
+    reefFButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefGButton = new JoystickButton(A2,7);
+    reefGButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefHButton = new JoystickButton(A2,8);
+    reefHButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefIButton = new JoystickButton(A2,9);
+    reefIButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefJButton = new JoystickButton(A2,10);
+    reefJButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefKButton = new JoystickButton(A2,11);
+    reefKButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
+    JoystickButton reefLButton = new JoystickButton(A2,12);
+    reefLButton.onTrue(new CoralPlacementSequenceCommand(m_elevatorSubsystem, m_clawSubsystem));
     //ACTION BUTTONS
-    JoystickButton toggleIntakeButton = new JoystickButton(A2, 4);
+    JoystickButton toggleIntakeButton = new JoystickButton(A1, 7);
     toggleIntakeButton.toggleOnTrue(m_toggleStationIntakeCommand);
-    JoystickButton toggleFloorAlgaeIntakeButton = new JoystickButton(A2,5);
-    toggleFloorAlgaeIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);*/
+    JoystickButton toggleFloorAlgaeIntakeButton = new JoystickButton(A1,8);
+    toggleFloorAlgaeIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);
+    JoystickButton bargeButton = new JoystickButton(A1, 9);
+    bargeButton.onTrue(m_bargeCommand);
+    JoystickButton processorButton = new JoystickButton(A1, 10);
+    processorButton.onTrue(m_processorCommand);
 
     JoystickButton driveReverseButton = new JoystickButton(A2, 5);
     driveReverseButton.whileTrue(m_clawDriveReverseCommand);
@@ -232,10 +255,7 @@ public class RobotContainer {
     intakeButton.toggleOnTrue(m_toggleStationIntakeCommand);//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
     /*JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
     intakeDriveButton.whileTrue(testIntakeCommand);*/
-    JoystickButton grabHigherAlgaeButton = new JoystickButton(A1,5);
-    grabHigherAlgaeButton.toggleOnTrue(m_grabHigherAlgaeCommand);
-    JoystickButton grabLowerAlgaeButton = new JoystickButton(A1,4);
-    grabLowerAlgaeButton.toggleOnTrue(m_grabLowerAlgaeCommand);
+
 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     photonVisionAlignButton = new JoystickButton(stick, 6);

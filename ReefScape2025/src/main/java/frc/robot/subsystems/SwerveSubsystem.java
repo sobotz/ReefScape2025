@@ -92,6 +92,7 @@ public class SwerveSubsystem extends SubsystemBase {
   ChassisSpeeds chassisSpeed;
   RobotConfig config;
   CurrentLimitsConfigs limitConfigs;
+  boolean bargeMode;
   /*Update requirements
    * *******SWERVE SUBSYSTEM*******
    * ID every device -- DONE
@@ -117,6 +118,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public SwerveSubsystem() {
     //SWERVE MOTORS INSTANTIATION
     atTargetPosition = false;
+    bargeMode = false;
     frontLeftDriveMotor = new TalonFX(2,"Drivetrain");
     frontLeftTurnMotor = new TalonFX(1,"Drivetrain");
     frontRightDriveMotor = new TalonFX(4,"Drivetrain");
@@ -232,6 +234,9 @@ public class SwerveSubsystem extends SubsystemBase {
   public double getCurrentRobotDegree(){
     return currentRobotDegree;
   }
+  public void setBargeMode(boolean bargeMode){
+    this.bargeMode = bargeMode;
+  }
 
   public void setDriveCommandDisabled(boolean mode){
     driveCommandDisabled = mode;
@@ -248,6 +253,10 @@ public class SwerveSubsystem extends SubsystemBase {
       double rotationalMagnitude = -rotationController.calculate(currentRobotDegree,rotationVector.getDegrees());
       if (Math.abs(rotationalMagnitude) < 0.01){
         rotationalMagnitude = 0;
+      }
+      if (bargeMode){
+        strafeVector.setMagnitude(strafeVector.getMagnitude() * .1);
+        rotationalMagnitude = -rotationController.calculate(currentRobotDegree,180);
       }
       drive(strafeVector, rotationalMagnitude, currentRobotDegree, false);
     }

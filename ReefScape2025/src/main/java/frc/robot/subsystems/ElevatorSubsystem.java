@@ -22,6 +22,7 @@ import frc.robot.Constants.ElevatorPosition;
 
 public class ElevatorSubsystem extends SubsystemBase {
   SwerveSubsystem m_swerveSubsystem;
+
   /** Elevator Motors */
   TalonFX elevatorMotor;
   TalonFX slaveMotor;
@@ -47,6 +48,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   double previousElevatorError;
   double atPositionCount;
 
+ 
+
   
 
   
@@ -54,11 +57,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
     /** Initialize position mappings */
     m_swerveSubsystem = swerveSubsystem;
+
+    
     
     positionMap = new HashMap<ElevatorPosition, Double>(){{
       put(ElevatorPosition.DEFAULT, ElevatorConstants.DEFAULT);
       put(ElevatorPosition.INTAKE, ElevatorConstants.INTAKE);
       put(ElevatorPosition.FLOORALGAE,ElevatorConstants.FLOORALGAE);
+      put(ElevatorPosition.PROCESSOR,ElevatorConstants.PROCESSOR);
       put(ElevatorPosition.LOWERALGAE,ElevatorConstants.LOWERALGAE);
       put(ElevatorPosition.HIGHERALGAE, ElevatorConstants.HIGHERALGAE);
       put(ElevatorPosition.BARGE, ElevatorConstants.BARGE);

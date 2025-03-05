@@ -52,8 +52,12 @@ public class ClawSubsystem extends SubsystemBase {
   boolean proxTripped;
   boolean reefCoralPlacementButton;
   boolean reefAlgaeGrabButton;
+  boolean toggleProcessor;
+  boolean toggleBarge;
 
   public ClawSubsystem() {
+    toggleProcessor = false;
+    toggleBarge = false;
     reefCoralPlacementButton = true;
     reefAlgaeGrabButton = true;
     timer = new Timer();
@@ -79,6 +83,7 @@ public class ClawSubsystem extends SubsystemBase {
     clawPositionMap = new HashMap<ClawPosition, Double>(){{
       put(ClawPosition.DEFAULT, ClawConstants.DEFAULT);
       put(ClawPosition.FLOORALGAE,ClawConstants.FLOORALGAE);
+      put(ClawPosition.PROCESSOR,ClawConstants.PROCESSOR);
       put(ClawPosition.FACINGDOWNREEFALGAE, ClawConstants.FACINGUPREEFALGAE);
       put(ClawPosition.FACINGUPREEFALGAE,ClawConstants.FACINGUPREEFALGAE);
       put(ClawPosition.BARGE,ClawConstants.BARGE);
@@ -108,6 +113,18 @@ public class ClawSubsystem extends SubsystemBase {
   }
   public Map<ClawPosition, Double> getPositionMap(){
     return clawPositionMap;
+  }
+  public void toggleProcessor(){
+    toggleProcessor = !toggleProcessor;
+  }
+  public boolean getToggleProcessor(){
+    return toggleProcessor;
+  }
+  public void toggleBarge(){
+    toggleBarge = !toggleBarge;
+  }
+  public boolean getToggleBarge(){
+    return toggleBarge;
   }
 
   public boolean clawAtTargetPosition(){
