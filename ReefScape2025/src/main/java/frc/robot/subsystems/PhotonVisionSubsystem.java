@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-public class PhotonVisionSubsytem extends SubsystemBase {
+public class PhotonVisionSubsystem extends SubsystemBase {
   //SwereSubsystem
   SwerveSubsystem m_swerveSubsystem;
   //Cameras
@@ -75,10 +75,16 @@ public class PhotonVisionSubsytem extends SubsystemBase {
    double xTarget;
    double yTarget;
 
+   boolean atTargetPosition;
+   boolean alignActive;
 
 
-  public PhotonVisionSubsytem(SwerveSubsystem subsystem) {
+  public PhotonVisionSubsystem(SwerveSubsystem subsystem) {
+    atTargetPosition = false;
     m_swerveSubsystem = subsystem;
+    xTarget = 0;
+    yTarget = 0;
+    alignActive = false;
     m3Camera = new PhotonCamera(Constants.PhotonVisionConstants.m3CameraName);
     m4Camera = new PhotonCamera(Constants.PhotonVisionConstants.m4CameraName);
     intakeCamera = new PhotonCamera(Constants.PhotonVisionConstants.m4CameraName);
@@ -106,6 +112,13 @@ public class PhotonVisionSubsytem extends SubsystemBase {
   public void setTargetPosition(double x,double y){
     xTarget = x;
     yTarget = y;
+  }
+  public void enableAlign(boolean enableAlign,double x, double y, int id){
+    xTarget = x;
+    yTarget = y;
+    alignActive = enableAlign;
+    m_swerveSubsystem.setTargetID(id);
+    this.id = id;
   }
   public double[] getData(PhotonPipelineResult result){
     if(result.hasTargets() && result.getTargets().stream().anyMatch(t -> Arrays.asList(id).contains(t.getFiducialId()))){
@@ -250,15 +263,26 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       m_swerveSubsystem.setDriveCommandDisabled(enabled);
       m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,enabled);
     }else{
-    m_swerveSubsystem.setDriveCommandDisabled(false);
-    m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, yTarget,false);
+      m_swerveSubsystem.setDriveCommandDisabled(false);
+      m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0,false);
     }
     
+  }
+  public boolean getAtTargetPosition(){
+    return m_swerveSubsystem.getAtTargetPosition();
   }
   @Override
   public void periodic() {
     //m_swerveSubsystem.getTargetID();
+    if (alignActive){
+      align(xTarget,yTarget , id, true);
+    }
+    else{
+      m_swerveSubsystem.setDriveCommandDisabled(false);
+    }
     
+    
+
     m3CameraResult = m3Camera.getLatestResult();
     m4CameraResult = m4Camera.getLatestResult();
     //align(0, 1, 20, true);

@@ -12,6 +12,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -27,7 +29,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 
   /** PID Controller for precise control */
-  private final PIDController elevatorController;
+  ProfiledPIDController elevatorController;
 
   /** Mapping of Enum Positions to Heights */
   private final Map<ElevatorPosition, Double> positionMap;
@@ -44,6 +46,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   boolean atTargetPosition;
   double previousElevatorError;
   double atPositionCount;
+
+  
+
   
 
   public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
@@ -79,7 +84,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     atPositionCount = 0;
     // enable stator current limit
 
-    elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD);  // Tune these values as needed
+    elevatorController = new ProfiledPIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD, new TrapezoidProfile.Constraints(6, 2));  // Tune these values as needed
     elevatorController.setTolerance(0.002); 
     elevatorPIDCalculation = 0; 
     targetPosition = ElevatorPosition.DEFAULT;
@@ -102,13 +107,13 @@ public class ElevatorSubsystem extends SubsystemBase {
       return false;
     }*/
     atTargetPosition = false;
-    if (Math.abs(previousElevatorError) - Math.abs(elevatorController.getError()) < 0.01){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+    if (Math.abs(previousElevatorError) - Math.abs(elevatorController.getPositionError()) < 0.01){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
       atPositionCount += 1;
     }
     else{
       atPositionCount = 0;
     }
-    previousElevatorError = elevatorController.getError();
+    previousElevatorError = elevatorController.getPositionError();
     if (atPositionCount > 2){
       atTargetPosition = true;
       atPositionCount = 0;
@@ -137,8 +142,11 @@ public class ElevatorSubsystem extends SubsystemBase {
       return ElevatorPosition.HIGHERALGAE;
     }
   }
+  public Map<ElevatorPosition, Double> getPositionMap(){
+    return positionMap;
+  }
   
-  
+
   public ElevatorPosition getAutoPlacePosition(){
     return autoPlaceTargetElevatorPosition;
   }
@@ -160,25 +168,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     //elevatorMotor.set(0.03);
     //slaveMotor.set(-0.03);
-    if (!elevatorController.atSetpoint()) {
-      //System.out.println(elevatorController.getError());
-      //System.out.println(elevatorPIDCalculation);
-      // if (elevatorPIDCalculation>0.5){
-      //   elevatorPIDCalculation = 0.5;
-      // }
-      // if (elevatorPIDCalculation<-0.5){
-      //   elevatorPIDCalculation = -0 .5;
-      // }
-      //System.out.println(elevatorPIDCalculation);
-      SmartDashboard.putNumber("Elevator Calculation", elevatorPIDCalculation);
-      SmartDashboard.putNumber("Elevator Error", elevatorController.getError());
-      elevatorMotor.set((elevatorPIDCalculation));
-      slaveMotor.set((-elevatorPIDCalculation));
-    }
-    else{
-      elevatorMotor.set((0));
-      slaveMotor.set((0));
-    }
+    SmartDashboard.putNumber("Elevator Calculation", elevatorPIDCalculation);
+    SmartDashboard.putNumber("Elevator Error", elevatorController.getPositionError());
+    
+    elevatorMotor.set((elevatorPIDCalculation));
+    slaveMotor.set((-elevatorPIDCalculation));
+    
     
     //System.out.println(atTargetPosition);
   }

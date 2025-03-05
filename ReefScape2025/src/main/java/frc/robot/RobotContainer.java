@@ -12,14 +12,14 @@ import frc.robot.commands.CoralLevelButtonCommand;
 import frc.robot.commands.CoralPlacementSequenceCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.EndAutoCommand;
-import frc.robot.commands.GrabHigherAlgaeCommand;
+import frc.robot.commands.GrabAlgaeCommand;
 import frc.robot.commands.GrabLowerAlgaeCommand;
 import frc.robot.commands.ReefInteractionSequentialCommand;
 import frc.robot.commands.SetActuatorPositionCommand;
 import frc.robot.commands.SetClawPositionCommand;
 import frc.robot.commands.TestClawDriveCommand;
 import frc.robot.commands.TestClawDriveReverseCommand;
-import frc.robot.commands.TestIntakeCommand;
+
 import frc.robot.commands.ToggleFloorAlgaeIntakeCommand;
 import frc.robot.commands.ToggleStationIntakeCommand;
 import frc.robot.subsystems.ClawSubsystem;
@@ -27,7 +27,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 import frc.robot.commands.PhotonVisionCommand;
-import frc.robot.subsystems.PhotonVisionSubsytem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -66,12 +66,12 @@ public class RobotContainer {
   DriveCommand m_driveCommand;
   TestClawDriveCommand m_clawDriveCommand;
   TestClawDriveReverseCommand m_clawDriveReverseCommand;
-  TestIntakeCommand testIntakeCommand;
+
 
   ToggleStationIntakeCommand m_toggleStationIntakeCommand;
   ToggleFloorAlgaeIntakeCommand m_toggleFloorAlgaeIntakeCommand;
 
-  GrabHigherAlgaeCommand m_grabHigherAlgaeCommand;
+  GrabAlgaeCommand m_grabHigherAlgaeCommand;
   GrabLowerAlgaeCommand m_grabLowerAlgaeCommand;
 
   SetClawPositionCommand testClaw1Command;
@@ -94,7 +94,7 @@ public class RobotContainer {
   
   SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
-  private final PhotonVisionSubsytem m_PhotonVisionSubsytem;
+  private final PhotonVisionSubsystem m_PhotonVisionSubsytem;
   private PhotonVisionCommand m_PhotonVisionCommand;
   JoystickButton photonVisionAlignButton;
 
@@ -133,19 +133,18 @@ public class RobotContainer {
     m_setActuatorFloorAlgaeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.FLOORALGAE, ClawPosition.FLOORALGAE);
 
     m_setActuatorBargeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.BARGE, ClawPosition.BARGE);
-    m_grabHigherAlgaeCommand = new GrabHigherAlgaeCommand(m_elevatorSubsystem, m_clawSubsystem);
+    m_grabHigherAlgaeCommand = new GrabAlgaeCommand(m_elevatorSubsystem, m_clawSubsystem);
     m_grabLowerAlgaeCommand = new GrabLowerAlgaeCommand(m_elevatorSubsystem, m_clawSubsystem);
 
     testClaw1Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.DEFAULT);
     testClaw2Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.L2);
-    testIntakeCommand = new TestIntakeCommand(m_intakeSubsystem);
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoPath = new PathPlannerAuto("TestAuto");
 
-    m_PhotonVisionSubsytem = new PhotonVisionSubsytem(m_swerveSubsystem);
+    m_PhotonVisionSubsytem = new PhotonVisionSubsystem(m_swerveSubsystem);
     m_PhotonVisionCommand = new PhotonVisionCommand(m_PhotonVisionSubsytem, m_swerveSubsystem);
 
     //autoPath.andThen(new EndAutoDrive(m_swerveSubsystem));

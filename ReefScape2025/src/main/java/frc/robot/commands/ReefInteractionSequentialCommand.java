@@ -4,25 +4,61 @@
 
 package frc.robot.commands;
 
+import java.util.Map;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
   /** Creates a new ReefInteractionSequentialCommand. */
+  Command algaeGrabCommand;
+  Map<ElevatorPosition, Double> elevatorPositionMap;
+  Map<ClawPosition, Double> clawPositionMap;
+  ElevatorPosition algaeElevatorPosition;
+  ClawPosition algaeClawPosition;
   
-  public ReefInteractionSequentialCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, ElevatorPosition targetElevatorPosition, ClawPosition targetClawPosition, double id) {
+  int id;
+  public ReefInteractionSequentialCommand(ElevatorSubsystem elevatorSubsystem, ElevatorPosition targetElevatorPosition, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem, ClawPosition targetClawPosition, int id) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    elevatorSubsystem.setAutoPlaceClawTargetPosition(targetElevatorPosition);
-    clawSubsystem.setAutoPlaceClawTargetPosition(targetClawPosition);
+    //elevatorSubsystem.setAutoPlaceClawTargetPosition(targetElevatorPosition);
+    //clawSubsystem.setAutoPlaceClawTargetPosition(targetClawPosition);
+    elevatorPositionMap = elevatorSubsystem.getPositionMap();
+    clawPositionMap = clawSubsystem.getPositionMap();
+    this.id = id;
+    if (id>=17 && id<=22){
+      id += 1;
+    }
+    if (id % 2 == 0){
+      algaeElevatorPosition = ElevatorPosition.LOWERALGAE;
+    }
+    else{
+      algaeElevatorPosition = ElevatorPosition.HIGHERALGAE;
+    }
+    if (elevatorPositionMap.get(elevatorSubsystem.getAutoPlacePosition()) > elevatorPositionMap.get(algaeElevatorPosition)){
+      algaeClawPosition = ClawPosition.FACINGDOWNREEFALGAE;
+    }
+    else{
+      algaeClawPosition = ClawPosition.FACINGUPREEFALGAE;
+    }
     addCommands(
-      new CoralPlacementSequenceCommand(elevatorSubsystem, clawSubsystem),
-      new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
+      new AlignCommand(photonVisionSubsystem, true, -0.2, 0.5, id),
+      new CoralPlacementCommand(elevatorSubsystem, clawSubsystem),
+      new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
+      new ParallelCommandGroup(
+        new AlignCommand(photonVisionSubsystem, true, 0, 0.5, id),
+        new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem, algaeElevatorPosition, algaeClawPosition)
+      ),
+      new AlignCommand(photonVisionSubsystem, false, 0, 0, id)
+    );
   }
 }

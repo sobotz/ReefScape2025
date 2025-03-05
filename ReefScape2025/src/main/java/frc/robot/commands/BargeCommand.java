@@ -31,10 +31,17 @@ public class BargeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.BARGE);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.BARGE);
-    timer.start();
     isFinished = false;
+    if (m_clawSubsystem.getHasAlgae()){
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.BARGE);
+      m_clawSubsystem.setClawTargetPosition(ClawPosition.BARGE);
+      timer.start();
+    }
+    else{
+      isFinished = true;
+    }
+    
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -61,7 +68,9 @@ public class BargeCommand extends Command {
     timer.stop();
     timer2.reset();
     timer2.stop();
-    m_clawSubsystem.setHasAlgae(false);
+    if (!m_clawSubsystem.getProximityTripped()){
+      m_clawSubsystem.setHasAlgae(false);
+    }
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_clawSubsystem.setDriveMotor(0);

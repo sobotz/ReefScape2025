@@ -26,15 +26,28 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
-    m_clawSubsystem.setDriveMotor(1);
     isFinished = false;
+    if (m_clawSubsystem.hasItem()){
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
+      m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
+      m_clawSubsystem.setDriveMotor(1);
+    }
+    else{
+      isFinished = true;
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(m_clawSubsystem.getProximityTripped()){
+      m_clawSubsystem.setHasAlgae(true);
+      m_clawSubsystem.setHasCoral(false);
+      m_clawSubsystem.setAlgaeRetainPosition();
+      isFinished = true;
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override

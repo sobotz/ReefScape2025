@@ -33,10 +33,16 @@ public class ToggleStationIntakeCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
-    timer.start();
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.INTAKE);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
-    m_clawSubsystem.setDriveMotor(1);///??????CHANGE
+    if (!m_clawSubsystem.hasItem()){
+      timer.start();
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.INTAKE);
+      m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
+      m_clawSubsystem.setDriveMotor(1);///??????CHANGE
+    }
+    else{
+      isFinished = true;
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,12 +54,17 @@ public class ToggleStationIntakeCommand extends Command {
     else if (timer.get()>1){
       m_intakeSubsystem.setDriveMotor(1.0);
     }
+    if (m_clawSubsystem.getProximityTripped()){
+      m_clawSubsystem.setHasCoral(true);
+      m_clawSubsystem.setHasAlgae(false);
+      isFinished = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_clawSubsystem.setHasAlgae(false);
+    
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_clawSubsystem.setDriveMotor(0);
