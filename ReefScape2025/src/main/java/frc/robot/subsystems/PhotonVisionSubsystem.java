@@ -156,6 +156,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     double[] returnList ={tempXOffset,tempYOffset,tempAngleOffset3D,tempAngleOffset2D, tempHasTarget};
     return returnList; 
   }
+  public boolean getIsRedAlliance(){
+    return m_swerveSubsystem.getIsRedAlliance();
+  }
   public void align(double x, double y,int ID,boolean enabled){
     m_swerveSubsystem.setTargetID(ID);
     //System.out.println("running");
@@ -278,14 +281,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public void periodic() {
     //m_swerveSubsystem.getTargetID();
     if (alignActive){
+      System.out.println("align active");
       align(xTarget,yTarget , id, true);
     }
     else{
       m_swerveSubsystem.setDriveCommandDisabled(false);
     }
-    
-    
-
     m3CameraResult = m3Camera.getLatestResult();
     m4CameraResult = m4Camera.getLatestResult();
     //align(0, 1, 20, true);

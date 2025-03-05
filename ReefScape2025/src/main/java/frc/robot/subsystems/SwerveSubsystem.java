@@ -93,6 +93,7 @@ public class SwerveSubsystem extends SubsystemBase {
   RobotConfig config;
   CurrentLimitsConfigs limitConfigs;
   boolean bargeMode;
+  boolean isRedAlliance;
   /*Update requirements
    * *******SWERVE SUBSYSTEM*******
    * ID every device -- DONE
@@ -117,6 +118,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveSubsystem() {
     //SWERVE MOTORS INSTANTIATION
+    isRedAlliance = false;
     atTargetPosition = false;
     bargeMode = false;
     frontLeftDriveMotor = new TalonFX(2,"Drivetrain");
@@ -200,12 +202,21 @@ public class SwerveSubsystem extends SubsystemBase {
     );
     chassisSpeed = new ChassisSpeeds();
     
+    
     try{
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
       e.printStackTrace();
     }
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      isRedAlliance = true;
+    }
+    else{
+      isRedAlliance = false;
+    }
+    isRedAlliance = false;//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
     
     AutoBuilder.configure(
             this::getPose, // Robot pose supplier
@@ -246,6 +257,9 @@ public class SwerveSubsystem extends SubsystemBase {
   }
   public void setTargetID(int id){
     targetID = id;
+  }
+  public boolean getIsRedAlliance(){
+    return isRedAlliance;
   }
 
   public void driverControlledDrive(Vector strafeVector, Vector rotationVector){
@@ -339,20 +353,23 @@ public class SwerveSubsystem extends SubsystemBase {
     return m_kinematics.toChassisSpeeds(getAllSwerveModuleStates());
   }
   public boolean getAtTargetPosition(){
+    if (Math.abs(xTranslationController.getPositionError())<0.3 && Math.abs(yTranslationController.getPositionError())<0.3){
+      atTargetPosition = true;
+      System.out.println("AtTargetPositionSwerve");
+    }
+    else{
+      atTargetPosition = false;
+    }
     return atTargetPosition;
   }
   public void resetGyro(){
     once = true;
   }
+  
 
   @Override
   public void periodic() {
-    if (Math.abs(xTranslationController.getPositionError())<0.2 && Math.abs(yTranslationController.getPositionError())<0.2){
-      atTargetPosition = true;
-    }
-    else{
-      atTargetPosition = false;
-    }
+    
     ChassisSpeeds speed = getSpeeds();
     chassisSpeed = speed;
     if (currentRobotDegree > 180){

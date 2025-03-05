@@ -23,10 +23,10 @@ public final class Constants {
   }
 
   public static class ClawConstants{
-    public static final double DEFAULT = -98;
+    public static final double DEFAULT = -90;
     public static final double HASALGAEDEFAULT = -320;
     public static final double HASFLOORALGAEDEFAULT = 0;
-    public static final double INTAKE = -98;
+    public static final double INTAKE = -90;
     public static final double FLOORALGAE = 120;
     public static final double PROCESSOR = 90;
     public static final double FACINGDOWNREEFALGAE = -270;
@@ -35,7 +35,7 @@ public final class Constants {
     public static final double L1 = 80;
     public static final double L2 = -240;
     public static final double L3= -240;
-    public static final double L4 = -205;
+    public static final double L4 = -220;
   }
   public static enum ClawPosition{
     DEFAULT,

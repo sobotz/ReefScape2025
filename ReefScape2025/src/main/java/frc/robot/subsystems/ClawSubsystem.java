@@ -31,7 +31,7 @@ public class ClawSubsystem extends SubsystemBase {
   DigitalInput proxSensor;
   CurrentLimitsConfigs limitConfigs;
   CANcoder clawSensor;
-  ProfiledPIDController clawController;
+  PIDController clawController;
   PIDController retainAlgaeController;
   Map<ClawPosition, Double> clawPositionMap;
   ClawPosition clawTargetPosition;
@@ -74,7 +74,7 @@ public class ClawSubsystem extends SubsystemBase {
     
     clawSensor = new CANcoder(17);
     
-    clawController = new ProfiledPIDController(0.012, 0.0000, 0.000,new TrapezoidProfile.Constraints(360,30));//P0.0155 d 0.00017
+    clawController = new PIDController(0.012, 0.0000, 0.000);
     //clawController.enableContinuousInput(0,360);
     clawController.setTolerance(0.01);
 
@@ -128,22 +128,33 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public boolean clawAtTargetPosition(){
-    if (Math.abs(previousClawError) - Math.abs(clawController.getPositionError()) <0.01){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
-      atPositionCount += 1;
+    if ((Math.abs(clawController.getError())<0.21) && (Math.abs(clawPIDCalculation)<0.012)){
+      System.out.println("inrange");
+      if (Math.abs(previousClawError - clawController.getError()) <0.065){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+        atPositionCount += 1;
+      }  
+      else{
+        atPositionCount = 0;
+      }
+
+      previousClawError = clawController.getError();
+      if (atPositionCount > 1){
+        System.out.println("atPositionCLaw");
+        atTarget = true;
+        atPositionCount = 0;
+        return true;
+      }
+      else{
+        atTarget = false;
+        return false;
+      }
     }
     else{
-      atPositionCount = 0;
-    }
-    previousClawError = clawController.getPositionError();
-    if (atPositionCount > 2){
-      atTarget = true;
-      atPositionCount = 0;
-      return true;
-    }
-    else{
+      previousClawError = clawController.getError();
       atTarget = false;
       return false;
     }
+    
   }
   public boolean getReefCoralPlacementButton(){
     return reefCoralPlacementButton;
@@ -231,34 +242,34 @@ public class ClawSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("clawSensorPosition",getClawSensorPosition());
     //System.out.println(getClawSensorPosition());
     // This method will be called once per scheduler run
-    clawPIDCalculation = clawController.calculate(getClawSensorPosition(), clawPositionMap.get(clawTargetPosition));
+    clawPIDCalculation = 1.5 * clawController.calculate(getClawSensorPosition(), clawPositionMap.get(clawTargetPosition));
     //System.out.println(clawPositionMap.get(clawTargetPosition));
     //SmartDashboard.putNumber("getTargetPosition",clawPositionMap.get(clawTargetPosition));
-    SmartDashboard.putNumber("Claw Error",clawController.getPositionError());
+    SmartDashboard.putNumber("Claw Error",clawController.getError());
     SmartDashboard.putNumber("Claw Calculation",clawPIDCalculation);
     //System.out.println(clawController.getError());
     //System.out.println(clawPIDCalculation);
     
-      // if (clawPIDCalculation > 0.90){
-      //   clawPIDCalculation = 0.90;
-      // }
-      // else if (clawPIDCalculation < -0.90){
-      //   clawPIDCalculation = -0.90;
-      // }
+      if (clawPIDCalculation > 0.90){
+        clawPIDCalculation = 0.90;
+      }
+      else if (clawPIDCalculation < -0.90){
+        clawPIDCalculation = -0.90;
+      }
       // if (Math.abs(clawPIDCalculation)<0.1){
       //   clawPIDCalculation = clawPIDCalculation * 1.032;
       // }
       /*if (Math.abs(clawPIDCalculation)<0.1){
         clawPIDCalculation = clawPIDCalculation * .95;
       }*/
-      /*if (Math.abs(clawPIDCalculation)<0.01){
+      if (Math.abs(clawPIDCalculation)<0.01){
         clawPIDCalculation = clawPIDCalculation * 5;
         //System.out.println("activated");
       }
       else if (Math.abs(clawPIDCalculation)<0.02){
         clawPIDCalculation = clawPIDCalculation * 1.7;
         //System.out.println("first Activation");
-      }*/
+      }
       /*else if (Math.abs(clawPIDCalculation)<0.025){
         clawPIDCalculation = clawPIDCalculation * 1.02;
       }*/
