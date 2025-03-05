@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
@@ -11,42 +12,69 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GrabHigherAlgaeCommand extends Command {
+public class GrabAlgaeCommand extends Command {
   /** Creates a new GrabHigherAlgaeCommand. */
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
-  public GrabHigherAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
+  ElevatorPosition elevatorPosition;
+  ClawPosition clawPosition;
+  Timer timer;
+  boolean isFinished;
+  public GrabAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,ElevatorPosition elevatorPosition, ClawPosition clawPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
+    this.elevatorPosition = elevatorPosition;
+    this.clawPosition = clawPosition;
+    timer = new Timer();
+    isFinished = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.HIGHERALGAE);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.FACINGDOWNREEFALGAE);
-    m_clawSubsystem.setDriveMotor(1);
+    isFinished = false;
+    if (m_clawSubsystem.getReefAlgaeGrabButton()){
+      m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
+      m_clawSubsystem.setClawTargetPosition(clawPosition);
+      m_clawSubsystem.setDriveMotor(1);
+      timer.start();
+    }
+    else{
+      isFinished = true;
+    }
+    
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (m_clawSubsystem.getProximityTripped()){
+      m_clawSubsystem.setHasAlgae(true);
+      m_clawSubsystem.setAlgaeRetainPosition();
+      isFinished = true;
+    }
+    else if (timer.get()>4){
+      isFinished = true;
+    }
+  
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_clawSubsystem.setHasAlgae(true);
+    timer.reset();
+    timer.stop();
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_clawSubsystem.setDriveMotor(0);
-    m_clawSubsystem.setAlgaeRetainPosition();
+    
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }

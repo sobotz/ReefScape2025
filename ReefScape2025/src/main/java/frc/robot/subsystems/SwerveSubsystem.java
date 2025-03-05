@@ -79,6 +79,7 @@ public class SwerveSubsystem extends SubsystemBase {
   boolean angleCorrectionMode;
   boolean once;
   boolean driveCommandDisabled;
+  boolean atTargetPosition;
 
   Translation2d m_frontLeftLocation;
   Translation2d m_frontRightLocation;
@@ -91,6 +92,7 @@ public class SwerveSubsystem extends SubsystemBase {
   ChassisSpeeds chassisSpeed;
   RobotConfig config;
   CurrentLimitsConfigs limitConfigs;
+  boolean bargeMode;
   /*Update requirements
    * *******SWERVE SUBSYSTEM*******
    * ID every device -- DONE
@@ -115,6 +117,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveSubsystem() {
     //SWERVE MOTORS INSTANTIATION
+    atTargetPosition = false;
+    bargeMode = false;
     frontLeftDriveMotor = new TalonFX(2,"Drivetrain");
     frontLeftTurnMotor = new TalonFX(1,"Drivetrain");
     frontRightDriveMotor = new TalonFX(4,"Drivetrain");
@@ -230,6 +234,9 @@ public class SwerveSubsystem extends SubsystemBase {
   public double getCurrentRobotDegree(){
     return currentRobotDegree;
   }
+  public void setBargeMode(boolean bargeMode){
+    this.bargeMode = bargeMode;
+  }
 
   public void setDriveCommandDisabled(boolean mode){
     driveCommandDisabled = mode;
@@ -246,6 +253,10 @@ public class SwerveSubsystem extends SubsystemBase {
       double rotationalMagnitude = -rotationController.calculate(currentRobotDegree,rotationVector.getDegrees());
       if (Math.abs(rotationalMagnitude) < 0.01){
         rotationalMagnitude = 0;
+      }
+      if (bargeMode){
+        strafeVector.setMagnitude(strafeVector.getMagnitude() * .1);
+        rotationalMagnitude = -rotationController.calculate(currentRobotDegree,180);
       }
       drive(strafeVector, rotationalMagnitude, currentRobotDegree, false);
     }
@@ -327,9 +338,21 @@ public class SwerveSubsystem extends SubsystemBase {
   public ChassisSpeeds getSpeeds() {
     return m_kinematics.toChassisSpeeds(getAllSwerveModuleStates());
   }
+  public boolean getAtTargetPosition(){
+    return atTargetPosition;
+  }
+  public void resetGyro(){
+    once = true;
+  }
 
   @Override
   public void periodic() {
+    if (Math.abs(xTranslationController.getPositionError())<0.2 && Math.abs(yTranslationController.getPositionError())<0.2){
+      atTargetPosition = true;
+    }
+    else{
+      atTargetPosition = false;
+    }
     ChassisSpeeds speed = getSpeeds();
     chassisSpeed = speed;
     if (currentRobotDegree > 180){
@@ -340,9 +363,9 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     //Set the current degree of the robot 
     if (once){
+      robotGyro.reset();
       robotDegreeOffset = ((((robotGyro.getYaw().getValueAsDouble()) % 360) + 360) % 360);
       once = false;
-      robotGyro.reset();
     }
     currentRobotDegree = ((((robotGyro.getYaw().getValueAsDouble() - robotDegreeOffset) % 360) + 360) % 360);
     m_odometer.update(autoRobotDegree,new SwerveModulePosition[]{

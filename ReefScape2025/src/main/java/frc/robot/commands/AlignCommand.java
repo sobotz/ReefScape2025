@@ -5,38 +5,50 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
+
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TestIntakeCommand extends Command {
-  /** Creates a new TestIntakeCommand. */
-  IntakeSubsystem m_intakeSubsystem;
-  public TestIntakeCommand(IntakeSubsystem intakeSubsystem) {
+public class AlignCommand extends Command {
+  /** Creates a new AlignCommand. */
+  PhotonVisionSubsystem m_photonVisionSubsystem;
+  boolean alignActive;
+  double xTarget;
+  double yTarget;
+  int id;
+  boolean isFinished;
+  public AlignCommand(PhotonVisionSubsystem photonVisionSubsystem, boolean align, double x, double y, int id) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_intakeSubsystem = intakeSubsystem;
+    alignActive = align;
+    m_photonVisionSubsystem = photonVisionSubsystem;
+    xTarget = x;
+    yTarget = y;
+    this.id = id;
+    isFinished = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_photonVisionSubsystem.enableAlign(alignActive ,xTarget, yTarget, id);
+    isFinished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeSubsystem.setDriveMotor(1);
-    System.out.println("drivecommand");
+    if (m_photonVisionSubsystem.getAtTargetPosition()){
+      isFinished = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_intakeSubsystem.setDriveMotor(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }

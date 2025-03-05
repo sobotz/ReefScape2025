@@ -5,15 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PhotonVisionSubsytem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PhotonVisionCommand extends Command {
   /** Creates a new PhotonVisionCommand. */
-  PhotonVisionSubsytem m_PhotonVisionSubsytem;
+  PhotonVisionSubsystem m_PhotonVisionSubsytem;
   SwerveSubsystem m_SwerveSubsystem;
-  public PhotonVisionCommand(PhotonVisionSubsytem photonsubsytem,SwerveSubsystem swervesubsystem) {
+  public PhotonVisionCommand(PhotonVisionSubsystem photonsubsytem,SwerveSubsystem swervesubsystem) {
     m_PhotonVisionSubsytem = photonsubsytem;
     m_SwerveSubsystem = swervesubsystem;
 
