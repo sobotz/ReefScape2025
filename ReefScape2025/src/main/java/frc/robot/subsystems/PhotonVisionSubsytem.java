@@ -82,7 +82,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     m3Camera = new PhotonCamera(Constants.PhotonVisionConstants.m3CameraName);
     m4Camera = new PhotonCamera(Constants.PhotonVisionConstants.m4CameraName);
     intakeCamera = new PhotonCamera(Constants.PhotonVisionConstants.m4CameraName);
-    id = 13;
+    id = 20;
     cameraXOffset = 0;
     cameraYOffset = 0;
     cameraAngleOffset3D = 0;
@@ -149,7 +149,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     //System.out.println(m3TargetData[4]);
     if (m3TargetData[4] == 1 && m4TargetData[4] == 1){
       if (Math.abs(m3TargetData[3])<Math.abs(m4TargetData[3])){
-        System.out.println("1st");
+        //System.out.println("1st");
         hasTarget = true;
         usingM3Camera = true;
         cameraXOffset = m3TargetData[0];
@@ -206,7 +206,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
       robotAngleOffset = cameraAngleOffset3D + 40;
       //System.out.println(robotAngleOffset);
       Vector vx = new Vector(cameraXOffset,(320  + robotAngleOffset) % 360,true);
-      System.out.println(vx.getX());
+      //System.out.println(vx.getX());
       Vector vy = new Vector(0,0,true);
       if (cameraYOffset<0){
         vy = new Vector(Math.abs(cameraYOffset),50 + robotAngleOffset,true);
@@ -243,11 +243,13 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     }
     //System.out.println(hasTarget);
     if (hasTarget && enabled){
-      
+      //x and y are working
+      if (Math.abs(cameraAngleOffset2D)>60){
+        robotAngleOffset = 0;
+      }
       m_swerveSubsystem.setDriveCommandDisabled(enabled);
-      m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, xTarget, yTarget,enabled);
+      m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,enabled);
     }else{
-    
     m_swerveSubsystem.setDriveCommandDisabled(false);
     m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, yTarget,false);
     }
@@ -269,7 +271,7 @@ public class PhotonVisionSubsytem extends SubsystemBase {
     m3TargetData = getData(m3CameraResult);
     m4TargetData = getData(m4CameraResult);
     intakeTargetData = getData(intakeCameraResult);
-    //align(0,1,13,true);
+    //align(0,1,20,true);
     //System.out.println(m3Camera.getLatestResult().getTargets().get(0).getYaw());
     SmartDashboard.putNumber("xrobot", robotXOffset);
     SmartDashboard.putNumber("yrobot",robotYOffset);

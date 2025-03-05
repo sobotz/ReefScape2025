@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
@@ -29,6 +30,7 @@ public class ClawSubsystem extends SubsystemBase {
   Map<ClawPosition, Double> clawPositionMap;
   ClawPosition clawTargetPosition;
   ClawPosition autoPlaceClawTargetPosition;
+  Timer timer;
 
   double clawPIDCalculation;
   double algaeRetainPosition;
@@ -38,8 +40,12 @@ public class ClawSubsystem extends SubsystemBase {
   boolean hasAlgae;
   boolean driveMotorIsControlled;
   boolean once;
+  double originalWristSensorPosition;
+  double previousClawError;
+  double atPositionCount;
 
   public ClawSubsystem() {
+    timer = new Timer();
     wristMotor = new TalonFX(18);//CHANGE
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
     limitConfigs = new CurrentLimitsConfigs();
@@ -51,9 +57,9 @@ public class ClawSubsystem extends SubsystemBase {
     
     clawSensor = new CANcoder(17);//CHANGE
     
-    clawController = new PIDController(0.010, 0.0000, 0.000);//P0.0155 d 0.00017
+    clawController = new PIDController(0.012, 0.0000, 0.000);//P0.0155 d 0.00017
     //clawController.enableContinuousInput(0,360);
-    clawController.setTolerance(0.0);
+    clawController.setTolerance(0.01);
 
     retainAlgaeController = new PIDController(0.001,0, 0);
 
@@ -79,15 +85,28 @@ public class ClawSubsystem extends SubsystemBase {
     algaeRetainPosition = 0;
     once = true;
     originalCanCoderPosition = 0;
+    originalWristSensorPosition = 0;
+    previousClawError = 0;
+    atPositionCount = 0;
   }
 
   public double getClawSensorPosition(){
-    return (((wristMotor.getPosition().getValueAsDouble()*6) + originalCanCoderPosition)-110);
+    return ((((wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition)*360/81.572753) + (originalCanCoderPosition +47)));
   }
 
   public boolean clawAtTargetPosition(){
-    if ((Math.abs(clawController.getError())<0.2) && clawPIDCalculation<0.008){
+    if (previousClawError == clawController.getError()){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      atPositionCount += 1;
       atTarget = true;
+      return true;
+    }
+    else{
+      atPositionCount = 0;
+    }
+    previousClawError = clawController.getError();
+    if (atPositionCount > 4){
+      atTarget = true;
+      atPositionCount = 0;
       return true;
     }
     else{
@@ -106,7 +125,6 @@ public class ClawSubsystem extends SubsystemBase {
     autoPlaceClawTargetPosition = position;
   }
   public void setDriveMotor(double value){
-    
     clawDriveMotor.set(value);
     if (value == 0){
       driveMotorIsControlled = false;
@@ -139,9 +157,16 @@ public class ClawSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     if (once){
-      originalCanCoderPosition =  (-1 * (clawSensor.getPosition().getValueAsDouble())) * 360;
-      once = false;
+      timer.start();
+      if (timer.get()>3){
+        originalCanCoderPosition =  ((-1 * clawSensor.getPosition().getValueAsDouble()) * 360) % 360;
+        originalWristSensorPosition = wristMotor.getPosition().getValueAsDouble();
+        once = false;  
+        timer.stop();
+      }
     }
+    //System.out.println(wristMotor.getPosition().getValueAsDouble() * 360);
+    //System.out.println(wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition);
     //System.out.println(getClawSensorPosition());
     SmartDashboard.putNumber("clawSensorPosition",getClawSensorPosition());
     //System.out.println(getClawSensorPosition());
@@ -154,11 +179,11 @@ public class ClawSubsystem extends SubsystemBase {
     //System.out.println(clawController.getError());
     //System.out.println(clawPIDCalculation);
     if (!clawController.atSetpoint()){
-      if (clawPIDCalculation > 0.75){
-        clawPIDCalculation = 0.75;
+      if (clawPIDCalculation > 0.90){
+        clawPIDCalculation = 0.90;
       }
-      else if (clawPIDCalculation < -0.75){
-        clawPIDCalculation = -0.75;
+      else if (clawPIDCalculation < -0.90){
+        clawPIDCalculation = -0.90;
       }
       // if (Math.abs(clawPIDCalculation)<0.1){
       //   clawPIDCalculation = clawPIDCalculation * 1.032;
@@ -167,7 +192,7 @@ public class ClawSubsystem extends SubsystemBase {
         clawPIDCalculation = clawPIDCalculation * .95;
       }*/
       if (Math.abs(clawPIDCalculation)<0.01){
-        clawPIDCalculation = clawPIDCalculation * 4;
+        clawPIDCalculation = clawPIDCalculation * 5;
         //System.out.println("activated");
       }
       else if (Math.abs(clawPIDCalculation)<0.02){

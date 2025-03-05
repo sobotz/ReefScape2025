@@ -42,6 +42,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   private boolean manualMode;
   boolean once;
   boolean atTargetPosition;
+  double previousElevatorError;
+  double atPositionCount;
+  
 
   public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
     /** Initialize position mappings */
@@ -72,7 +75,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor.getConfigurator().apply(limitConfigs);
     slaveMotor.getConfigurator().apply(limitConfigs);
     
-
+    previousElevatorError = 0;
+    atPositionCount = 0;
     // enable stator current limit
 
     elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD);  // Tune these values as needed
@@ -89,8 +93,27 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean elevatorAtTargetPosition() {
-    if (Math.abs(elevatorController.getError())<0.26 && elevatorPIDCalculation<0.035){
+    /*if (Math.abs(elevatorController.getError())<0.26 && Math.abs(elevatorPIDCalculation)<0.035){
       atTargetPosition = true;
+      return true;
+    }
+    else{
+      atTargetPosition = false;
+      return false;
+    }*/
+    atTargetPosition = false;
+    if (previousElevatorError == elevatorController.getError()){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      atPositionCount += 1;
+      atTargetPosition = true;
+      return true;
+    }
+    else{
+      atPositionCount = 0;
+    }
+    previousElevatorError = elevatorController.getError();
+    if (atPositionCount > 4){
+      atTargetPosition = true;
+      atPositionCount = 0;
       return true;
     }
     else{

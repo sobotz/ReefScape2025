@@ -28,13 +28,14 @@ public class PhotonVisionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_PhotonVisionSubsytem.align(0,0.5,13,true);
+    m_PhotonVisionSubsytem.align(-0.3,0.4,20,true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_PhotonVisionSubsytem.align(0,0.5,13,false);
+    m_PhotonVisionSubsytem.align(0,0.5,20,false);
+    m_SwerveSubsystem.setDriveCommandDisabled(false);
   }
 
   // Returns true when the command should end.

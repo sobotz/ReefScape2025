@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import org.json.simple.parser.Yytoken;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -17,6 +18,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,7 +27,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -59,8 +61,8 @@ public class SwerveSubsystem extends SubsystemBase {
   //PID CONTROLLERS
   PIDController rotationController;
   PIDController angleCorrectionController;
-  PIDController xTranslationController;
-  PIDController yTranslationController;
+  ProfiledPIDController xTranslationController;
+  ProfiledPIDController yTranslationController;
   PIDController xVelocityController;
   PIDController yVelocityController;
   PIDController degreeVelocityController;
@@ -88,6 +90,7 @@ public class SwerveSubsystem extends SubsystemBase {
   SwerveDriveOdometry m_odometer;
   ChassisSpeeds chassisSpeed;
   RobotConfig config;
+  CurrentLimitsConfigs limitConfigs;
   /*Update requirements
    * *******SWERVE SUBSYSTEM*******
    * ID every device -- DONE
@@ -120,6 +123,19 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeftTurnMotor = new TalonFX(7,"Drivetrain");
     backRightDriveMotor = new TalonFX(6,"Drivetrain");
     backRightTurnMotor = new TalonFX(5,"Drivetrain");
+
+    limitConfigs = new CurrentLimitsConfigs();
+    limitConfigs.StatorCurrentLimit = 50;
+    limitConfigs.StatorCurrentLimitEnable = true;
+    frontLeftDriveMotor.getConfigurator().apply(limitConfigs);
+    frontLeftTurnMotor.getConfigurator().apply(limitConfigs);
+    frontRightDriveMotor.getConfigurator().apply(limitConfigs);
+    frontRightTurnMotor.getConfigurator().apply(limitConfigs);
+    backLeftDriveMotor.getConfigurator().apply(limitConfigs);
+    backLeftTurnMotor.getConfigurator().apply(limitConfigs);
+    backRightDriveMotor.getConfigurator().apply(limitConfigs);
+    backRightTurnMotor.getConfigurator().apply(limitConfigs);
+
     //ENCODER INSTANTIATION
     frontLeftEncoder = new CANcoder(9,"Drivetrain");
     frontRightEncoder = new CANcoder(10,"Drivetrain");
@@ -139,15 +155,14 @@ public class SwerveSubsystem extends SubsystemBase {
     //Allows for leeway if the current degree is not exactly on target
     angleCorrectionController.setTolerance(0.2);
 
-    rotationController = new PIDController(0.0045,0,0);
+    rotationController = new PIDController(0.0049,0,0);
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0.2);
 
-    xTranslationController = new PIDController(0.03,0,0);
-    xTranslationController.setTolerance(0);
-
-    yTranslationController = new PIDController(0.03,0,0);
-    yTranslationController.setTolerance(0);
+    xTranslationController = new ProfiledPIDController(0.6, 0, 0.001, new TrapezoidProfile.Constraints(1,0.3));
+    xTranslationController.setTolerance(0.0);
+    yTranslationController =new ProfiledPIDController(0.6, 0, 0.001, new TrapezoidProfile.Constraints(1,0.3));
+    yTranslationController.setTolerance(0.0);
 
     xVelocityController = new PIDController(0.023,0,0.001);
     //xVelocityController.setTolerance(0.01);
@@ -231,7 +246,6 @@ public class SwerveSubsystem extends SubsystemBase {
       double rotationalMagnitude = -rotationController.calculate(currentRobotDegree,rotationVector.getDegrees());
       if (Math.abs(rotationalMagnitude) < 0.01){
         rotationalMagnitude = 0;
-        
       }
       drive(strafeVector, rotationalMagnitude, currentRobotDegree, false);
     }
@@ -253,8 +267,11 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void reefControlledDrive(double xOffset, double yOffset,double angleOffset, double xTarget, double yTarget,boolean enabled){
-    
-    Vector tvec = new Vector(-xTranslationController.calculate( xOffset,xTarget),yTranslationController.calculate(yOffset,yTarget));
+    //System.out.println("xoffset: " + xOffset);
+    //System.out.println("yoffset: " + yOffset);
+    //System.out.println("yTarget: " + yTarget);
+    angleOffset = (angleOffset + 360) % 360;
+    Vector tvec = new Vector(-xTranslationController.calculate( -xOffset,xTarget), yTranslationController.calculate(yOffset,yTarget));
     Vector rvec = new Vector(1, 0 , true);
     //angleRotationController.
     //System.out.println(rvec.getMagnitude());
@@ -262,17 +279,17 @@ public class SwerveSubsystem extends SubsystemBase {
     if (Math.abs(rotationalMagnitude) < 0.01){
       rotationalMagnitude = 0;
     }
-    rotationalMagnitude = 0;
-    //System.out.println(enabled);
-    if ( enabled){ 
-      System.out.println("Jaywonathan");
-      drive(tvec, rotationalMagnitude,currentRobotDegree /*(angleOffset + 360) % 360*/,false);
+    //rotationalMagnitude = 0;
+    //System.out.println("trans vec mag :  " + tvec.getMagnitude());
+    //System.out.println("trans vec degree: " + tvec.getDegrees());
+    
+    if (enabled){ 
+      drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
     }else{
       setDriveCommandDisabled(false);
       drive(new Vector(0, 0),0,currentRobotDegree,true);//CHANGE
     }
   }
-
 
   public void drive(Vector strafeVector, double rotationalMagnitude,double currentRobotDegree, boolean relativeVelocityControlled){
     //System.out.println(strafeVector.getMagnitude());
