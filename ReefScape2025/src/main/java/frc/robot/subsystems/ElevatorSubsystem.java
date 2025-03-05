@@ -102,16 +102,14 @@ public class ElevatorSubsystem extends SubsystemBase {
       return false;
     }*/
     atTargetPosition = false;
-    if (previousElevatorError == elevatorController.getError()){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+    if (Math.abs(previousElevatorError) - Math.abs(elevatorController.getError()) < 0.01){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
       atPositionCount += 1;
-      atTargetPosition = true;
-      return true;
     }
     else{
       atPositionCount = 0;
     }
     previousElevatorError = elevatorController.getError();
-    if (atPositionCount > 4){
+    if (atPositionCount > 2){
       atTargetPosition = true;
       atPositionCount = 0;
       return true;
