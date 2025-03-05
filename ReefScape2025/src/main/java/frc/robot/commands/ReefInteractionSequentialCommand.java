@@ -27,7 +27,7 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
   ClawPosition algaeClawPosition;
   
   int id;
-  public ReefInteractionSequentialCommand(ElevatorSubsystem elevatorSubsystem, ElevatorPosition targetElevatorPosition, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem, ClawPosition targetClawPosition, int id) {
+  public ReefInteractionSequentialCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem,double xTarget, double yTarget, int id) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     //elevatorSubsystem.setAutoPlaceClawTargetPosition(targetElevatorPosition);
@@ -36,13 +36,20 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     clawPositionMap = clawSubsystem.getPositionMap();
     this.id = id;
     if (id>=17 && id<=22){
-      id += 1;
+      if (id % 2 == 0){
+        algaeElevatorPosition = ElevatorPosition.HIGHERALGAE;
+      }
+      else{
+        algaeElevatorPosition = ElevatorPosition.LOWERALGAE;
+      }
     }
-    if (id % 2 == 0){
-      algaeElevatorPosition = ElevatorPosition.LOWERALGAE;
-    }
-    else{
-      algaeElevatorPosition = ElevatorPosition.HIGHERALGAE;
+    else if (id>=6 && id<=11){
+      if (id % 2 == 0){
+        algaeElevatorPosition = ElevatorPosition.LOWERALGAE;
+      }
+      else{
+        algaeElevatorPosition = ElevatorPosition.HIGHERALGAE;
+      }
     }
     if (elevatorPositionMap.get(elevatorSubsystem.getAutoPlacePosition()) > elevatorPositionMap.get(algaeElevatorPosition)){
       algaeClawPosition = ClawPosition.FACINGDOWNREEFALGAE;
@@ -51,14 +58,13 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
       algaeClawPosition = ClawPosition.FACINGUPREEFALGAE;
     }
     addCommands(
-      new AlignCommand(photonVisionSubsystem, true, -0.2, 0.5, id),
+      new AlignCommand(photonVisionSubsystem, true, xTarget, yTarget, id),
       new CoralPlacementCommand(elevatorSubsystem, clawSubsystem),
-      new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
       new ParallelCommandGroup(
         new AlignCommand(photonVisionSubsystem, true, 0, 0.5, id),
         new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem, algaeElevatorPosition, algaeClawPosition)
       ),
-      new AlignCommand(photonVisionSubsystem, false, 0, 0, id)
+      new AlignCommand(photonVisionSubsystem, false, 0, 0.7, id)
     );
   }
 }
