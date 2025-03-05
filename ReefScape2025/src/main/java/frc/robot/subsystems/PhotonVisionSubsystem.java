@@ -269,7 +269,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       m_swerveSubsystem.setDriveCommandDisabled(false);
       m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,false);
     }
-    
+   
+  }
+  public void intakeAlign(double robotX,double robotY,boolean enabled){
+      
   }
   public boolean getAtTargetPosition(){
     return m_swerveSubsystem.getAtTargetPosition();
