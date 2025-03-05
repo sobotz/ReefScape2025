@@ -14,6 +14,7 @@ import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -27,7 +28,7 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
   ClawPosition algaeClawPosition;
   
   int id;
-  public ReefInteractionSequentialCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem,double xTarget, double yTarget, int id) {
+  public ReefInteractionSequentialCommand(SwerveSubsystem swerveSubsystem, ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem,double xTarget, double yTarget, int id) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     //elevatorSubsystem.setAutoPlaceClawTargetPosition(targetElevatorPosition);
@@ -57,14 +58,17 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     else{
       algaeClawPosition = ClawPosition.FACINGUPREEFALGAE;
     }
+    System.out.println("id: " + id);
     addCommands(
-      new AlignCommand(photonVisionSubsystem, true, xTarget, yTarget, id),
+      new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id),
       new CoralPlacementCommand(elevatorSubsystem, clawSubsystem),
       new ParallelCommandGroup(
-        new AlignCommand(photonVisionSubsystem, true, 0, 0.5, id),
+        new AlignCommand(swerveSubsystem ,photonVisionSubsystem, true, 0, 1, id),
         new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem, algaeElevatorPosition, algaeClawPosition)
       ),
-      new AlignCommand(photonVisionSubsystem, false, 0, 0.7, id)
+      new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 1.2, id),
+      new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
+      new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 1.2, id)
     );
   }
 }

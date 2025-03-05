@@ -6,20 +6,23 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignCommand extends Command {
   /** Creates a new AlignCommand. */
+  SwerveSubsystem m_swerveSubsystem;
   PhotonVisionSubsystem m_photonVisionSubsystem;
   boolean alignActive;
   double xTarget;
   double yTarget;
   int id;
   boolean isFinished;
-  public AlignCommand(PhotonVisionSubsystem photonVisionSubsystem, boolean align, double x, double y, int id) {
+  public AlignCommand(SwerveSubsystem swerveSubsystem, PhotonVisionSubsystem photonVisionSubsystem, boolean align, double x, double y, int id) {
     // Use addRequirements() here to declare subsystem dependencies.
     alignActive = align;
+    m_swerveSubsystem = swerveSubsystem;
     m_photonVisionSubsystem = photonVisionSubsystem;
     xTarget = x;
     yTarget = y;
@@ -32,12 +35,17 @@ public class AlignCommand extends Command {
   public void initialize() {
     m_photonVisionSubsystem.enableAlign(alignActive ,xTarget, yTarget, id);
     isFinished = false;
+    if (!alignActive){
+      m_swerveSubsystem.setDriveCommandDisabled(false);
+      isFinished = true;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (m_photonVisionSubsystem.getAtTargetPosition()){
+      System.out.println("FINISH ALIGNNNNN");
       isFinished = true;
     }
   }

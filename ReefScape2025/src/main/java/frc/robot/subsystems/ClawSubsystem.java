@@ -129,7 +129,7 @@ public class ClawSubsystem extends SubsystemBase {
 
   public boolean clawAtTargetPosition(){
     if ((Math.abs(clawController.getError())<0.21) && (Math.abs(clawPIDCalculation)<0.012)){
-      System.out.println("inrange");
+      //System.out.println("inrange");
       if (Math.abs(previousClawError - clawController.getError()) <0.065){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;
       }  
@@ -139,7 +139,7 @@ public class ClawSubsystem extends SubsystemBase {
 
       previousClawError = clawController.getError();
       if (atPositionCount > 1){
-        System.out.println("atPositionCLaw");
+        //System.out.println("atPositionCLaw");
         atTarget = true;
         atPositionCount = 0;
         return true;

@@ -116,7 +116,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       if (atPositionCount > 1){
         atTargetPosition = true;
         atPositionCount = 0;
-        System.out.println("elevatorAtPosition");
+        //System.out.println("elevatorAtPosition");
         return true;
       }
       else{

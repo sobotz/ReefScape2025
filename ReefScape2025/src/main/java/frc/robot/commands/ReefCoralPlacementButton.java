@@ -21,5 +21,6 @@ public class ReefCoralPlacementButton extends InstantCommand {
   @Override
   public void initialize() {
     m_clawSubsystem.toggleReefCoralPlacementButton();
+    System.out.println(m_clawSubsystem.getReefCoralPlacementButton());
   }
 }

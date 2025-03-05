@@ -29,7 +29,7 @@ public class PhotonVisionCommand extends Command {
   @Override
   public void execute() {
     m_PhotonVisionSubsytem.align(.5,0.7,20,true);
-    System.out.println(m_PhotonVisionSubsytem.getAtTargetPosition());
+    //System.out.println(m_PhotonVisionSubsytem.getAtTargetPosition());
   }
 
   // Called once the command ends or is interrupted.

@@ -281,7 +281,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public void periodic() {
     //m_swerveSubsystem.getTargetID();
     if (alignActive){
-      System.out.println("align active");
+      //System.out.println("align active");
       align(xTarget,yTarget , id, true);
     }
     m3CameraResult = m3Camera.getLatestResult();

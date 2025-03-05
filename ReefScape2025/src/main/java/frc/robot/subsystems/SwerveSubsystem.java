@@ -94,6 +94,10 @@ public class SwerveSubsystem extends SubsystemBase {
   CurrentLimitsConfigs limitConfigs;
   boolean bargeMode;
   boolean isRedAlliance;
+  double previousXError;
+  double previousYError;
+  double xAtPositionCount;
+  double yAtPositionCount;
   /*Update requirements
    * *******SWERVE SUBSYSTEM*******
    * ID every device -- DONE
@@ -121,6 +125,8 @@ public class SwerveSubsystem extends SubsystemBase {
     isRedAlliance = false;
     atTargetPosition = false;
     bargeMode = false;
+    xAtPositionCount = 0;
+    yAtPositionCount = 0;
     frontLeftDriveMotor = new TalonFX(2,"Drivetrain");
     frontLeftTurnMotor = new TalonFX(1,"Drivetrain");
     frontRightDriveMotor = new TalonFX(4,"Drivetrain");
@@ -217,6 +223,8 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     isRedAlliance = false;//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
+    previousXError = 0;
+    previousYError = 0;
     
     AutoBuilder.configure(
             this::getPose, // Robot pose supplier
@@ -296,6 +304,8 @@ public class SwerveSubsystem extends SubsystemBase {
     //System.out.println("yoffset: " + yOffset);
     //System.out.println("yTarget: " + yTarget);
     //System.out.println("driveCommand: " + driveCommandDisabled);
+    //System.out.println("xTarget: " + xTarget);
+    //System.out.println("yTarget: " +  yTarget);
     angleOffset = (angleOffset + 360) % 360;
     double xCalculation = -xTranslationController.calculate( -xOffset,xTarget);
     double yCalculation = yTranslationController.calculate(yOffset,yTarget);
@@ -372,14 +382,67 @@ public class SwerveSubsystem extends SubsystemBase {
     return m_kinematics.toChassisSpeeds(getAllSwerveModuleStates());
   }
   public boolean getAtTargetPosition(){
-    if (Math.abs(xTranslationController.getPositionError())<0.04 && Math.abs(yTranslationController.getPositionError())<0.04){
-      atTargetPosition = true;
-      System.out.println("AtTargetPositionSwerve");
+    boolean xAtTarget = false;
+    boolean yAtTarget = false;
+    
+    if ((Math.abs(xTranslationController.getPositionError())<0.03)){
+      
+      if (Math.abs(previousXError - xTranslationController.getPositionError()) <0.02){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+        xAtPositionCount += 1;
+        System.out.println("xCount: " + xAtPositionCount);
+      }  
+      else{
+        xAtPositionCount = 0;
+      }
+
+      previousXError = xTranslationController.getPositionError();
+      if (xAtPositionCount > 1){
+        //System.out.println("atPositionCLaw");
+        xAtTarget = true;
+      }
+      else{
+        xAtTarget = false;
+      }
     }
     else{
-      atTargetPosition = false;
+      previousXError = xTranslationController.getPositionError();
+      xAtTarget = false;
+      
     }
-    return atTargetPosition;
+
+
+    if ((Math.abs(yTranslationController.getPositionError())<0.03)){
+      //System.out.println("inrange");
+      if (Math.abs(previousYError - yTranslationController.getPositionError()) <0.02){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+        yAtPositionCount += 1;
+        System.out.println("yCount: " + yAtPositionCount);
+      }  
+      else{
+        yAtPositionCount = 0;
+      }
+
+      previousYError = yTranslationController.getPositionError();
+      if (yAtPositionCount > 1){
+        System.out.println();
+        yAtTarget = true;
+      }
+      else{
+        yAtTarget = false;
+      }
+    }
+    else{
+      previousYError = yTranslationController.getPositionError();
+      yAtTarget = false;
+      
+    }
+    if (yAtTarget && xAtTarget){
+      System.out.println("AtMovementPoint");
+      return true;
+    }
+    else{
+      //System.out.println("CHECKING");
+      return false;
+    }
   }
   public void resetGyro(){
     once = true;
