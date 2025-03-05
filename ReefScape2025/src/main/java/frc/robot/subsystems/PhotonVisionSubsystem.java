@@ -240,7 +240,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       //System.out.println("robotX: " + robotXOffset);
     }
     else{
-      robotAngleOffset = cameraAngleOffset3D - 40;
+      robotAngleOffset = cameraAngleOffset3D - 42;
       Vector vx = new Vector(cameraXOffset, 40 + robotAngleOffset,true);
       Vector vy = new Vector(0,0,true);
       if (cameraYOffset<0){
@@ -267,7 +267,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,enabled);
     }else{
       m_swerveSubsystem.setDriveCommandDisabled(false);
-      m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0,false);
+      m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,false);
     }
     
   }
@@ -280,9 +280,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     if (alignActive){
       System.out.println("align active");
       align(xTarget,yTarget , id, true);
-    }
-    else{
-      m_swerveSubsystem.setDriveCommandDisabled(false);
     }
     m3CameraResult = m3Camera.getLatestResult();
     m4CameraResult = m4Camera.getLatestResult();

@@ -295,8 +295,26 @@ public class SwerveSubsystem extends SubsystemBase {
     //System.out.println("xoffset: " + xOffset);
     //System.out.println("yoffset: " + yOffset);
     //System.out.println("yTarget: " + yTarget);
+    //System.out.println("driveCommand: " + driveCommandDisabled);
     angleOffset = (angleOffset + 360) % 360;
-    Vector tvec = new Vector(-xTranslationController.calculate( -xOffset,xTarget), yTranslationController.calculate(yOffset,yTarget));
+    double xCalculation = -xTranslationController.calculate( -xOffset,xTarget);
+    double yCalculation = yTranslationController.calculate(yOffset,yTarget);
+    if (Math.abs(xTranslationController.getPositionError()) > 0.03){
+      xCalculation = -xTranslationController.calculate( -xOffset,xTarget);
+    }
+    else{
+      
+      xCalculation = 0;
+    }
+    if (Math.abs(yTranslationController.getPositionError())> 0.03){
+      
+      yCalculation = yTranslationController.calculate(yOffset,yTarget);
+    }
+    else{
+      
+      yCalculation = 0;
+    }
+    Vector tvec = new Vector(xCalculation, yCalculation);
     Vector rvec = new Vector(1, 0 , true);
     //angleRotationController.
     //System.out.println(rvec.getMagnitude());
@@ -304,6 +322,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (Math.abs(rotationalMagnitude) < 0.01){
       rotationalMagnitude = 0;
     }
+    
     //rotationalMagnitude = 0;
     //System.out.println("trans vec mag :  " + tvec.getMagnitude());
     //System.out.println("trans vec degree: " + tvec.getDegrees());
@@ -353,7 +372,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return m_kinematics.toChassisSpeeds(getAllSwerveModuleStates());
   }
   public boolean getAtTargetPosition(){
-    if (Math.abs(xTranslationController.getPositionError())<0.3 && Math.abs(yTranslationController.getPositionError())<0.3){
+    if (Math.abs(xTranslationController.getPositionError())<0.04 && Math.abs(yTranslationController.getPositionError())<0.04){
       atTargetPosition = true;
       System.out.println("AtTargetPositionSwerve");
     }
@@ -398,6 +417,8 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("raw drive sensor", frontLeftSwerveModule.getRawDriveSensorPosition());
     SmartDashboard.putNumber("Angular Velocity",robotGyro.getAngularVelocityZWorld().getValueAsDouble() * (Math.PI/180));
     SmartDashboard.putNumber("degree",currentRobotDegree);
+    SmartDashboard.putNumber("xOffsetDrive", xTranslationController.getPositionError());
+    SmartDashboard.putNumber("yOffsetDrive", yTranslationController.getPositionError());
     
   }
 }
