@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
@@ -16,19 +17,21 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
   boolean isFinished;
+  Timer timer;
   public ToggleFloorAlgaeIntakeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
     isFinished = false;
+    timer = new Timer();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("on");
     isFinished = false;
-    if (m_clawSubsystem.hasItem()){
-      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
+    if (!m_clawSubsystem.hasItem()){
       m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
       m_clawSubsystem.setDriveMotor(1);
     }
@@ -41,18 +44,27 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_clawSubsystem.getProximityTripped()){
+    if (m_clawSubsystem.clawAtTargetPosition()){
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
+    }
+    if(m_clawSubsystem.getDriveMotorCurrent()>60){
+      timer.start();
+    }
+    if (timer.get()>0.6){
       m_clawSubsystem.setHasAlgae(true);
       m_clawSubsystem.setHasCoral(false);
       m_clawSubsystem.setAlgaeRetainPosition();
       isFinished = true;
     }
   }
-
   // Called once the command ends or is interrupted.
   @Override
+  
   public void end(boolean interrupted) {
-    m_clawSubsystem.setHasAlgae(true);
+    //m_clawSubsystem.setHasAlgae(true)
+    timer.reset();
+    timer.stop();
+    m_clawSubsystem.setDriveMotor(0);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
   }

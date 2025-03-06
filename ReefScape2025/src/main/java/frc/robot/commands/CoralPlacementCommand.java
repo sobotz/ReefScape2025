@@ -53,7 +53,7 @@ public class CoralPlacementCommand extends Command {
       timer2.start();
       m_clawSubsystem.setDriveMotor(-0.6);
     }
-    if (timer2.get()>0.8){
+    if (timer2.get()>0.5){
       isFinished = true;
     }
   }

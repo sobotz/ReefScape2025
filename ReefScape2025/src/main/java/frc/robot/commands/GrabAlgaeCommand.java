@@ -10,31 +10,30 @@ import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.PhotonVisionSubsystem;
+
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GrabAlgaeCommand extends Command {
   /** Creates a new GrabHigherAlgaeCommand. */
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
-  PhotonVisionSubsystem m_photonVisionSubsystem;
   ElevatorPosition elevatorPosition;
   ClawPosition clawPosition;
   Timer timer;
+  Timer timer2;
   boolean isFinished;
   
-  int id;
-  public GrabAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, ElevatorPosition elevatorPosition, ClawPosition clawPosition, int id) {
+  
+  public GrabAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, ElevatorPosition elevatorPosition, ClawPosition clawPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
-    m_photonVisionSubsystem = photonVisionSubsystem;
     this.elevatorPosition = elevatorPosition;
     this.clawPosition = clawPosition;
     timer = new Timer();
+    timer2 = new Timer();
     isFinished = false;
 
-    this.id = id;
   }
 
   // Called when the command is initially scheduled.
@@ -42,8 +41,6 @@ public class GrabAlgaeCommand extends Command {
   public void initialize() {
     isFinished = false;
     if (m_clawSubsystem.getReefAlgaeGrabButton()){
-      m_photonVisionSubsystem.enableAlign(true ,0, 0.36, id);
-      m_photonVisionSubsystem.resetCount();
       m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
       m_clawSubsystem.setClawTargetPosition(clawPosition);
       m_clawSubsystem.setDriveMotor(1);
@@ -59,21 +56,22 @@ public class GrabAlgaeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    /*if (m_clawSubsystem.getProximityTripped()){
+    if (m_clawSubsystem.getDriveMotorCurrent()>59.6){
+      timer2.start();
+    }
+    if (timer.get()>3){
+      isFinished = true;
+    }
+    if (timer2.get()>0.5){
       m_clawSubsystem.setHasAlgae(true);
       m_clawSubsystem.setAlgaeRetainPosition();
       isFinished = true;
-    }*/
-    if (timer.get()>1.2){
-      isFinished = true;
     }
-  
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_clawSubsystem.setHasAlgae(true);
     m_clawSubsystem.setDriveMotor(0);
     m_clawSubsystem.setAlgaeRetainPosition();
     timer.reset();

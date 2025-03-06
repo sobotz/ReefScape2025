@@ -283,6 +283,10 @@ public class RobotContainer {
     testL4Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));
     JoystickButton intakeButton = new JoystickButton(testOperator,7);
     intakeButton.toggleOnTrue(m_toggleStationIntakeCommand);//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
+    JoystickButton groundIntakeButton = new JoystickButton(testOperator, 9);
+    groundIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);
+    JoystickButton bargeButtonTest = new JoystickButton(testOperator, 10);
+    bargeButtonTest.onTrue(m_bargeCommand);
     /*JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
     intakeDriveButton.whileTrue(testIntakeCommand);*/
 

@@ -30,7 +30,7 @@ public class ProcessorCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
-    if (m_clawSubsystem.getHasAlgae()){
+    if (m_clawSubsystem.hasItem()){
       m_clawSubsystem.toggleProcessor();
       if (m_clawSubsystem.getToggleProcessor() == true){
         m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.PROCESSOR);
@@ -51,9 +51,7 @@ public class ProcessorCommand extends Command {
   @Override
   public void execute() {
     if (timer.get()>0.5){
-      if (!m_clawSubsystem.getProximityTripped()){
-        m_clawSubsystem.setHasAlgae(false);
-      }
+      m_clawSubsystem.setHasAlgae(false);
       isFinished = true;
     }
   }
@@ -66,6 +64,7 @@ public class ProcessorCommand extends Command {
     if (m_clawSubsystem.getToggleProcessor() == false){
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+      m_clawSubsystem.setDriveMotor(0);
     }
   }
 

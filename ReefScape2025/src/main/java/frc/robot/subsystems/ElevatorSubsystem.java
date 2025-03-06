@@ -57,9 +57,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
     /** Initialize position mappings */
     m_swerveSubsystem = swerveSubsystem;
-
-    
-    
     positionMap = new HashMap<ElevatorPosition, Double>(){{
       put(ElevatorPosition.DEFAULT, ElevatorConstants.DEFAULT);
       put(ElevatorPosition.INTAKE, ElevatorConstants.INTAKE);
@@ -77,7 +74,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     /** Initialize motors */
     elevatorMotor = new TalonFX(15);
+    elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     slaveMotor = new TalonFX(14);
+    slaveMotor.setNeutralMode(NeutralModeValue.Brake);
 
     /** Configure motors */
     limitConfigs = new CurrentLimitsConfigs();
@@ -95,7 +94,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorController.setTolerance(0.002); 
     elevatorPIDCalculation = 0; 
     targetPosition = ElevatorPosition.DEFAULT;
-    autoPlaceTargetElevatorPosition = ElevatorPosition.DEFAULT;
+    autoPlaceTargetElevatorPosition = ElevatorPosition.L1;
     once = true;
     atTargetPosition = false;
   }
@@ -184,6 +183,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     //slaveMotor.set(-0.03);
     SmartDashboard.putNumber("Elevator Calculation", elevatorPIDCalculation);
     SmartDashboard.putNumber("Elevator Error", elevatorController.getError());
+    SmartDashboard.putNumber("Elevator Position", elevatorMotor.getPosition().getValueAsDouble());
     
     elevatorMotor.set((elevatorPIDCalculation));
     slaveMotor.set((-elevatorPIDCalculation));

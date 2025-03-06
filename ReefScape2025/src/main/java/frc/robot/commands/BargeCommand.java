@@ -70,6 +70,7 @@ public class BargeCommand extends Command {
       m_swerveSubsystem.setBargeMode(false);
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+      m_clawSubsystem.setDriveMotor(0);
     }
   }
 

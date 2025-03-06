@@ -7,7 +7,7 @@ package frc.robot.commands;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
@@ -35,6 +35,8 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     //clawSubsystem.setAutoPlaceClawTargetPosition(targetClawPosition);
     elevatorPositionMap = elevatorSubsystem.getPositionMap();
     clawPositionMap = clawSubsystem.getPositionMap();
+    algaeElevatorPosition = ElevatorPosition.LOWERALGAE;
+    algaeClawPosition = ClawPosition.FACINGUPREEFALGAE;
     this.id = id;
     if (id>=17 && id<=22){
       if (id % 2 == 0){
@@ -65,7 +67,8 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     addCommands(
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id),
       new CoralPlacementCommand(elevatorSubsystem, clawSubsystem),
-      new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem,photonVisionSubsystem, algaeElevatorPosition, algaeClawPosition, id),
+      new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.36, id),
+      new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem, algaeElevatorPosition, algaeClawPosition),
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.43, id),
       new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 0.41, id)
