@@ -62,6 +62,8 @@ public class ProcessorCommand extends Command {
     timer.reset();
     timer.stop();
     if (m_clawSubsystem.getToggleProcessor() == false){
+      m_clawSubsystem.setHasAlgae(false);
+      m_clawSubsystem.setHasCoral(false);
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
       m_clawSubsystem.setDriveMotor(0);

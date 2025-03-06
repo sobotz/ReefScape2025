@@ -55,8 +55,10 @@ public class ClawSubsystem extends SubsystemBase {
   boolean toggleProcessor;
   boolean toggleBarge;
   double driveMotorCurrent;
+  Timer intakeTimer;
 
   public ClawSubsystem() {
+    intakeTimer = new Timer();
     driveMotorCurrent = 0;
     toggleProcessor = false;
     toggleBarge = false;
@@ -87,7 +89,7 @@ public class ClawSubsystem extends SubsystemBase {
       put(ClawPosition.DEFAULT, ClawConstants.DEFAULT);
       put(ClawPosition.FLOORALGAE,ClawConstants.FLOORALGAE);
       put(ClawPosition.PROCESSOR,ClawConstants.PROCESSOR);
-      put(ClawPosition.FACINGDOWNREEFALGAE, ClawConstants.FACINGUPREEFALGAE);
+      put(ClawPosition.FACINGDOWNREEFALGAE, ClawConstants.FACINGDOWNREEFALGAE);
       put(ClawPosition.FACINGUPREEFALGAE,ClawConstants.FACINGUPREEFALGAE);
       put(ClawPosition.BARGE,ClawConstants.BARGE);
       put(ClawPosition.INTAKE, ClawConstants.INTAKE);
@@ -187,6 +189,10 @@ public class ClawSubsystem extends SubsystemBase {
     clawDriveMotor.set(value);
     if (value == 0){
       driveMotorIsControlled = false;
+      if (hasCoral && !hasAlgae){
+        intakeTimer.start();
+        clawDriveMotor.set(0.13);
+      }
     }
     else{
       driveMotorIsControlled = true;
@@ -239,6 +245,11 @@ public class ClawSubsystem extends SubsystemBase {
     if (once){
       originalWristSensorPosition = wristMotor.getPosition().getValueAsDouble();
       once = false;  
+    }
+    if (intakeTimer.get()>0.7){
+      intakeTimer.reset();
+      intakeTimer.stop();
+      clawDriveMotor.set(0);
     }
     //System.out.println(wristMotor.getPosition().getValueAsDouble() * 360);
     //System.out.println(wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition);

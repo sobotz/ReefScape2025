@@ -167,13 +167,13 @@ public class SwerveSubsystem extends SubsystemBase {
     //Allows for leeway if the current degree is not exactly on target
     angleCorrectionController.setTolerance(0.2);
 
-    rotationController = new PIDController(0.0049,0,0);
+    rotationController = new PIDController(0.005,0,0);
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0.2);
 
-    xTranslationController = new PIDController(0.64, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
+    xTranslationController = new PIDController(0.65, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
     xTranslationController.setTolerance(0.0);
-    yTranslationController =new PIDController(0.64, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
+    yTranslationController =new PIDController(0.65, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
     yTranslationController.setTolerance(0.0);
 
     xVelocityController = new PIDController(0.023,0,0.001);
@@ -221,6 +221,7 @@ public class SwerveSubsystem extends SubsystemBase {
     else{
       isRedAlliance = false;
     }
+    isRedAlliance = true;
     //isRedAlliance = false;//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
     previousXError = 0;
@@ -306,24 +307,20 @@ public class SwerveSubsystem extends SubsystemBase {
     //System.out.println("driveCommand: " + driveCommandDisabled);
     //System.out.println("xTarget: " + xTarget);
     //System.out.println("yTarget: " +  yTarget);
-    
-    
     angleOffset = (angleOffset + 360) % 360;
     double xCalculation = -xTranslationController.calculate( -xOffset,xTarget);
     double yCalculation = yTranslationController.calculate(yOffset,yTarget);
-    if (Math.abs(xTranslationController.getPositionError()) > 0.03){
+    if (Math.abs(xTranslationController.getPositionError()) > 0.02){
       xCalculation = -xTranslationController.calculate( -xOffset,xTarget);
     }
     else{
-      
       xCalculation = 0;
     }
-    if (Math.abs(yTranslationController.getPositionError())> 0.03){
+    if (Math.abs(yTranslationController.getPositionError())> 0.02){
       yCalculation = yTranslationController.calculate(yOffset,yTarget);
       //System.out.println(yTranslationController.getPositionError());
     }
     else{
-      
       yCalculation = 0;
     }
     Vector tvec = new Vector(xCalculation, yCalculation);
@@ -331,9 +328,6 @@ public class SwerveSubsystem extends SubsystemBase {
     //angleRotationController.
     //System.out.println(rvec.getMagnitude());
     double rotationalMagnitude = -rotationController.calculate(angleOffset,rvec.getDegrees());
-    if (Math.abs(rotationalMagnitude) < 0.01){
-      rotationalMagnitude = 0;
-    }
     
     //rotationalMagnitude = 0;
     //System.out.println("trans vec mag :  " + tvec.getMagnitude());
@@ -393,7 +387,7 @@ public class SwerveSubsystem extends SubsystemBase {
     
     if ((Math.abs(xTranslationController.getPositionError())<0.05)){
       
-      if (Math.abs(previousXError - xTranslationController.getPositionError()) <0.03){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousXError - xTranslationController.getPositionError()) <0.04){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         xAtPositionCount += 1;
         //System.out.println("xCount: " + xAtPositionCount);
       }  
@@ -419,7 +413,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     if ((Math.abs(yTranslationController.getPositionError())<0.05)){
       //System.out.println("inrange");
-      if (Math.abs(previousYError - yTranslationController.getPositionError()) <0.03){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousYError - yTranslationController.getPositionError()) <0.04){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         yAtPositionCount += 1;
         //System.out.println("yCount: " + yAtPositionCount);
       }  
@@ -488,6 +482,7 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("degree",currentRobotDegree);
     SmartDashboard.putNumber("xOffsetDrive", xTranslationController.getPositionError());
     SmartDashboard.putNumber("yOffsetDrive", yTranslationController.getPositionError());
+    //System.out.println(isRedAlliance);
     
   }
 }

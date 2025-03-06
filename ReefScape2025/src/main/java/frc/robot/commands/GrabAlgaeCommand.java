@@ -41,6 +41,15 @@ public class GrabAlgaeCommand extends Command {
   public void initialize() {
     isFinished = false;
     if (m_clawSubsystem.getReefAlgaeGrabButton()){
+      if (m_elevatorSubsystem.getPositionMap().get(m_elevatorSubsystem.getAutoPlacePosition()) > m_elevatorSubsystem.getPositionMap().get(elevatorPosition)){
+        clawPosition = ClawPosition.FACINGDOWNREEFALGAE;
+      }
+      else{
+        clawPosition = ClawPosition.FACINGUPREEFALGAE;
+        if (elevatorPosition == ElevatorPosition.HIGHERALGAE){
+          elevatorPosition = ElevatorPosition.MIDALGAE;
+        }
+      }
       m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
       m_clawSubsystem.setClawTargetPosition(clawPosition);
       m_clawSubsystem.setDriveMotor(1);
@@ -56,7 +65,7 @@ public class GrabAlgaeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_clawSubsystem.getDriveMotorCurrent()>59.6){
+    if (m_clawSubsystem.getDriveMotorCurrent()>60.2){
       timer2.start();
     }
     if (timer.get()>3){

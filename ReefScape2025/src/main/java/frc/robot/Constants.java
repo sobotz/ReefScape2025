@@ -23,13 +23,13 @@ public final class Constants {
   }
 
   public static class ClawConstants{
-    public static final double DEFAULT = -90;
+    public static final double DEFAULT = -87;
     public static final double HASALGAEDEFAULT = -360;
     public static final double HASFLOORALGAEDEFAULT = 0;
-    public static final double INTAKE = -90;
+    public static final double INTAKE = -87;
     public static final double FLOORALGAE = -220.0137;
     public static final double PROCESSOR = -270;
-    public static final double FACINGDOWNREEFALGAE = -220;
+    public static final double FACINGDOWNREEFALGAE = -240;
     public static final double FACINGUPREEFALGAE = -300;
     public static final double BARGE = -300;
     public static final double L1 = 60;
@@ -74,12 +74,12 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0.006;
     public static final double DEFAULT = 10;
-    public static final double INTAKE = 20.3;
-    public static final double FLOORALGAE = 8;
-    public static final double PROCESSOR = 5;
-    public static final double LOWERALGAE = 30;
+    public static final double INTAKE = 18.5;
+    public static final double FLOORALGAE = 7.6;
+    public static final double PROCESSOR = 6;
+    public static final double LOWERALGAE = 32;
     public static final double MIDALGAE = 36;
-    public static final double HIGHERALGAE = 42;
+    public static final double HIGHERALGAE = 46;
     public static final double BARGE = 70;
     public static final double L1 = 5;
     public static final double L2 = 27.5;

@@ -276,6 +276,24 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public boolean getAtTargetPosition(){
     return m_swerveSubsystem.getAtTargetPosition();
   }
+  public boolean hasRightID(int id){
+    if (hasID(m3CameraResult,id) || hasID(m3CameraResult,id)){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  public boolean hasID(PhotonPipelineResult pipeline, int idd){
+    if(pipeline.hasTargets() && pipeline.getTargets().stream().anyMatch(t -> Arrays.asList(idd).contains(t.getFiducialId()))){
+      return true;
+    }
+    else{
+      return false;
+    }
+
+
+  }
   @Override
   public void periodic() {
     //m_swerveSubsystem.getTargetID();

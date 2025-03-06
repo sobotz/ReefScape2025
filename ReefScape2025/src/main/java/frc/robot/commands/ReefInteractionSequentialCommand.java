@@ -22,6 +22,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
   /** Creates a new ReefInteractionSequentialCommand. */
   Command algaeGrabCommand;
+  PhotonVisionSubsystem m_photonVisionSubsystem;
   Map<ElevatorPosition, Double> elevatorPositionMap;
   Map<ClawPosition, Double> clawPositionMap;
   ElevatorPosition algaeElevatorPosition;
@@ -33,10 +34,11 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     //elevatorSubsystem.setAutoPlaceClawTargetPosition(targetElevatorPosition);
     //clawSubsystem.setAutoPlaceClawTargetPosition(targetClawPosition);
+    m_photonVisionSubsystem = photonVisionSubsystem;
     elevatorPositionMap = elevatorSubsystem.getPositionMap();
     clawPositionMap = clawSubsystem.getPositionMap();
-    algaeElevatorPosition = ElevatorPosition.LOWERALGAE;
-    algaeClawPosition = ClawPosition.FACINGUPREEFALGAE;
+    algaeElevatorPosition = ElevatorPosition.HIGHERALGAE;
+    algaeClawPosition = ClawPosition.FACINGDOWNREEFALGAE;
     this.id = id;
     if (id>=17 && id<=22){
       if (id % 2 == 0){
@@ -54,15 +56,16 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
         algaeElevatorPosition = ElevatorPosition.HIGHERALGAE;
       }
     }
-    if (elevatorPositionMap.get(elevatorSubsystem.getAutoPlacePosition()) > elevatorPositionMap.get(algaeElevatorPosition)){
-      algaeClawPosition = ClawPosition.FACINGDOWNREEFALGAE;
-    }
-    else{
-      algaeClawPosition = ClawPosition.FACINGUPREEFALGAE;
-      if (algaeElevatorPosition == ElevatorPosition.HIGHERALGAE){
-        algaeElevatorPosition = ElevatorPosition.MIDALGAE;
-      }
-    }
+    //System.out.println(elevatorPositionMap.get(elevatorSubsystem.getAutoPlacePosition()));
+    // if (elevatorPositionMap.get(elevatorSubsystem.getAutoPlacePosition()) > elevatorPositionMap.get(algaeElevatorPosition)){
+    //   algaeClawPosition = ClawPosition.FACINGDOWNREEFALGAE;
+    // }
+    // else{
+    //   algaeClawPosition = ClawPosition.FACINGUPREEFALGAE;
+    //   if (algaeElevatorPosition == ElevatorPosition.HIGHERALGAE){
+    //     algaeElevatorPosition = ElevatorPosition.MIDALGAE;
+    //   }
+    // }
     //System.out.println("id: " + id);
     addCommands(
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id),
@@ -73,5 +76,10 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
       new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 0.41, id)
     );
+  }
+  
+  @Override
+  public boolean isFinished() {
+    return m_photonVisionSubsystem.hasRightID(id);
   }
 }

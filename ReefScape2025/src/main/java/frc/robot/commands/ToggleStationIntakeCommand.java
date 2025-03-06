@@ -54,17 +54,19 @@ public class ToggleStationIntakeCommand extends Command {
     else if (timer.get()>1){
       m_intakeSubsystem.setDriveMotor(1.0);
     }
-    if (m_clawSubsystem.getProximityTripped()){
-      m_clawSubsystem.setHasCoral(true);
-      m_clawSubsystem.setHasAlgae(false);
-      isFinished = true;
-    }
+    // if (m_clawSubsystem.getProximityTripped()){
+    //   m_clawSubsystem.setHasCoral(true);
+    //   m_clawSubsystem.setHasAlgae(false);
+    //   isFinished = true;
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    m_clawSubsystem.setHasCoral(true);
+      m_clawSubsystem.setHasAlgae(false);
+      isFinished = true;
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_clawSubsystem.setDriveMotor(0);
