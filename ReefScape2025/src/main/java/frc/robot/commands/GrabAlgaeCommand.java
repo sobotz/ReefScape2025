@@ -10,24 +10,31 @@ import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GrabAlgaeCommand extends Command {
   /** Creates a new GrabHigherAlgaeCommand. */
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
+  PhotonVisionSubsystem m_photonVisionSubsystem;
   ElevatorPosition elevatorPosition;
   ClawPosition clawPosition;
   Timer timer;
   boolean isFinished;
-  public GrabAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,ElevatorPosition elevatorPosition, ClawPosition clawPosition) {
+  
+  int id;
+  public GrabAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, ElevatorPosition elevatorPosition, ClawPosition clawPosition, int id) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
+    m_photonVisionSubsystem = photonVisionSubsystem;
     this.elevatorPosition = elevatorPosition;
     this.clawPosition = clawPosition;
     timer = new Timer();
     isFinished = false;
+
+    this.id = id;
   }
 
   // Called when the command is initially scheduled.
@@ -35,7 +42,8 @@ public class GrabAlgaeCommand extends Command {
   public void initialize() {
     isFinished = false;
     if (m_clawSubsystem.getReefAlgaeGrabButton()){
-      System.out.println("start algae grabBBBBBBBBBBBBBBB");
+      m_photonVisionSubsystem.enableAlign(true ,0, 0.36, id);
+      m_photonVisionSubsystem.resetCount();
       m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
       m_clawSubsystem.setClawTargetPosition(clawPosition);
       m_clawSubsystem.setDriveMotor(1);

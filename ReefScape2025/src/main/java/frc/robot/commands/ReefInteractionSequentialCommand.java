@@ -57,15 +57,15 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     }
     else{
       algaeClawPosition = ClawPosition.FACINGUPREEFALGAE;
+      if (algaeElevatorPosition == ElevatorPosition.HIGHERALGAE){
+        algaeElevatorPosition = ElevatorPosition.MIDALGAE;
+      }
     }
     //System.out.println("id: " + id);
     addCommands(
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id),
       new CoralPlacementCommand(elevatorSubsystem, clawSubsystem),
-      new ParallelCommandGroup(
-        new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem, algaeElevatorPosition, algaeClawPosition),
-        new AlignCommand(swerveSubsystem ,photonVisionSubsystem, true, 0, 0.36, id)
-      ),
+      new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem,photonVisionSubsystem, algaeElevatorPosition, algaeClawPosition, id),
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.43, id),
       new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 0.41, id)

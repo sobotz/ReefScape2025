@@ -55,10 +55,7 @@ public class BargeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.get()>0.5){
-      if (!m_clawSubsystem.getProximityTripped()){
-        m_clawSubsystem.setHasAlgae(false);
-      }
+    if (timer.get()>0.4){
       isFinished = true;
     }
   }
@@ -69,6 +66,7 @@ public class BargeCommand extends Command {
     timer.reset();
     timer.stop();
     if (m_clawSubsystem.getToggleBarge() == false){
+      m_clawSubsystem.setHasAlgae(false);
       m_swerveSubsystem.setBargeMode(false);
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);

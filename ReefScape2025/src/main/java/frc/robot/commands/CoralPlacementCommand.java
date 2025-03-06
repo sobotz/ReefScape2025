@@ -61,6 +61,7 @@ public class CoralPlacementCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_clawSubsystem.setHasCoral(false);
     timer.reset();
     timer2.reset();
     timer.stop();

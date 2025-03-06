@@ -54,8 +54,10 @@ public class ClawSubsystem extends SubsystemBase {
   boolean reefAlgaeGrabButton;
   boolean toggleProcessor;
   boolean toggleBarge;
+  double driveMotorCurrent;
 
   public ClawSubsystem() {
+    driveMotorCurrent = 0;
     toggleProcessor = false;
     toggleBarge = false;
     reefCoralPlacementButton = true;
@@ -111,6 +113,7 @@ public class ClawSubsystem extends SubsystemBase {
   public double getClawSensorPosition(){
     return (((((wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition)*360)/82.1333333)-94));
   }
+
 
   public Map<ClawPosition, Double> getPositionMap(){
     return clawPositionMap;
@@ -223,10 +226,14 @@ public class ClawSubsystem extends SubsystemBase {
   public boolean getProximityTripped(){
     return proxTripped;
   }
+  public double getDriveMotorCurrent(){
+    return driveMotorCurrent;
+  }
 
 
   @Override
   public void periodic() {
+    driveMotorCurrent = clawDriveMotor.getTorqueCurrent().getValueAsDouble();
     proxTripped = proxSensor.get();
     if (once){
       originalWristSensorPosition = wristMotor.getPosition().getValueAsDouble();

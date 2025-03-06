@@ -270,6 +270,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public void intakeAlign(double robotX,double robotY,boolean enabled){
       
   }
+  public void resetCount(){
+    m_swerveSubsystem.resetCount();
+  }
   public boolean getAtTargetPosition(){
     return m_swerveSubsystem.getAtTargetPosition();
   }

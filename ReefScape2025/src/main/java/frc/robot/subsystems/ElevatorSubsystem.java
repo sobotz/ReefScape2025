@@ -66,6 +66,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       put(ElevatorPosition.FLOORALGAE,ElevatorConstants.FLOORALGAE);
       put(ElevatorPosition.PROCESSOR,ElevatorConstants.PROCESSOR);
       put(ElevatorPosition.LOWERALGAE,ElevatorConstants.LOWERALGAE);
+      put(ElevatorPosition.MIDALGAE, ElevatorConstants.MIDALGAE);
       put(ElevatorPosition.HIGHERALGAE, ElevatorConstants.HIGHERALGAE);
       put(ElevatorPosition.BARGE, ElevatorConstants.BARGE);
       put(ElevatorPosition.L1, ElevatorConstants.L1);

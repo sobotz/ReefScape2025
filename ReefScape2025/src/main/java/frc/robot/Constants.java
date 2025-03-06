@@ -56,6 +56,7 @@ public final class Constants {
     FLOORALGAE,
     PROCESSOR,
     LOWERALGAE,
+    MIDALGAE,
     HIGHERALGAE,
     BARGE,
     L1,
@@ -76,8 +77,9 @@ public final class Constants {
     public static final double INTAKE = 20.3;
     public static final double FLOORALGAE = 8;
     public static final double PROCESSOR = 8;
-    public static final double LOWERALGAE = 29.4;
-    public static final double HIGHERALGAE = 37;
+    public static final double LOWERALGAE = 30;
+    public static final double MIDALGAE = 36;
+    public static final double HIGHERALGAE = 39;
     public static final double BARGE = 70;
     public static final double L1 = 8;
     public static final double L2 = 27.5;
