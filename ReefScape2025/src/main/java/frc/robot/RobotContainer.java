@@ -36,7 +36,6 @@ import frc.robot.commands.ReefCoralPlacementButton;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 
 import frc.robot.subsystems.SwerveSubsystem;
-
 import java.lang.annotation.ElementType;
 
 import com.pathplanner.lib.auto.AutoBuilder;
