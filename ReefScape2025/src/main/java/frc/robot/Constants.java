@@ -24,18 +24,18 @@ public final class Constants {
 
   public static class ClawConstants{
     public static final double DEFAULT = -90;
-    public static final double HASALGAEDEFAULT = -320;
+    public static final double HASALGAEDEFAULT = -360;
     public static final double HASFLOORALGAEDEFAULT = 0;
     public static final double INTAKE = -90;
     public static final double FLOORALGAE = 120;
     public static final double PROCESSOR = 90;
-    public static final double FACINGDOWNREEFALGAE = -270;
-    public static final double FACINGUPREEFALGAE = -270;
+    public static final double FACINGDOWNREEFALGAE = -220;
+    public static final double FACINGUPREEFALGAE = -300;
     public static final double BARGE = -300;
-    public static final double L1 = 80;
+    public static final double L1 = 90;
     public static final double L2 = -240;
     public static final double L3= -240;
-    public static final double L4 = -220;
+    public static final double L4 = -228;
   }
   public static enum ClawPosition{
     DEFAULT,
@@ -76,12 +76,12 @@ public final class Constants {
     public static final double INTAKE = 20.3;
     public static final double FLOORALGAE = 8;
     public static final double PROCESSOR = 8;
-    public static final double LOWERALGAE = 31;
-    public static final double HIGHERALGAE = 43;
+    public static final double LOWERALGAE = 29.4;
+    public static final double HIGHERALGAE = 37;
     public static final double BARGE = 70;
     public static final double L1 = 8;
-    public static final double L2 = 29;
-    public static final double L3 = 40;
+    public static final double L2 = 27.5;
+    public static final double L3 = 42;
     public static final double L4 = 70;
   }
 

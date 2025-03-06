@@ -35,6 +35,7 @@ public class GrabAlgaeCommand extends Command {
   public void initialize() {
     isFinished = false;
     if (m_clawSubsystem.getReefAlgaeGrabButton()){
+      System.out.println("start algae grabBBBBBBBBBBBBBBB");
       m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
       m_clawSubsystem.setClawTargetPosition(clawPosition);
       m_clawSubsystem.setDriveMotor(1);
@@ -50,12 +51,12 @@ public class GrabAlgaeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_clawSubsystem.getProximityTripped()){
+    /*if (m_clawSubsystem.getProximityTripped()){
       m_clawSubsystem.setHasAlgae(true);
       m_clawSubsystem.setAlgaeRetainPosition();
       isFinished = true;
-    }
-    else if (timer.get()>4){
+    }*/
+    if (timer.get()>1.2){
       isFinished = true;
     }
   
@@ -64,11 +65,14 @@ public class GrabAlgaeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_clawSubsystem.setHasAlgae(true);
+    m_clawSubsystem.setDriveMotor(0);
+    m_clawSubsystem.setAlgaeRetainPosition();
     timer.reset();
     timer.stop();
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
-    m_clawSubsystem.setDriveMotor(0);
+    
     
   }
 

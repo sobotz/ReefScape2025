@@ -64,7 +64,7 @@ public class ClawSubsystem extends SubsystemBase {
     proxSensor = new DigitalInput(0);//CHANGE
     proxTripped = false;
     wristMotor = new TalonFX(18);
-    wristMotor.setNeutralMode(NeutralModeValue.Brake);
+    wristMotor.setNeutralMode(NeutralModeValue.Coast);
     limitConfigs = new CurrentLimitsConfigs();
     limitConfigs.StatorCurrentLimit = 60;
     limitConfigs.StatorCurrentLimitEnable = true;
@@ -109,8 +109,9 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public double getClawSensorPosition(){
-    return (((((wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition)*360)/80.6/*81.572753*/) + (originalCanCoderPosition + 45)));
+    return (((((wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition)*360)/82.1333333)-94));
   }
+
   public Map<ClawPosition, Double> getPositionMap(){
     return clawPositionMap;
   }
@@ -128,9 +129,9 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public boolean clawAtTargetPosition(){
-    if ((Math.abs(clawController.getError())<0.21) && (Math.abs(clawPIDCalculation)<0.012)){
+    if ((Math.abs(clawController.getError())<0.21) && (Math.abs(clawPIDCalculation)<0.02)){
       //System.out.println("inrange");
-      if (Math.abs(previousClawError - clawController.getError()) <0.065){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousClawError - clawController.getError()) <0.06){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;
       }  
       else{
@@ -228,13 +229,8 @@ public class ClawSubsystem extends SubsystemBase {
   public void periodic() {
     proxTripped = proxSensor.get();
     if (once){
-      timer.start();
-      if (timer.get()>3){
-        originalCanCoderPosition =  ((-1 * clawSensor.getAbsolutePosition().getValueAsDouble()) * 360) % 360;
-        originalWristSensorPosition = wristMotor.getPosition().getValueAsDouble();
-        once = false;  
-        timer.stop();
-      }
+      originalWristSensorPosition = wristMotor.getPosition().getValueAsDouble();
+      once = false;  
     }
     //System.out.println(wristMotor.getPosition().getValueAsDouble() * 360);
     //System.out.println(wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition);
@@ -249,7 +245,8 @@ public class ClawSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Claw Calculation",clawPIDCalculation);
     //System.out.println(clawController.getError());
     //System.out.println(clawPIDCalculation);
-    
+    //System.out.println((-1 * clawSensor.getAbsolutePosition().getValueAsDouble()* 360) % 360);
+    //System.out.println(wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition);
       if (clawPIDCalculation > 0.90){
         clawPIDCalculation = 0.90;
       }

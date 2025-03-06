@@ -207,55 +207,55 @@ public class RobotContainer {
     //REEF BUTTONS
     if (m_swerveSubsystem.getIsRedAlliance()){
       JoystickButton reefAButton = new JoystickButton(A2,1);
-      reefAButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 7));
+      reefAButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 7));
       JoystickButton reefBButton = new JoystickButton(A2, 2);
-      reefBButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 7));
+      reefBButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 7));
       JoystickButton reefCButton = new JoystickButton(A2,3);
-      reefCButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 8));
+      reefCButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 8));
       JoystickButton reefDButton = new JoystickButton(A2,4);
-      reefDButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 8));
+      reefDButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 8));
       JoystickButton reefEButton = new JoystickButton(A2,5);
-      reefEButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 9));
+      reefEButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 9));
       JoystickButton reefFButton = new JoystickButton(A2,6);
-      reefFButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 9));
+      reefFButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 9));
       JoystickButton reefGButton = new JoystickButton(A2,7);
-      reefGButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 10));
+      reefGButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 10));
       JoystickButton reefHButton = new JoystickButton(A2,8);
-      reefHButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 10));
+      reefHButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 10));
       JoystickButton reefIButton = new JoystickButton(A2,9);
-      reefIButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 11));
+      reefIButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 11));
       JoystickButton reefJButton = new JoystickButton(A2,10);
-      reefJButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1,11));
+      reefJButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41,11));
       JoystickButton reefKButton = new JoystickButton(A2,11);
-      reefKButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 12));
+      reefKButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 12));
       JoystickButton reefLButton = new JoystickButton(A2,12);
-      reefLButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 12));
+      reefLButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 12));
     }
     else{
       JoystickButton reefAButton = new JoystickButton(A2,1);
-      reefAButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.2, 1, 18));
+      reefAButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.14, 0.41, 18));
       JoystickButton reefBButton = new JoystickButton(A2, 2);
-      reefBButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 18));
+      reefBButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 18));
       JoystickButton reefCButton = new JoystickButton(A2,3);
-      reefCButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 17));
+      reefCButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 17));
       JoystickButton reefDButton = new JoystickButton(A2,4);
-      reefDButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 17));
+      reefDButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 17));
       JoystickButton reefEButton = new JoystickButton(A2,5);
-      reefEButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 22));
+      reefEButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 22));
       JoystickButton reefFButton = new JoystickButton(A2,6);
-      reefFButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 22));
+      reefFButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 22));
       JoystickButton reefGButton = new JoystickButton(A2,7);
-      reefGButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 21));
+      reefGButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 21));
       JoystickButton reefHButton = new JoystickButton(A2,8);
-      reefHButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 21));
+      reefHButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 21));
       JoystickButton reefIButton = new JoystickButton(A2,9);
-      reefIButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 20));
+      reefIButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 20));
       JoystickButton reefJButton = new JoystickButton(A2,10);
-      reefJButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 20));
+      reefJButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 20));
       JoystickButton reefKButton = new JoystickButton(A2,11);
-      reefKButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.2,1, 19));
+      reefKButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,-0.14,0.41, 19));
       JoystickButton reefLButton = new JoystickButton(A2,12);
-      reefLButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.2,1, 19));
+      reefLButton.onTrue(new ReefInteractionSequentialCommand(m_swerveSubsystem,m_elevatorSubsystem,m_clawSubsystem, m_PhotonVisionSubsytem,+0.14,0.41, 19));
     }
     
     //ACTION BUTTONS
@@ -272,14 +272,14 @@ public class RobotContainer {
     driveReverseButton.whileTrue(m_clawDriveReverseCommand);
     JoystickButton driveButton = new JoystickButton(testOperator, 6);
     driveButton.whileTrue(m_clawDriveCommand);
-    JoystickButton defaultButton = new JoystickButton(stick,5);
+    JoystickButton defaultButton = new JoystickButton(testOperator,5);
     defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
-    JoystickButton testL1Button = new JoystickButton(stick, 1);
-    testL1Button.onTrue(new CoralPlacementCommand(m_elevatorSubsystem, m_clawSubsystem));
-    JoystickButton testL2Button = new JoystickButton(stick,2);
+    JoystickButton testL1Button = new JoystickButton(testOperator, 1);
+    testL1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1));
+    JoystickButton testL2Button = new JoystickButton(testOperator,2);
     testL2Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L2, ClawPosition.L2));
-    JoystickButton testL3Button = new JoystickButton(stick,3);
-    testL3Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L3, ClawPosition.L3));
+    JoystickButton testL3Button = new JoystickButton(testOperator,3);
+    testL3Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));
     /*JoystickButton testL4Button = new JoystickButton(testOperator,6);
     testL4Button.onTrue(new CoralPlacementCommand(m_elevatorSubsystem, m_clawSubsystem));*/
     //JoystickButton intakeButton = new JoystickButton(testOperator,6);

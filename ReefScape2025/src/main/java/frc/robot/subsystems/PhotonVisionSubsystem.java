@@ -105,14 +105,11 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
     usingM3Camera = false;
     xTarget = 0;
-    yTarget = 0;
+    yTarget = 1;
     
 
   }
-  public void setTargetPosition(double x,double y){
-    xTarget = x;
-    yTarget = y;
-  }
+  
   public void enableAlign(boolean enableAlign,double x, double y, int id){
     xTarget = x;
     yTarget = y;
@@ -269,7 +266,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       m_swerveSubsystem.setDriveCommandDisabled(false);
       m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,false);
     }
-   
   }
   public void intakeAlign(double robotX,double robotY,boolean enabled){
       
@@ -296,6 +292,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     m3TargetData = getData(m3CameraResult);
     m4TargetData = getData(m4CameraResult);
     intakeTargetData = getData(intakeCameraResult);
+    //align(0, 0, id, false);
     //align(0,1,20,true);
     //System.out.println(m3Camera.getLatestResult().getTargets().get(0).getYaw());
     SmartDashboard.putNumber("xrobot", robotXOffset);

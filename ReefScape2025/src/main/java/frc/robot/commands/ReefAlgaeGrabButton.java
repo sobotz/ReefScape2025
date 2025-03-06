@@ -22,5 +22,6 @@ public class ReefAlgaeGrabButton extends InstantCommand {
   @Override
   public void initialize() {
     m_clawSubsystem.toggleReefAlgaeGrabButton();
+    System.out.println(m_clawSubsystem.getReefAlgaeGrabButton());
   }
 }

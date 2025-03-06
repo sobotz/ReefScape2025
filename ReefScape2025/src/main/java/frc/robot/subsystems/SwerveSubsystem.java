@@ -61,8 +61,8 @@ public class SwerveSubsystem extends SubsystemBase {
   //PID CONTROLLERS
   PIDController rotationController;
   PIDController angleCorrectionController;
-  ProfiledPIDController xTranslationController;
-  ProfiledPIDController yTranslationController;
+  PIDController xTranslationController;
+  PIDController yTranslationController;
   PIDController xVelocityController;
   PIDController yVelocityController;
   PIDController degreeVelocityController;
@@ -171,9 +171,9 @@ public class SwerveSubsystem extends SubsystemBase {
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0.2);
 
-    xTranslationController = new ProfiledPIDController(0.6, 0, 0.001, new TrapezoidProfile.Constraints(1,0.3));
+    xTranslationController = new PIDController(0.63, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
     xTranslationController.setTolerance(0.0);
-    yTranslationController =new ProfiledPIDController(0.6, 0, 0.001, new TrapezoidProfile.Constraints(1,0.3));
+    yTranslationController =new PIDController(0.63, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
     yTranslationController.setTolerance(0.0);
 
     xVelocityController = new PIDController(0.023,0,0.001);
@@ -306,6 +306,8 @@ public class SwerveSubsystem extends SubsystemBase {
     //System.out.println("driveCommand: " + driveCommandDisabled);
     //System.out.println("xTarget: " + xTarget);
     //System.out.println("yTarget: " +  yTarget);
+    
+    
     angleOffset = (angleOffset + 360) % 360;
     double xCalculation = -xTranslationController.calculate( -xOffset,xTarget);
     double yCalculation = yTranslationController.calculate(yOffset,yTarget);
@@ -317,8 +319,8 @@ public class SwerveSubsystem extends SubsystemBase {
       xCalculation = 0;
     }
     if (Math.abs(yTranslationController.getPositionError())> 0.03){
-      
       yCalculation = yTranslationController.calculate(yOffset,yTarget);
+      //System.out.println(yTranslationController.getPositionError());
     }
     else{
       
@@ -381,6 +383,10 @@ public class SwerveSubsystem extends SubsystemBase {
   public ChassisSpeeds getSpeeds() {
     return m_kinematics.toChassisSpeeds(getAllSwerveModuleStates());
   }
+  public void resetCount(){
+    xAtPositionCount = 0;
+    yAtPositionCount = 0;
+  }
   public boolean getAtTargetPosition(){
     boolean xAtTarget = false;
     boolean yAtTarget = false;
@@ -389,7 +395,7 @@ public class SwerveSubsystem extends SubsystemBase {
       
       if (Math.abs(previousXError - xTranslationController.getPositionError()) <0.02){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         xAtPositionCount += 1;
-        System.out.println("xCount: " + xAtPositionCount);
+        //System.out.println("xCount: " + xAtPositionCount);
       }  
       else{
         xAtPositionCount = 0;
@@ -415,7 +421,7 @@ public class SwerveSubsystem extends SubsystemBase {
       //System.out.println("inrange");
       if (Math.abs(previousYError - yTranslationController.getPositionError()) <0.02){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         yAtPositionCount += 1;
-        System.out.println("yCount: " + yAtPositionCount);
+        //System.out.println("yCount: " + yAtPositionCount);
       }  
       else{
         yAtPositionCount = 0;
@@ -436,7 +442,7 @@ public class SwerveSubsystem extends SubsystemBase {
       
     }
     if (yAtTarget && xAtTarget){
-      System.out.println("AtMovementPoint");
+      //System.out.println("AtMovementPoint");
       return true;
     }
     else{

@@ -31,6 +31,7 @@ public class CoralPlacementCommand extends Command {
   public void initialize() {
     isFinished = false;
     if (m_clawSubsystem.getReefCoralPlacementButton()){
+      System.out.println("startcoral placement");
       m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
       m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
       timer.start();
@@ -45,12 +46,12 @@ public class CoralPlacementCommand extends Command {
   @Override
   public void execute() {
     if (m_clawSubsystem.clawAtTargetPosition() && m_elevatorSubsystem.elevatorAtTargetPosition()){
-      m_clawSubsystem.setDriveMotor(-0.8);
+      m_clawSubsystem.setDriveMotor(-0.6);
       timer2.start();
     }
     else if(timer.get()>4){
       timer2.start();
-      m_clawSubsystem.setDriveMotor(-0.8);
+      m_clawSubsystem.setDriveMotor(-0.6);
     }
     if (timer2.get()>0.8){
       isFinished = true;

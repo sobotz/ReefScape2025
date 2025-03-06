@@ -35,7 +35,10 @@ public class AlignCommand extends Command {
   public void initialize() {
     m_photonVisionSubsystem.enableAlign(alignActive ,xTarget, yTarget, id);
     isFinished = false;
+    m_swerveSubsystem.resetCount();
+    System.out.println("start align");
     if (!alignActive){
+
       m_swerveSubsystem.setDriveCommandDisabled(false);
       isFinished = true;
     }
