@@ -77,9 +77,4 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 0.41, id)
     );
   }
-  
-  @Override
-  public boolean isFinished() {
-    return m_photonVisionSubsystem.hasRightID(id);
-  }
 }
