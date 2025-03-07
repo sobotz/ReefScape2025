@@ -9,6 +9,7 @@ package frc.robot;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.commands.AlignCommand;
+import frc.robot.commands.AutoSetStationIntakeCommand;
 import frc.robot.commands.BargeCommand;
 import frc.robot.commands.CoralLevelButtonCommand;
 import frc.robot.commands.CoralPlacementCommand;
@@ -133,6 +134,7 @@ public class RobotContainer {
   ReefInteractionSequentialCommand m_autoLReefCommand;
 
   ResetGyroCommand m_resetGyroCommand;
+  AutoSetStationIntakeCommand m_autoSetStationIntakeCommand;
   
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -204,6 +206,7 @@ public class RobotContainer {
     m_autoKReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.14, 0.41, 19, true);
     m_autoLReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.14, 0.41, 19, true);
 
+    m_autoSetStationIntakeCommand = new AutoSetStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     //autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
     configureBindings();
   }
