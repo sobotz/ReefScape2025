@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ClawPosition;
+import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
@@ -13,12 +15,16 @@ import frc.robot.subsystems.SwerveSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ReefInteractionSequentialHolderCommand extends Command {
   /** Creates a new ReefInteractionSequentialHolderCommand. */
+  ElevatorSubsystem m_elevatorSubsystem;
+  ClawSubsystem m_clawSubsystem;
   ReefInteractionSequentialCommand m_interactionCommand;
   PhotonVisionSubsystem m_photonVisionSubsystem;
   int id;
   boolean isFinished;
   public ReefInteractionSequentialHolderCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, int id, ReefInteractionSequentialCommand interactionCommand) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_elevatorSubsystem = elevatorSubsystem;
+    m_clawSubsystem = clawSubsystem;
     m_interactionCommand = interactionCommand;
     this.id = id;
     isFinished = false;
@@ -49,6 +55,8 @@ public class ReefInteractionSequentialHolderCommand extends Command {
   public void end(boolean interrupted) {
     if (interrupted){
       m_interactionCommand.cancel();
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
+      m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     }
     m_photonVisionSubsystem.setDriveCommandDisabled(false);
     m_photonVisionSubsystem.enableAlign(false,0,0,id);
