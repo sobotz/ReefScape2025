@@ -171,9 +171,9 @@ public class SwerveSubsystem extends SubsystemBase {
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0.2);
 
-    xTranslationController = new PIDController(0.65, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
+    xTranslationController = new PIDController(0.66, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
     xTranslationController.setTolerance(0.0);
-    yTranslationController =new PIDController(0.65, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
+    yTranslationController =new PIDController(0.66, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
     yTranslationController.setTolerance(0.0);
 
     xVelocityController = new PIDController(0.023,0,0.001);
@@ -385,7 +385,7 @@ public class SwerveSubsystem extends SubsystemBase {
     boolean xAtTarget = false;
     boolean yAtTarget = false;
     
-    if ((Math.abs(xTranslationController.getPositionError())<0.05)){
+    if ((Math.abs(xTranslationController.getPositionError())<0.06)){
       
       if (Math.abs(previousXError - xTranslationController.getPositionError()) <0.04){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         xAtPositionCount += 1;
@@ -407,11 +407,10 @@ public class SwerveSubsystem extends SubsystemBase {
     else{
       previousXError = xTranslationController.getPositionError();
       xAtTarget = false;
-      
     }
 
 
-    if ((Math.abs(yTranslationController.getPositionError())<0.05)){
+    if ((Math.abs(yTranslationController.getPositionError())<0.06)){
       //System.out.println("inrange");
       if (Math.abs(previousYError - yTranslationController.getPositionError()) <0.04){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         yAtPositionCount += 1;

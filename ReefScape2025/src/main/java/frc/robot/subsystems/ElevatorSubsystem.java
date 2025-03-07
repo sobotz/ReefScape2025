@@ -70,6 +70,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       put(ElevatorPosition.L2, ElevatorConstants.L2);
       put(ElevatorPosition.L3, ElevatorConstants.L3);
       put(ElevatorPosition.L4, ElevatorConstants.L4);
+      put(ElevatorPosition.TEMPPOSITION, ElevatorConstants.TEMPPOSITION);
     }};
 
     /** Initialize motors */

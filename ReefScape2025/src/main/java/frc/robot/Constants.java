@@ -36,6 +36,7 @@ public final class Constants {
     public static final double L2 = -240;
     public static final double L3= -240;
     public static final double L4 = -228;
+    public static final double TEMPPOSITION = -180;
   }
   public static enum ClawPosition{
     DEFAULT,
@@ -48,7 +49,8 @@ public final class Constants {
     L1,
     L2,
     L3,
-    L4
+    L4,
+    TEMPPOSITION
   }
   public static enum ElevatorPosition{
     DEFAULT,
@@ -62,7 +64,8 @@ public final class Constants {
     L1,
     L2,
     L3,
-    L4
+    L4,
+    TEMPPOSITION
   }
   public static final class ElevatorConstants {
     //I type PID CONTROLLER
@@ -85,6 +88,7 @@ public final class Constants {
     public static final double L2 = 27.5;
     public static final double L3 = 42;
     public static final double L4 = 70;
+    public static final double TEMPPOSITION = 30;
   }
 
   public static class PhotonVisionConstants{

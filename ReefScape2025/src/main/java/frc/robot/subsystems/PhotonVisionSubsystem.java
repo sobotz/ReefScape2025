@@ -144,6 +144,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     }
 
   }*/
+  
   public void enableAlign(boolean enableAlign,double x, double y, int id){
     xTarget = x;
     yTarget = y;

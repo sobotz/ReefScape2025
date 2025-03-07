@@ -99,6 +99,7 @@ public class ClawSubsystem extends SubsystemBase {
       put(ClawPosition.L2, ClawConstants.L2);
       put(ClawPosition.L3, ClawConstants.L3);
       put(ClawPosition.L4, ClawConstants.L4);
+      put(ClawPosition.TEMPPOSITION, ClawConstants.TEMPPOSITION);
     }};
     clawTargetPosition = ClawPosition.DEFAULT;
     autoPlaceClawTargetPosition = ClawPosition.L1;
