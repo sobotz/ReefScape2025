@@ -5,27 +5,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
-
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlignCommand extends Command {
-  /** Creates a new AlignCommand. */
-  SwerveSubsystem m_swerveSubsystem;
+public class ReefInteractionSequentialHolderCommand extends Command {
+  /** Creates a new ReefInteractionSequentialHolderCommand. */
+  ReefInteractionSequentialCommand m_interactionCommand;
   PhotonVisionSubsystem m_photonVisionSubsystem;
-  boolean alignActive;
-  double xTarget;
-  double yTarget;
   int id;
   boolean isFinished;
-  public AlignCommand(SwerveSubsystem swerveSubsystem, PhotonVisionSubsystem photonVisionSubsystem, boolean align, double x, double y, int id) {
+  public ReefInteractionSequentialHolderCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, int id, ReefInteractionSequentialCommand interactionCommand) {
     // Use addRequirements() here to declare subsystem dependencies.
-    alignActive = align;
-    m_swerveSubsystem = swerveSubsystem;
-    m_photonVisionSubsystem = photonVisionSubsystem;
-    xTarget = x;
-    yTarget = y;
+    m_interactionCommand = interactionCommand;
     this.id = id;
     isFinished = false;
   }
@@ -33,11 +27,11 @@ public class AlignCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_photonVisionSubsystem.enableAlign(alignActive ,xTarget, yTarget, id);
     isFinished = false;
-    m_swerveSubsystem.resetCount();
-    if (!alignActive){
-      m_swerveSubsystem.setDriveCommandDisabled(false);
+    if (m_photonVisionSubsystem.hasRightID(id)){
+      m_interactionCommand.schedule();
+    }
+    else{
       isFinished = true;
     }
   }
@@ -45,15 +39,20 @@ public class AlignCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_photonVisionSubsystem.getAtTargetPosition()){
-      System.out.println("FINISH ALIGNNNNN");
+    if (m_interactionCommand.isFinished()){
       isFinished = true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if (interrupted){
+      m_interactionCommand.cancel();
+    }
+    m_photonVisionSubsystem.setDriveCommandDisabled(false);
+    m_photonVisionSubsystem.enableAlign(false,0,0,id);
+  }
 
   // Returns true when the command should end.
   @Override

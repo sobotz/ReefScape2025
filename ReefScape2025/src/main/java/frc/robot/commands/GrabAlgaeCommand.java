@@ -33,7 +33,6 @@ public class GrabAlgaeCommand extends Command {
     timer = new Timer();
     timer2 = new Timer();
     isFinished = false;
-
   }
 
   // Called when the command is initially scheduled.

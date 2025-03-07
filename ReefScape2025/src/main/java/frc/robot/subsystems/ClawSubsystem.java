@@ -57,6 +57,8 @@ public class ClawSubsystem extends SubsystemBase {
   double driveMotorCurrent;
   Timer intakeTimer;
 
+
+
   public ClawSubsystem() {
     intakeTimer = new Timer();
     driveMotorCurrent = 0;
@@ -112,6 +114,7 @@ public class ClawSubsystem extends SubsystemBase {
     previousClawError = 0;
     atPositionCount = 0;
   }
+  
 
   public double getClawSensorPosition(){
     return (((((wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition)*360)/82.1333333)-90));

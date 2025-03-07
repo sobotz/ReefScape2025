@@ -79,7 +79,36 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    boolean alignActive;
 
 
+   boolean aReef;
+   boolean bReef;
+   boolean cReef;
+   boolean dReef;
+   boolean eReef;
+   boolean fReef;
+   boolean gReef;
+   boolean hReef;
+   boolean iReef;
+   boolean jReef;
+   boolean kReef;
+   boolean lReef;
+
+   double reefNumber;
+
+
   public PhotonVisionSubsystem(SwerveSubsystem subsystem) {
+    reefNumber = 0;
+    aReef = false;
+    bReef = false;
+    cReef = false;
+    dReef = false;
+    eReef = false;
+    fReef = false;
+    gReef = false;
+    hReef = false;
+    iReef = false;
+    jReef = false;
+    kReef = false;
+    lReef = false;
     atTargetPosition = false;
     m_swerveSubsystem = subsystem;
     xTarget = 0;
@@ -109,7 +138,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     
 
   }
-  
+  /*public void lightUpReef(int id, boolean isRightSide){
+    if (id>=6 && id<=11){
+      reefNumber = 
+    }
+
+  }*/
   public void enableAlign(boolean enableAlign,double x, double y, int id){
     xTarget = x;
     yTarget = y;
@@ -293,6 +327,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     }
 
 
+  }
+  public void setDriveCommandDisabled(boolean value){
+    m_swerveSubsystem.setDriveCommandDisabled(value);
   }
   @Override
   public void periodic() {
