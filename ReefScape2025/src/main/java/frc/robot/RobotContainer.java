@@ -113,6 +113,12 @@ public class RobotContainer {
   ReefAlgaeGrabButton m_ReefAlgaeGrabCommand;
   ProcessorCommand m_processorCommand;
   BargeCommand m_bargeCommand;
+
+  ReefCoralPlacementButton m_setL1Level;
+  ReefCoralPlacementButton m_setL2Level;
+  ReefCoralPlacementButton m_setL3Level;
+  ReefCoralPlacementButton m_setL4Level;
+
   ReefInteractionSequentialCommand m_autoAReefCommand;
   ReefInteractionSequentialCommand m_autoBReefCommand;
   ReefInteractionSequentialCommand m_autoCReefCommand;
@@ -180,7 +186,10 @@ public class RobotContainer {
     m_processorCommand = new ProcessorCommand(m_elevatorSubsystem, m_clawSubsystem);
     m_bargeCommand = new BargeCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem);
     m_resetGyroCommand = new ResetGyroCommand(m_swerveSubsystem, m_PhotonVisionSubsytem);
-
+    m_setL1Level = new ReefCoralPlacementButton(m_clawSubsystem);
+    m_setL2Level = new ReefCoralPlacementButton(m_clawSubsystem);
+    m_setL3Level = new ReefCoralPlacementButton(m_clawSubsystem);
+    m_setL4Level = new ReefCoralPlacementButton(m_clawSubsystem);
     //AUTOPATHS
     m_autoAReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.14, 0.41, 18, true);
     m_autoBReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.14, 0.41, 18, true);
