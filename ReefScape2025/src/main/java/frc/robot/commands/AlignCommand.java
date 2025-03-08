@@ -37,6 +37,7 @@ public class AlignCommand extends Command {
     isFinished = false;
     m_swerveSubsystem.resetCount();
     if (!alignActive){
+      m_photonVisionSubsystem.enableAlign(false,0,0,0);
       m_swerveSubsystem.setDriveCommandDisabled(false);
       m_photonVisionSubsystem.align(0,0,0,false);
       isFinished = true;

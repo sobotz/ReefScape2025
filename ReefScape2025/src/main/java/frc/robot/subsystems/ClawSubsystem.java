@@ -147,7 +147,6 @@ public class ClawSubsystem extends SubsystemBase {
       else{
         atPositionCount = 0;
       }
-
       previousClawError = clawController.getError();
       if (atPositionCount > 1){
         //System.out.println("atPositionCLaw");

@@ -32,7 +32,7 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-import frc.robot.commands.PhotonVisionCommand;
+
 import frc.robot.commands.ProcessorCommand;
 import frc.robot.commands.ReefAlgaeGrabButton;
 import frc.robot.commands.ReefCoralPlacementButton;
@@ -46,6 +46,7 @@ import java.lang.annotation.ElementType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.revrobotics.servohub.ServoHub;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -63,6 +64,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  ServoHub servoHub;
   
   Joystick stick;
   Joystick testOperator;
@@ -106,7 +108,6 @@ public class RobotContainer {
   SendableChooser<Command> autoChooser;
   PathPlannerAuto autoPath;
   private final PhotonVisionSubsystem m_PhotonVisionSubsytem;
-  private PhotonVisionCommand m_PhotonVisionCommand;
   JoystickButton photonVisionAlignButton;
 
   ReefInteractionSequentialCommand m_testReef;
@@ -144,7 +145,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-
+    servoHub = new ServoHub(40);////CHANGEEEEEEEEEEEEEEEEEEEEEEEEE
     A1 = new Joystick(0);
     A2 = new Joystick(1);
     stick = new Joystick(2);
@@ -181,7 +182,7 @@ public class RobotContainer {
     //autoPath = new PathPlannerAuto("TestAuto");
 
     m_PhotonVisionSubsytem = new PhotonVisionSubsystem(m_swerveSubsystem);
-    m_PhotonVisionCommand = new PhotonVisionCommand(m_PhotonVisionSubsytem, m_swerveSubsystem);
+
 
     m_reefCoralPlacementCommand = new ReefCoralPlacementButton(m_clawSubsystem);
     m_ReefAlgaeGrabCommand = new ReefAlgaeGrabButton(m_clawSubsystem);

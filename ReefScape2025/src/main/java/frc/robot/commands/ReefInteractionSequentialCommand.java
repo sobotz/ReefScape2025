@@ -87,14 +87,14 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     //   }
     // }
     //System.out.println("id: " + id);
-    super.addCommands(
+    addCommands(
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id),
       new CoralPlacementCommand(elevatorSubsystem, clawSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id),
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.35, id),
       new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem, algaeElevatorPosition, algaeClawPosition),
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.43, id),
       new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
-      new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 0.41, id));
+      new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 0, 0));
   }
   public boolean getIsRightSide(){
     return isRightSide;

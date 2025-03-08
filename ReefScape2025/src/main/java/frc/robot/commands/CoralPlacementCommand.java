@@ -42,22 +42,17 @@ public class CoralPlacementCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
-    if (m_clawSubsystem.getReefCoralPlacementButton()){
+    if (m_clawSubsystem.getReefCoralPlacementButton() && !m_clawSubsystem.getHasAlgae()){
       System.out.println("start coral placement");
-      //m_photonVisionSubsystem.resetCount();
-      //m_photonVisionSubsystem.enableAlign(true, xTarget, yTarget, id);
+      m_photonVisionSubsystem.resetCount();
+      m_photonVisionSubsystem.enableAlign(true, xTarget, yTarget, id);
       m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
       m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
       timer.start();
-      if (m_elevatorSubsystem.getAutoPlacePosition() == ElevatorPosition.L3 || m_elevatorSubsystem.getAutoPlacePosition() == ElevatorPosition.L4){
-        //m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.TEMPPOSITION);
-        //m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
-      }
     }
     else{
       isFinished = true;
     }
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -68,7 +63,7 @@ public class CoralPlacementCommand extends Command {
     //   m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
     //   timer.start();
     // }
-    if (m_clawSubsystem.clawAtTargetPosition() && m_elevatorSubsystem.elevatorAtTargetPosition()){
+    if (m_clawSubsystem.clawAtTargetPosition() && m_elevatorSubsystem.elevatorAtTargetPosition() && m_photonVisionSubsystem.getAtTargetPosition()){
       m_clawSubsystem.setDriveMotor(-0.6);
       timer2.start();
     }
