@@ -31,7 +31,7 @@ public final class Constants {
     public static final double PROCESSOR = -270;
     public static final double FACINGDOWNREEFALGAE = -240;
     public static final double FACINGUPREEFALGAE = -300;
-    public static final double BARGE = -300;
+    public static final double BARGE = -326;
     public static final double L1 = 60;
     public static final double L2 = -240;
     public static final double L3= -240;
@@ -76,11 +76,11 @@ public final class Constants {
     public static final double kP = 0.15;
     public static final double kI = 0;
     public static final double kD = 0.006;
-    public static final double DEFAULT = 10;
+    public static final double DEFAULT = 6;
     public static final double INTAKE = 18.5;
     public static final double FLOORALGAE = 7.6;
     public static final double PROCESSOR = 6;
-    public static final double LOWERALGAE = 32;
+    public static final double LOWERALGAE = 30;
     public static final double MIDALGAE = 36;
     public static final double HIGHERALGAE = 46;
     public static final double BARGE = 70;

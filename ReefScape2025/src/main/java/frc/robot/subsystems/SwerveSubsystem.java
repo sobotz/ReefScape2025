@@ -63,9 +63,11 @@ public class SwerveSubsystem extends SubsystemBase {
   PIDController angleCorrectionController;
   PIDController xTranslationController;
   PIDController yTranslationController;
+
   PIDController xVelocityController;
   PIDController yVelocityController;
   PIDController degreeVelocityController;
+
   //CURRENT STATUS VARIABLES
   double currentRobotDegree;
   double robotDegreeOffset;
@@ -171,15 +173,15 @@ public class SwerveSubsystem extends SubsystemBase {
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0.2);
 
-    xTranslationController = new PIDController(0.66, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
+    xTranslationController = new PIDController(0.67, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
     xTranslationController.setTolerance(0.0);
-    yTranslationController =new PIDController(0.66, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
+    yTranslationController =new PIDController(0.67, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
     yTranslationController.setTolerance(0.0);
 
-    xVelocityController = new PIDController(0.023,0,0.001);
+    xVelocityController = new PIDController(0.022,0,0.001);
     //xVelocityController.setTolerance(0.01);
     
-    yVelocityController = new PIDController(0.023,0,0.001);
+    yVelocityController = new PIDController(0.022,0,0.001);
     //yVelocityController.setTolerance(0.01);
 
     degreeVelocityController = new PIDController(0.011,0.000,0.007);//d0.07
@@ -208,6 +210,12 @@ public class SwerveSubsystem extends SubsystemBase {
     );
     chassisSpeed = new ChassisSpeeds();
     
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      isRedAlliance = true;
+    }
+    else{
+      isRedAlliance = false;
+    }
     
     try{
       config = RobotConfig.fromGUISettings();
@@ -215,13 +223,11 @@ public class SwerveSubsystem extends SubsystemBase {
       // Handle exception as needed
       e.printStackTrace();
     }
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-      isRedAlliance = true;
-    }
-    else{
-      isRedAlliance = false;
-    }
-    isRedAlliance = true;
+
+    
+    
+    
+    //isRedAlliance = true;
     //isRedAlliance = false;//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
     previousXError = 0;
@@ -337,7 +343,7 @@ public class SwerveSubsystem extends SubsystemBase {
       drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
     }else{
       setDriveCommandDisabled(false);
-      drive(new Vector(0, 0),0,currentRobotDegree,true);//CHANGE
+      drive(new Vector(0, 0),0,currentRobotDegree,false);//CHANGE
     }
   }
 
@@ -387,7 +393,7 @@ public class SwerveSubsystem extends SubsystemBase {
     
     if ((Math.abs(xTranslationController.getPositionError())<0.06)){
       
-      if (Math.abs(previousXError - xTranslationController.getPositionError()) <0.04){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousXError - xTranslationController.getPositionError()) <0.05){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         xAtPositionCount += 1;
         //System.out.println("xCount: " + xAtPositionCount);
       }  
@@ -412,7 +418,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     if ((Math.abs(yTranslationController.getPositionError())<0.06)){
       //System.out.println("inrange");
-      if (Math.abs(previousYError - yTranslationController.getPositionError()) <0.04){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousYError - yTranslationController.getPositionError()) <0.05){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         yAtPositionCount += 1;
         //System.out.println("yCount: " + yAtPositionCount);
       }  

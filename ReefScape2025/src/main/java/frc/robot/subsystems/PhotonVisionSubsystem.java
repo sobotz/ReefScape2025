@@ -93,9 +93,11 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    boolean lReef;
 
    double reefNumber;
+   boolean emergencyReset;
 
 
   public PhotonVisionSubsystem(SwerveSubsystem subsystem) {
+    emergencyReset = false;
     reefNumber = 0;
     aReef = false;
     bReef = false;
@@ -144,6 +146,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     }
 
   }*/
+  public void enableEmergencyReset(){
+    emergencyReset = true;
+  }
+  public void disableEmergencyReset(){
+    emergencyReset = false;
+  }
+  public boolean getEmergencyReset(){
+    return emergencyReset;
+  }
   
   public void enableAlign(boolean enableAlign,double x, double y, int id){
     xTarget = x;
@@ -151,6 +162,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     alignActive = enableAlign;
     m_swerveSubsystem.setTargetID(id);
     this.id = id;
+    if (!enableAlign){
+      setDriveCommandDisabled(false);
+    }
   }
   public double[] getData(PhotonPipelineResult result){
     if(result.hasTargets() && result.getTargets().stream().anyMatch(t -> Arrays.asList(id).contains(t.getFiducialId()))){

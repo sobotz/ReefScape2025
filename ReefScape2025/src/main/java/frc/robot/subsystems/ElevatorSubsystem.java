@@ -105,7 +105,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean elevatorAtTargetPosition() {
-    if (Math.abs(elevatorController.getError())<0.34 && Math.abs(elevatorPIDCalculation)<0.045){
+    if (Math.abs(elevatorController.getError())<0.36 && Math.abs(elevatorPIDCalculation)<0.05){
       atTargetPosition = false;
       if (Math.abs(previousElevatorError - elevatorController.getError()) < 0.06){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;

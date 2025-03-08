@@ -64,16 +64,20 @@ public class GrabAlgaeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_clawSubsystem.getDriveMotorCurrent()>60.2){
+    if (m_clawSubsystem.getDriveMotorCurrent()>60){
       timer2.start();
     }
     if (timer.get()>3){
       isFinished = true;
     }
-    if (timer2.get()>0.5){
+    if (timer2.get()>0.35 && m_clawSubsystem.getDriveMotorCurrent()>60){
       m_clawSubsystem.setHasAlgae(true);
       m_clawSubsystem.setAlgaeRetainPosition();
       isFinished = true;
+    }
+    else if (timer2.get()>0.5){
+      timer2.reset();
+      timer2.stop();
     }
   }
 

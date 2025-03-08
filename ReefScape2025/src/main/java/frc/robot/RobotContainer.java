@@ -44,6 +44,7 @@ import java.io.BufferedWriter;
 import java.lang.annotation.ElementType;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -176,9 +177,8 @@ public class RobotContainer {
     testClaw2Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.L2);
 
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    autoPath = new PathPlannerAuto("TestAuto");
+    
+    //autoPath = new PathPlannerAuto("TestAuto");
 
     m_PhotonVisionSubsytem = new PhotonVisionSubsystem(m_swerveSubsystem);
     m_PhotonVisionCommand = new PhotonVisionCommand(m_PhotonVisionSubsytem, m_swerveSubsystem);
@@ -207,6 +207,16 @@ public class RobotContainer {
     m_autoLReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.14, 0.41, 19, true);
 
     m_autoSetStationIntakeCommand = new AutoSetStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
+    
+    NamedCommands.registerCommand("m_ReefAlgaeGrabCommand",m_ReefAlgaeGrabCommand);
+    NamedCommands.registerCommand("m_SetL4Level", m_setL4Level);
+    NamedCommands.registerCommand("m_autoHReefCommand", m_autoHReefCommand);
+    NamedCommands.registerCommand("m_autoGReefCommand",m_autoGReefCommand);
+    NamedCommands.registerCommand("m_autoGReefCommand", m_autoGReefCommand);
+    
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    
     //autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
     configureBindings();
   }
@@ -348,7 +358,7 @@ public class RobotContainer {
     processorButton.onTrue(m_processorCommand);
 
     //DRIVER BUTTONS
-    JoystickButton resetGyroButton = new JoystickButton(stick, 6);
+    JoystickButton resetGyroButton = new JoystickButton(stick, 7);
     resetGyroButton.onTrue(m_resetGyroCommand);
 
     JoystickButton driveReverseButton = new JoystickButton(testOperator, 5);
@@ -393,6 +403,7 @@ public class RobotContainer {
   }*/
   public Command getAutonomousCommand(){
     //return new PathPlannerAuto("New Auto");
-    return autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
+    //return autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
+    return autoChooser.getSelected().andThen(new EndAutoCommand(m_swerveSubsystem));
   }
 }

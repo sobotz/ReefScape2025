@@ -33,7 +33,7 @@ public class ToggleStationIntakeCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
-    if (!m_clawSubsystem.hasItem()){
+    if (!m_clawSubsystem.getHasAlgae()){
       timer.start();
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.INTAKE);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
@@ -55,19 +55,16 @@ public class ToggleStationIntakeCommand extends Command {
     else if (timer.get()>1){
       m_intakeSubsystem.setDriveMotor(1.0);
     }
-    // if (m_clawSubsystem.getProximityTripped()){
-    //   m_clawSubsystem.setHasCoral(true);
-    //   m_clawSubsystem.setHasAlgae(false);
-    //   isFinished = true;
-    // }
+    if (m_clawSubsystem.getProximityTripped()){
+      m_clawSubsystem.setHasCoral(true);
+      m_clawSubsystem.setHasAlgae(false);
+      isFinished = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_clawSubsystem.setHasCoral(true);
-      m_clawSubsystem.setHasAlgae(false);
-      isFinished = true;
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_clawSubsystem.setDriveMotor(0);
@@ -76,7 +73,7 @@ public class ToggleStationIntakeCommand extends Command {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished(){
     return isFinished;
   }
 }

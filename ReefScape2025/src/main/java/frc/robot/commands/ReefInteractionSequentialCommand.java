@@ -7,7 +7,7 @@ package frc.robot.commands;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
@@ -88,13 +88,13 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     // }
     //System.out.println("id: " + id);
     super.addCommands(
+      new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id),
       new CoralPlacementCommand(elevatorSubsystem, clawSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id),
-      new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.36, id),
+      new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.35, id),
       new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem, algaeElevatorPosition, algaeClawPosition),
       new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.43, id),
       new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
-      new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 0.41, id)
-    );
+      new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 0.41, id));
   }
   public boolean getIsRightSide(){
     return isRightSide;

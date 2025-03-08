@@ -26,6 +26,7 @@ public class ReefInteractionSequentialHolderCommand extends Command {
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
     m_interactionCommand = interactionCommand;
+    m_photonVisionSubsystem = photonVisionSubsystem;
     this.id = id;
     isFinished = false;
   }
@@ -34,18 +35,23 @@ public class ReefInteractionSequentialHolderCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
-    if (m_photonVisionSubsystem.hasRightID(id)){
+    m_interactionCommand.schedule();
+    /*if (m_photonVisionSubsystem.hasRightID(id)){
       m_interactionCommand.schedule();
     }
     else{
       isFinished = true;
-    }
+    }*/
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     if (m_interactionCommand.isFinished()){
+      isFinished = true;
+    }
+    if (m_photonVisionSubsystem.getEmergencyReset()){
       isFinished = true;
     }
   }
@@ -53,13 +59,14 @@ public class ReefInteractionSequentialHolderCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted){
-      m_interactionCommand.cancel();
-      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
-      m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
-    }
+    
+    m_interactionCommand.cancel();
+    //m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
+    //m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    m_photonVisionSubsystem.disableEmergencyReset();
     m_photonVisionSubsystem.setDriveCommandDisabled(false);
     m_photonVisionSubsystem.enableAlign(false,0,0,id);
+    //m_photonVisionSubsystem.align(0,0,0,false);
   }
 
   // Returns true when the command should end.

@@ -42,7 +42,7 @@ public class BargeCommand extends Command {
         isFinished = true;
       }
       else{
-        m_clawSubsystem.setDriveMotor(-0.5);
+        m_clawSubsystem.setDriveMotor(-0.76);
         timer.start();
       }
     }

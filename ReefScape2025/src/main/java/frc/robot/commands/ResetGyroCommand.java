@@ -24,6 +24,8 @@ public class ResetGyroCommand extends InstantCommand {
   @Override
   public void initialize() {
     m_swerveSubsystem.resetGyro();
-    m_photonVisionSubsystem.enableAlign(false, 0, 0, 0);
+    m_photonVisionSubsystem.enableAlign(false, 0, 0, 7);
+    m_photonVisionSubsystem.setDriveCommandDisabled(false);
+    m_photonVisionSubsystem.enableEmergencyReset();
   }
 }

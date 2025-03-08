@@ -67,7 +67,7 @@ public class ClawSubsystem extends SubsystemBase {
     reefCoralPlacementButton = true;
     reefAlgaeGrabButton = true;
     timer = new Timer();
-    proxSensor = new DigitalInput(0);//CHANGE
+    proxSensor = new DigitalInput(9);//CHANGE
     proxTripped = false;
     wristMotor = new TalonFX(18);
     wristMotor.setNeutralMode(NeutralModeValue.Coast);
@@ -139,7 +139,7 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public boolean clawAtTargetPosition(){
-    if ((Math.abs(clawController.getError())<0.21) && (Math.abs(clawPIDCalculation)<0.02)){
+    if ((Math.abs(clawController.getError())<0.21) && (Math.abs(clawPIDCalculation)<0.03)){
       //System.out.println("inrange");
       if (Math.abs(previousClawError - clawController.getError()) <0.06){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;
@@ -231,7 +231,7 @@ public class ClawSubsystem extends SubsystemBase {
     return hasCoral;
   }
   public void setAlgaeRetainPosition(){
-    algaeRetainPosition = getClawDriveMotorPosition()+0.5;
+    algaeRetainPosition = getClawDriveMotorPosition()+1.2;
   }
 
   public boolean getProximityTripped(){
@@ -245,7 +245,7 @@ public class ClawSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     driveMotorCurrent = clawDriveMotor.getTorqueCurrent().getValueAsDouble();
-    proxTripped = proxSensor.get();
+    proxTripped = !proxSensor.get();
     if (once){
       originalWristSensorPosition = wristMotor.getPosition().getValueAsDouble();
       once = false;  
@@ -255,6 +255,7 @@ public class ClawSubsystem extends SubsystemBase {
       intakeTimer.stop();
       clawDriveMotor.set(0);
     }
+    SmartDashboard.putBoolean("clawProx", proxTripped);
     //System.out.println(wristMotor.getPosition().getValueAsDouble() * 360);
     //System.out.println(wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition);
     //System.out.println(getClawSensorPosition());

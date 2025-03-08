@@ -44,11 +44,14 @@ public class CoralPlacementCommand extends Command {
     isFinished = false;
     if (m_clawSubsystem.getReefCoralPlacementButton()){
       System.out.println("start coral placement");
-      m_photonVisionSubsystem.resetCount();
-      m_photonVisionSubsystem.enableAlign(true, xTarget, yTarget, id);
+      //m_photonVisionSubsystem.resetCount();
+      //m_photonVisionSubsystem.enableAlign(true, xTarget, yTarget, id);
+      m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
+      m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
+      timer.start();
       if (m_elevatorSubsystem.getAutoPlacePosition() == ElevatorPosition.L3 || m_elevatorSubsystem.getAutoPlacePosition() == ElevatorPosition.L4){
-        m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.TEMPPOSITION);
-        m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
+        //m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.TEMPPOSITION);
+        //m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
       }
     }
     else{
@@ -60,11 +63,11 @@ public class CoralPlacementCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_photonVisionSubsystem.getAtTargetPosition()){
-      m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
-      m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
-      timer.start();
-    }
+    // if (m_photonVisionSubsystem.getAtTargetPosition()){
+    //   m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
+    //   m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
+    //   timer.start();
+    // }
     if (m_clawSubsystem.clawAtTargetPosition() && m_elevatorSubsystem.elevatorAtTargetPosition()){
       m_clawSubsystem.setDriveMotor(-0.6);
       timer2.start();
@@ -73,7 +76,7 @@ public class CoralPlacementCommand extends Command {
       timer2.start();
       m_clawSubsystem.setDriveMotor(-0.6);
     }
-    if (timer2.get()>0.5){
+    if (timer2.get()>0.4){
       isFinished = true;
     }
   }
