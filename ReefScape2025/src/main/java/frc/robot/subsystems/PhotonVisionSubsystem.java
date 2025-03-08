@@ -313,12 +313,34 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,enabled);
     }else{
       m_swerveSubsystem.setDriveCommandDisabled(false);
-      m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,false);
+      m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0,false);
     }
   }
   public void intakeAlign(double robotX,double robotY,boolean enabled){
-      
+    if (intakeTargetData[4] == 1){
+      if (Math.abs(m3TargetData[3])<Math.abs(m4TargetData[3])){
+        //System.out.println("1st");
+        hasTarget = true;
+        cameraXOffset = m3TargetData[0];
+        cameraYOffset = m3TargetData[1];
+        cameraAngleOffset3D = m3TargetData[2];
+        cameraAngleOffset2D = m3TargetData[3]; 
+      }
+    }
+    else{
+      //System.out.println("4st");
+      hasTarget = false;
+    }
+    if (hasTarget && enabled){
+      m_swerveSubsystem.reefControlledDrive(0, cameraXOffset, cameraAngleOffset3D, robotX, robotY, enabled);
+    }
+    else{
+      m_swerveSubsystem.setDriveCommandDisabled(false);
+      m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
+    }
+    
   }
+
   public void resetCount(){
     m_swerveSubsystem.resetCount();
   }

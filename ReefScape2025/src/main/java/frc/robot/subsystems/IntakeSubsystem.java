@@ -34,7 +34,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setDriveMotor(double value){
     System.out.println("drive");
     driveMotor.set(value);
-    
   }
 
   @Override
