@@ -43,6 +43,8 @@ public class DriveCommand extends Command {
     //strafeVector = new Vector(0.5, 0);
     //rotationVector = new Vector(0, 0);
     //System.out.println("hello");
+    //strafeVector = new Vector(0, 0.2);
+    //rotationVector = new Vector(0,0);
     m_swerveSubsystem.driverControlledDrive(strafeVector,rotationVector);
     //m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
   }

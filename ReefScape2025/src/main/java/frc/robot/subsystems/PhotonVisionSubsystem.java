@@ -345,7 +345,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     m_swerveSubsystem.resetCount();
   }
   public boolean getAtTargetPosition(){
-    return m_swerveSubsystem.getAtTargetPosition();
+    return m_swerveSubsystem.getAtTargetPosition(hasTarget);
   }
   public boolean hasRightID(int id){
     if (hasID(m3CameraResult,id) || hasID(m3CameraResult,id)){

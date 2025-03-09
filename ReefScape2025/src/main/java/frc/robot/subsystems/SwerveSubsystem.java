@@ -169,13 +169,13 @@ public class SwerveSubsystem extends SubsystemBase {
     //Allows for leeway if the current degree is not exactly on target
     angleCorrectionController.setTolerance(0.2);
 
-    rotationController = new PIDController(0.005,0,0);
+    rotationController = new PIDController(0.006,0,0);
     rotationController.enableContinuousInput(0,360); 
-    rotationController.setTolerance(0.2);
+    rotationController.setTolerance(0);
 
-    xTranslationController = new PIDController(0.67, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
+    xTranslationController = new PIDController(0.71, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
     xTranslationController.setTolerance(0.0);
-    yTranslationController =new PIDController(0.67, 0, 0.001);//, new TrapezoidProfile.Constraints(1,0.3));
+    yTranslationController =new PIDController(0.71, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
     yTranslationController.setTolerance(0.0);
 
     xVelocityController = new PIDController(0.022,0,0.001);
@@ -184,7 +184,7 @@ public class SwerveSubsystem extends SubsystemBase {
     yVelocityController = new PIDController(0.022,0,0.001);
     //yVelocityController.setTolerance(0.01);
 
-    degreeVelocityController = new PIDController(0.011,0.000,0.007);//d0.07
+    degreeVelocityController = new PIDController(0.010,0.000,0.000);//d0.07
     //degreeVelocityController.setTolerance(0.01);
     targetID = 0;
     once = true;
@@ -387,13 +387,13 @@ public class SwerveSubsystem extends SubsystemBase {
     xAtPositionCount = 0;
     yAtPositionCount = 0;
   }
-  public boolean getAtTargetPosition(){
+  public boolean getAtTargetPosition(boolean hasTarget){
     boolean xAtTarget = false;
     boolean yAtTarget = false;
     
-    if ((Math.abs(xTranslationController.getPositionError())<0.06)){
+    if ((Math.abs(xTranslationController.getPositionError())<0.04)){
       
-      if (Math.abs(previousXError - xTranslationController.getPositionError()) <0.05){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousXError - xTranslationController.getPositionError()) <0.03){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         xAtPositionCount += 1;
         //System.out.println("xCount: " + xAtPositionCount);
       }  
@@ -416,9 +416,9 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 
-    if ((Math.abs(yTranslationController.getPositionError())<0.06)){
+    if ((Math.abs(yTranslationController.getPositionError())<0.04)){
       //System.out.println("inrange");
-      if (Math.abs(previousYError - yTranslationController.getPositionError()) <0.05){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousYError - yTranslationController.getPositionError()) <0.03){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         yAtPositionCount += 1;
         //System.out.println("yCount: " + yAtPositionCount);
       }  
@@ -440,7 +440,7 @@ public class SwerveSubsystem extends SubsystemBase {
       yAtTarget = false;
       
     }
-    if (yAtTarget && xAtTarget){
+    if ((yAtTarget && xAtTarget) && hasTarget){
       //System.out.println("AtMovementPoint");
       return true;
     }

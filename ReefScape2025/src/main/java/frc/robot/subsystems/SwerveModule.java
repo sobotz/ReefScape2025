@@ -119,13 +119,13 @@ public class SwerveModule {
         return targetModuleDegree;
     }
     public double getDriveSensorPosition(){
-        return driveMotor.getPosition().getValueAsDouble()/25.97290039;//* Constants.SwerveConstants.wheelRotationPerMotorRotation*(2 * Math.PI* Constants.SwerveConstants.wheelRadius);//CHANGE
+        return driveMotor.getPosition().getValueAsDouble()/19.607;//25.97290039;//* Constants.SwerveConstants.wheelRotationPerMotorRotation*(2 * Math.PI* Constants.SwerveConstants.wheelRadius);//CHANGE
     }
     public double getRawDriveSensorPosition(){
         return driveMotor.getPosition().getValueAsDouble();
     }
     public double getDriveSensorVelocity(){
-        return (driveMotor.getVelocity().getValueAsDouble()/25.97290039);// * Constants.SwerveConstants.wheelRotationPerMotorRotation)/60) * 2 * Math.PI * Constants.SwerveConstants.wheelRadius);//CHANGE
+        return driveMotor.getVelocity().getValueAsDouble()/19.607;//25.97290039);// * Constants.SwerveConstants.wheelRotationPerMotorRotation)/60) * 2 * Math.PI * Constants.SwerveConstants.wheelRadius);//CHANGE
     }
     public double getCurrentModuleDegree(){
         return currentModuleDegree;
