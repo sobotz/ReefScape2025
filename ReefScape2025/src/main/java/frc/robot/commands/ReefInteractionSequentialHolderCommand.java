@@ -15,17 +15,23 @@ import frc.robot.subsystems.SwerveSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ReefInteractionSequentialHolderCommand extends Command {
   /** Creates a new ReefInteractionSequentialHolderCommand. */
+  SwerveSubsystem m_swerveSubsystem;
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
   ReefInteractionSequentialCommand m_interactionCommand;
   PhotonVisionSubsystem m_photonVisionSubsystem;
   int id;
   boolean isFinished;
-  public ReefInteractionSequentialHolderCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, int id, ReefInteractionSequentialCommand interactionCommand) {
+  double xTarget;
+  double yTarget;
+  public ReefInteractionSequentialHolderCommand(SwerveSubsystem swerveSubsystem, ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, double x, double y, int id) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_swerveSubsystem = swerveSubsystem;
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
-    m_interactionCommand = interactionCommand;
+    xTarget = x;
+    yTarget = y;
+    
     m_photonVisionSubsystem = photonVisionSubsystem;
     this.id = id;
     isFinished = false;
@@ -35,6 +41,27 @@ public class ReefInteractionSequentialHolderCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
+    if (!m_swerveSubsystem.getIsRedAlliance()){
+      if (id == 7){
+        id = 18;
+      }
+      if (id == 8){
+        id = 17;
+      }
+      if (id == 9){
+        id = 22;
+      }
+      if (id == 10){
+        id = 21;
+      }
+      if (id == 11){
+        id = 20;
+      }
+      if (id == 6){
+        id = 19;
+      }
+    }
+    m_interactionCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem, xTarget, yTarget, id, false);
     m_interactionCommand.schedule();
     /*if (m_photonVisionSubsystem.hasRightID(id)){
       m_interactionCommand.schedule();
