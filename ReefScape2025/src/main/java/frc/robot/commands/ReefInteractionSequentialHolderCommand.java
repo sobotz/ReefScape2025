@@ -82,12 +82,15 @@ public class ReefInteractionSequentialHolderCommand extends Command {
     if (m_photonVisionSubsystem.getEmergencyReset()){
       isFinished = true;
     }
+    if (m_clawSubsystem.getFinishReefSequence()){
+      isFinished = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    m_clawSubsystem.setFinishReefSequence(false);
     m_interactionCommand.cancel();
     //m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     //m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);

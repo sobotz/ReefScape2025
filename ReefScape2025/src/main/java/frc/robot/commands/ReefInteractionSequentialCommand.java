@@ -96,6 +96,7 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
       new SetClawPositionCommand(clawSubsystem, ClawPosition.DEFAULT),
       new SetElevatorPositionCommand(elevatorSubsystem, ElevatorPosition.DEFAULT),
       new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, false, 0, 0, 0,isAuto));
+      new FinishReefSequenceCommand(clawSubsystem);
   }
   public boolean getIsRightSide(){
     return isRightSide;

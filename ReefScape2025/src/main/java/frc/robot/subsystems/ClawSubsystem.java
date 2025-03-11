@@ -57,9 +57,12 @@ public class ClawSubsystem extends SubsystemBase {
   double driveMotorCurrent;
   Timer intakeTimer;
 
+  boolean finishReefSequence;
+
 
 
   public ClawSubsystem() {
+    finishReefSequence = false;
     intakeTimer = new Timer();
     driveMotorCurrent = 0;
     toggleProcessor = false;
@@ -119,6 +122,12 @@ public class ClawSubsystem extends SubsystemBase {
 
   public double getClawSensorPosition(){
     return (((((wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition)*360)/82.1333333)-90));
+  }
+  public void setFinishReefSequence(boolean value){
+    finishReefSequence = value;
+  }
+  public boolean getFinishReefSequence(){
+    return finishReefSequence;
   }
 
 
