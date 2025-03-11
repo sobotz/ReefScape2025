@@ -77,7 +77,6 @@ public class Robot extends TimedRobot {
     
     //m_autonomousCommand.isFinished()
   }
-
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when

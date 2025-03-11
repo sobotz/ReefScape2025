@@ -211,7 +211,7 @@ public class ClawSubsystem extends SubsystemBase {
     }
   }
   public double getClawDriveMotorPosition(){
-    return clawDriveMotor.getPosition().getValueAsDouble();
+    return  clawDriveMotor.getPosition().getValueAsDouble();
   }
   
   public double getClawPIDCalcuate(){
@@ -257,13 +257,14 @@ public class ClawSubsystem extends SubsystemBase {
     proxTripped = !proxSensor.get();
     if (once){
       originalWristSensorPosition = wristMotor.getPosition().getValueAsDouble();
-      once = false;  
+      once = false;
     }
     if (intakeTimer.get()>0.7){
       intakeTimer.reset();
       intakeTimer.stop();
       clawDriveMotor.set(0);
     }
+    
     SmartDashboard.putBoolean("clawProx", proxTripped);
     //System.out.println(wristMotor.getPosition().getValueAsDouble() * 360);
     //System.out.println(wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition);

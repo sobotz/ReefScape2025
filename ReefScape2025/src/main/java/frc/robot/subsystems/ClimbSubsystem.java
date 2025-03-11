@@ -67,6 +67,7 @@ public class ClimbSubsystem extends SubsystemBase {
     else{
       //driveMotor.set(0);
     }
+    SmartDashboard.putNumber("Climb Servo", climbServo.getPulseWidth());
     //climbCalculate = climbController.calculate(driveMotor.getPosition().getValueAsDouble(), targetPosition);
     //driveMotor.set(climbCalculate);
     // This method will be called once per scheduler run

@@ -358,8 +358,6 @@ public class RobotContainer {
     JoystickButton reefLButton = new JoystickButton(A2,12);
     reefLButton.toggleOnTrue(m_reefLCommand);
     
-    
-    
     //ACTION BUTTONS
     JoystickButton toggleIntakeButton = new JoystickButton(A1, 7);
     toggleIntakeButton.toggleOnTrue(m_toggleStationIntakeCommand);
@@ -402,7 +400,6 @@ public class RobotContainer {
     testClimbReverseButton.whileTrue(testClimbDriveMotorReverse);
     /*JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
     intakeDriveButton.whileTrue(testIntakeCommand);*/
-
 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     //photonVisionAlignButton = new JoystickButton(stick, 6);

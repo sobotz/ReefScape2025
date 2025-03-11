@@ -489,8 +489,6 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("degree",currentRobotDegree);
     SmartDashboard.putNumber("xOffsetDrive", xTranslationController.getPositionError());
     SmartDashboard.putNumber("yOffsetDrive", yTranslationController.getPositionError());
-    
-    
     //System.out.println(isRedAlliance);
     
   }
