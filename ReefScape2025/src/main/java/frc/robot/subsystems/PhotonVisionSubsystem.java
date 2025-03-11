@@ -309,7 +309,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       if (Math.abs(cameraAngleOffset2D)>60){
         robotAngleOffset = 0;
       }
-      m_swerveSubsystem.setDriveCommandDisabled(enabled);
+      m_swerveSubsystem.setDriveCommandDisabled(true);
       m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,enabled);
     }else{
       m_swerveSubsystem.setDriveCommandDisabled(false);
@@ -343,6 +343,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   public void resetCount(){
     m_swerveSubsystem.resetCount();
+  }
+  public boolean getHasTarget(){
+    return hasTarget;
   }
   public boolean getAtTargetPosition(){
     return m_swerveSubsystem.getAtTargetPosition(hasTarget);

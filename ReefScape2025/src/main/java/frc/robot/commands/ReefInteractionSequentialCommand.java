@@ -28,6 +28,7 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
   ElevatorPosition algaeElevatorPosition;
   ClawPosition algaeClawPosition;
   boolean isRightSide;
+  boolean isAuto;
   
   
   int id;
@@ -44,11 +45,12 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
       else{
         id = idd;
       }
-      
     }
     else{
       id = idd;
     }
+    this.isAuto = isAuto;
+    
     m_photonVisionSubsystem = photonVisionSubsystem;
     elevatorPositionMap = elevatorSubsystem.getPositionMap();
     clawPositionMap = clawSubsystem.getPositionMap();
@@ -88,13 +90,11 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     // }
     //System.out.println("id: " + id);
     addCommands(
-      
-      new CoralPlacementCommand(elevatorSubsystem, clawSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id),
-      new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.35, id),
-      new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem, algaeElevatorPosition, algaeClawPosition),
-      new AlignCommand(swerveSubsystem, photonVisionSubsystem, true, 0, 0.43, id),
+      new CoralPlacementCommand(elevatorSubsystem, clawSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id, isAuto),
+      new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem,photonVisionSubsystem, algaeElevatorPosition, algaeClawPosition, id),
+      new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, true, 0, 0.45, id,isAuto),
       new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
-      new AlignCommand(swerveSubsystem, photonVisionSubsystem, false, 0, 0, 0));
+      new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, false, 0, 0, 0,isAuto));
   }
   public boolean getIsRightSide(){
     return isRightSide;

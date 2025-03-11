@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -24,7 +25,8 @@ public class CoralPlacementCommand extends Command {
   int id;
   Timer timer;
   Timer timer2;
-  public CoralPlacementCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem, boolean align, double x, double y, int id) {
+  boolean isAuto;
+  public CoralPlacementCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem, boolean align, double x, double y, int id, boolean auto) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
@@ -36,16 +38,21 @@ public class CoralPlacementCommand extends Command {
 
     timer = new Timer();
     timer2 = new Timer();
+    isAuto = auto;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     isFinished = false;
-    if (m_clawSubsystem.getReefCoralPlacementButton() && !m_clawSubsystem.getHasAlgae()){
-      System.out.println("start coral placement");
+    //System.out.println("placecoral button: " + m_clawSubsystem.getReefCoralPlacementButton());
+    if (m_clawSubsystem.getReefCoralPlacementButton() || isAuto){
       m_photonVisionSubsystem.resetCount();
       m_photonVisionSubsystem.enableAlign(true, xTarget, yTarget, id);
+      if (isAuto){
+        m_elevatorSubsystem.setAutoPlaceClawTargetPosition(ElevatorPosition.L4);
+        m_clawSubsystem.setAutoPlaceClawTargetPosition(ClawPosition.L4);
+      }
       m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
       m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
       timer.start();
@@ -63,7 +70,8 @@ public class CoralPlacementCommand extends Command {
     //   m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
     //   timer.start();
     // }
-    if (m_clawSubsystem.clawAtTargetPosition() && m_elevatorSubsystem.elevatorAtTargetPosition() && m_photonVisionSubsystem.getAtTargetPosition()){
+    //System.out.println("RUNNING");
+    if ((m_clawSubsystem.clawAtTargetPosition() && m_elevatorSubsystem.elevatorAtTargetPosition()) && m_photonVisionSubsystem.getAtTargetPosition()){
       m_clawSubsystem.setDriveMotor(-0.6);
       timer2.start();
     }
@@ -71,6 +79,9 @@ public class CoralPlacementCommand extends Command {
       timer2.start();
       m_clawSubsystem.setDriveMotor(-0.6);
     }
+    // if (!m_photonVisionSubsystem.getHasTarget()){
+    //   timer.restart();
+    // }
     if (timer2.get()>0.4){
       isFinished = true;
     }

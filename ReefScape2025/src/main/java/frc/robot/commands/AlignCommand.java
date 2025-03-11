@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -13,29 +14,39 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class AlignCommand extends Command {
   /** Creates a new AlignCommand. */
   SwerveSubsystem m_swerveSubsystem;
+  ClawSubsystem m_clawSubsystem;
   PhotonVisionSubsystem m_photonVisionSubsystem;
   boolean alignActive;
   double xTarget;
   double yTarget;
   int id;
   boolean isFinished;
-  public AlignCommand(SwerveSubsystem swerveSubsystem, PhotonVisionSubsystem photonVisionSubsystem, boolean align, double x, double y, int id) {
+  boolean isAuto;
+  public AlignCommand(SwerveSubsystem swerveSubsystem,ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, boolean align, double x, double y, int id, boolean isAuto) {
     // Use addRequirements() here to declare subsystem dependencies.
     alignActive = align;
     m_swerveSubsystem = swerveSubsystem;
+    m_clawSubsystem = clawSubsystem;
     m_photonVisionSubsystem = photonVisionSubsystem;
     xTarget = x;
     yTarget = y;
     this.id = id;
     isFinished = false;
+    this.isAuto = isAuto;
   }
+
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_photonVisionSubsystem.enableAlign(alignActive ,xTarget, yTarget, id);
-    isFinished = false;
-    m_swerveSubsystem.resetCount();
+    if (!isAuto || m_clawSubsystem.getReefAlgaeGrabButton()){
+      m_swerveSubsystem.resetCount();
+      m_photonVisionSubsystem.enableAlign(alignActive ,xTarget, yTarget, id);
+      isFinished = false;
+    }
+    else if (isAuto){
+      isFinished = true;
+    }
     if (!alignActive){
       m_photonVisionSubsystem.enableAlign(false,0,0,0);
       m_swerveSubsystem.setDriveCommandDisabled(false);
@@ -47,8 +58,10 @@ public class AlignCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //System.out.println("isAligning");
     if (m_photonVisionSubsystem.getAtTargetPosition()){
-      System.out.println("FINISH ALIGNNNNN");
+
+      //System.out.println("FINISH ALIGNNNNN");
       isFinished = true;
     }
   }

@@ -19,6 +19,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -173,9 +174,9 @@ public class SwerveSubsystem extends SubsystemBase {
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0);
 
-    xTranslationController = new PIDController(0.71, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
+    xTranslationController = new PIDController(0.74, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
     xTranslationController.setTolerance(0.0);
-    yTranslationController =new PIDController(0.71, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
+    yTranslationController =new PIDController(0.74, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
     yTranslationController.setTolerance(0.0);
 
     xVelocityController = new PIDController(0.022,0,0.001);
@@ -184,7 +185,7 @@ public class SwerveSubsystem extends SubsystemBase {
     yVelocityController = new PIDController(0.022,0,0.001);
     //yVelocityController.setTolerance(0.01);
 
-    degreeVelocityController = new PIDController(0.010,0.000,0.000);//d0.07
+    degreeVelocityController = new PIDController(0.011,0.000,0.000);//d0.07
     //degreeVelocityController.setTolerance(0.01);
     targetID = 0;
     once = true;
@@ -342,7 +343,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (enabled){ 
       drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
     }else{
-      setDriveCommandDisabled(false);
+      //setDriveCommandDisabled(false);
       drive(new Vector(0, 0),0,currentRobotDegree,false);//CHANGE
     }
   }
@@ -400,7 +401,8 @@ public class SwerveSubsystem extends SubsystemBase {
       else{
         xAtPositionCount = 0;
       }
-
+      //SwerveDrivePoseEstimator example = new SwerveDrivePoseEstimator(m_kinematics, autoRobotDegree, getAllSwerveModulePositions(), getPose());
+      
       previousXError = xTranslationController.getPositionError();
       if (xAtPositionCount > 1){
         //System.out.println("atPositionCLaw");
@@ -440,7 +442,7 @@ public class SwerveSubsystem extends SubsystemBase {
       yAtTarget = false;
       
     }
-    if ((yAtTarget && xAtTarget) && hasTarget){
+    if ((yAtTarget && xAtTarget)){
       //System.out.println("AtMovementPoint");
       return true;
     }
@@ -487,6 +489,8 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("degree",currentRobotDegree);
     SmartDashboard.putNumber("xOffsetDrive", xTranslationController.getPositionError());
     SmartDashboard.putNumber("yOffsetDrive", yTranslationController.getPositionError());
+    
+    
     //System.out.println(isRedAlliance);
     
   }

@@ -11,15 +11,39 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "CoralID22"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "m_SetL4Level"
+            "name": "m_autoFReefCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_autoSetStationIntakeCommand"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CoralID17"
+            "pathName": "CS-ID22"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_toggleStationIntakeCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CSID17"
           }
         },
         {
@@ -37,7 +61,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ID17-CS"
+            "pathName": "ID17CS"
           }
         },
         {
@@ -49,13 +73,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ID12-Reef"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "m_autoCReefCommand"
+            "pathName": "CSID17Number2"
           }
         }
       ]

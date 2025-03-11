@@ -5,9 +5,27 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "m_SetL4Level"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_ReefAlgaeGrabCommand"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "CoralID21"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": null
           }
         }
       ]

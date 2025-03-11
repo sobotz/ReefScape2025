@@ -24,7 +24,8 @@ public class ReefInteractionSequentialHolderCommand extends Command {
   boolean isFinished;
   double xTarget;
   double yTarget;
-  public ReefInteractionSequentialHolderCommand(SwerveSubsystem swerveSubsystem, ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, double x, double y, int id) {
+  boolean isAuto;
+  public ReefInteractionSequentialHolderCommand(SwerveSubsystem swerveSubsystem, ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, double x, double y, int idd, boolean isAuto) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_swerveSubsystem = swerveSubsystem;
     m_elevatorSubsystem = elevatorSubsystem;
@@ -33,44 +34,45 @@ public class ReefInteractionSequentialHolderCommand extends Command {
     yTarget = y;
     
     m_photonVisionSubsystem = photonVisionSubsystem;
-    this.id = id;
+    this.id = idd;
     isFinished = false;
+    this.isAuto = isAuto;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     isFinished = false;
-    if (!m_swerveSubsystem.getIsRedAlliance()){
-      if (id == 7){
+    if (isAuto){
+      if (m_swerveSubsystem.getIsRedAlliance()){
+        id = id - 11;
+        xTarget = -xTarget;
+      }
+    }
+    else if (!m_swerveSubsystem.getIsRedAlliance()){
+      System.out.println("BLUE ALLIANCE");
+      if (id == (int)7){
         id = 18;
       }
-      if (id == 8){
+      else if (id == (int)8){
         id = 17;
       }
-      if (id == 9){
+      else if (id == (int)9){
         id = 22;
       }
-      if (id == 10){
+      else if (id == (int)10){
         id = 21;
       }
-      if (id == 11){
+      else if (id == (int)11){
         id = 20;
       }
-      if (id == 6){
+      else if (id == (int)6){
         id = 19;
       }
     }
-    m_interactionCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem, xTarget, yTarget, id, false);
+    m_interactionCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem, xTarget, yTarget, id,false);
     m_interactionCommand.schedule();
-    /*if (m_photonVisionSubsystem.hasRightID(id)){
-      m_interactionCommand.schedule();
-    }
-    else{
-      isFinished = true;
-    }*/
   }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {

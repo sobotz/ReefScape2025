@@ -243,6 +243,7 @@ public class ClawSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
     driveMotorCurrent = clawDriveMotor.getTorqueCurrent().getValueAsDouble();
     proxTripped = !proxSensor.get();
     if (once){
@@ -299,7 +300,7 @@ public class ClawSubsystem extends SubsystemBase {
     wristMotor.set(clawPIDCalculation);
 
     if (hasAlgae && !driveMotorIsControlled){
-      System.out.println("claw setpoint activated");
+      //System.out.println("claw setpoint activated");
       clawDriveMotor.set(retainAlgaeController.calculate(getClawDriveMotorPosition(),algaeRetainPosition));
     }
   }

@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    CommandScheduler.getInstance().run();
     // System.out.println(m_autonomousCommand.isFinished());
     // if (m_autonomousCommand.isFinished()){
     //   System.out.println("finished");

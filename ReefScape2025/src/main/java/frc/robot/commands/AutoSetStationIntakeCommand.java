@@ -30,6 +30,7 @@ public class AutoSetStationIntakeCommand extends InstantCommand {
   public void initialize() {
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.INTAKE);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
+    m_clawSubsystem.setDriveMotor(1);
     m_intakeSubsystem.setDriveMotor(1);
   }
 }

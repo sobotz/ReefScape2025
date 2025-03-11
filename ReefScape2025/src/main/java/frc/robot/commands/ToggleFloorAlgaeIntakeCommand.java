@@ -29,7 +29,7 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("on");
+    //System.out.println("on");
     isFinished = false;
     if (!m_clawSubsystem.hasItem()){
       m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
