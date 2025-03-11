@@ -89,8 +89,8 @@ public class Robot extends TimedRobot {
       m_teleopCommand = m_robotContainer.getTeleopCommand();
       m_teleopCommand.schedule();
     }
-     
-     
+    m_robotContainer.getPhotonSubsystem().enableAlign(false,0,0,0);
+    m_robotContainer.getSwerveSubsystem().setDriveCommandDisabled(false);
   }
 
   /** This function is called periodically during operator control. */
