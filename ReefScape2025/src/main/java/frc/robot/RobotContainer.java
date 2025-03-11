@@ -25,10 +25,11 @@ import frc.robot.commands.SetActuatorPositionCommand;
 import frc.robot.commands.SetClawPositionCommand;
 import frc.robot.commands.TestClawDriveCommand;
 import frc.robot.commands.TestClawDriveReverseCommand;
-
+import frc.robot.commands.ToggleClimbCommand;
 import frc.robot.commands.ToggleFloorAlgaeIntakeCommand;
 import frc.robot.commands.ToggleStationIntakeCommand;
 import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -79,6 +80,7 @@ public class RobotContainer {
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
   IntakeSubsystem m_intakeSubsystem;
+  ClimbSubsystem m_climbSubsystem;
 
   DriveCommand m_driveCommand;
   TestClawDriveCommand m_clawDriveCommand;
@@ -120,6 +122,7 @@ public class RobotContainer {
   ReefAlgaeGrabButton m_ReefAlgaeGrabCommand;
   ProcessorCommand m_processorCommand;
   BargeCommand m_bargeCommand;
+  ToggleClimbCommand m_toggleClimbCommand;
 
   ReefCoralPlacementButton m_setL1Level;
   ReefCoralPlacementButton m_setL2Level;
@@ -177,13 +180,16 @@ public class RobotContainer {
     m_swerveSubsystem = new SwerveSubsystem();
     m_elevatorSubsystem = new ElevatorSubsystem(m_swerveSubsystem);
     m_clawSubsystem = new ClawSubsystem();
-    m_intakeSubsystem = new IntakeSubsystem();
+    m_intakeSubsystem = new IntakeSubsystem(servoHub);
+    m_climbSubsystem = new ClimbSubsystem(servoHub);
+
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
     m_clawDriveReverseCommand = new TestClawDriveReverseCommand(m_clawSubsystem);
     m_clawDriveCommand = new TestClawDriveCommand(m_clawSubsystem);
 
     m_toggleStationIntakeCommand = new ToggleStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     m_toggleFloorAlgaeIntakeCommand = new ToggleFloorAlgaeIntakeCommand(m_elevatorSubsystem, m_clawSubsystem);
+    m_toggleClimbCommand = new ToggleClimbCommand(m_intakeSubsystem, m_climbSubsystem);
 
     m_setActuatorDefaultCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT);
     m_setActuatorCoralIntakeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE);
@@ -354,6 +360,8 @@ public class RobotContainer {
     bargeButton.onTrue(m_bargeCommand);
     JoystickButton processorButton = new JoystickButton(A1, 10);
     processorButton.onTrue(m_processorCommand);
+    JoystickButton climbButton = new JoystickButton(A1, 11);
+    climbButton.onTrue(m_toggleClimbCommand);
 
     //DRIVER BUTTONS
     JoystickButton resetGyroButton = new JoystickButton(stick, 7);

@@ -8,6 +8,9 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
+import com.revrobotics.servohub.ServoChannel;
+import com.revrobotics.servohub.ServoHub;
+import com.revrobotics.servohub.ServoChannel.ChannelId;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,9 +18,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   TalonFXS driveMotor;
-  
+  ServoHub m_servoHub;
+  ServoChannel intakeServo;
 
-  public IntakeSubsystem() {
+  public IntakeSubsystem(ServoHub servoHub) {
+    m_servoHub = servoHub;
+    intakeServo = servoHub.getServoChannel(ChannelId.kChannelId0);
+
     driveMotor = new TalonFXS(13);
     TalonFXSConfiguration toConfigure = new TalonFXSConfiguration();
     toConfigure.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
@@ -34,6 +41,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setDriveMotor(double value){
     System.out.println("drive");
     driveMotor.set(value);
+  }
+  public void openServo(){
+    intakeServo.setPulseWidth(5000);
+    intakeServo.setEnabled(true);
   }
 
   @Override

@@ -93,7 +93,8 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
       new CoralPlacementCommand(elevatorSubsystem, clawSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id, isAuto),
       new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem,photonVisionSubsystem, algaeElevatorPosition, algaeClawPosition, id),
       new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, true, 0, 0.45, id,isAuto),
-      new SetActuatorPositionCommand(elevatorSubsystem, clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT),
+      new SetClawPositionCommand(clawSubsystem, ClawPosition.DEFAULT),
+      new SetElevatorPositionCommand(elevatorSubsystem, ElevatorPosition.DEFAULT),
       new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, false, 0, 0, 0,isAuto));
   }
   public boolean getIsRightSide(){

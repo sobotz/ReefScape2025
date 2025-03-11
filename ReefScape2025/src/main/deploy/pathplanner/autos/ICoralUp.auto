@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "m_ReefAlgaeGrabCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_SetL4Level"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CoralID20"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_autoIReefCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_autoSetStationIntakeCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ID20CS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_toggleStationIntakeCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CSID19"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_autoKReefCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_autoSetStationIntakeCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ID19CS2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_toggleStationIntakeCommand"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

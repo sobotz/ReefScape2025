@@ -39,12 +39,12 @@ public class AlignCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (!isAuto || m_clawSubsystem.getReefAlgaeGrabButton()){
+    if (m_clawSubsystem.getReefAlgaeGrabButton()){
       m_swerveSubsystem.resetCount();
       m_photonVisionSubsystem.enableAlign(alignActive ,xTarget, yTarget, id);
       isFinished = false;
     }
-    else if (isAuto){
+    else if (!m_clawSubsystem.getReefAlgaeGrabButton()){
       isFinished = true;
     }
     if (!alignActive){
