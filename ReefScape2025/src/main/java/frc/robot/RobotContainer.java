@@ -25,6 +25,8 @@ import frc.robot.commands.SetActuatorPositionCommand;
 import frc.robot.commands.SetClawPositionCommand;
 import frc.robot.commands.TestClawDriveCommand;
 import frc.robot.commands.TestClawDriveReverseCommand;
+import frc.robot.commands.TestClimbDriveMotor;
+import frc.robot.commands.TestClimbDriveMotorReverse;
 import frc.robot.commands.ToggleClimbCommand;
 import frc.robot.commands.ToggleFloorAlgaeIntakeCommand;
 import frc.robot.commands.ToggleStationIntakeCommand;
@@ -71,6 +73,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   ServoHub servoHub;
+
+  TestClimbDriveMotor testClimbDriveMotor;
+  TestClimbDriveMotorReverse testClimbDriveMotorReverse;
   
   Joystick stick;
   Joystick testOperator;
@@ -206,6 +211,9 @@ public class RobotContainer {
 
     testClaw1Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.DEFAULT);
     testClaw2Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.L2);
+
+    testClimbDriveMotor = new TestClimbDriveMotor(m_climbSubsystem);
+    testClimbDriveMotorReverse = new TestClimbDriveMotorReverse(m_climbSubsystem);
 
 
     
@@ -388,6 +396,10 @@ public class RobotContainer {
     groundIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);
     JoystickButton bargeButtonTest = new JoystickButton(testOperator, 10);
     bargeButtonTest.onTrue(m_bargeCommand);
+    JoystickButton testClimbForwardButton = new JoystickButton(testOperator, 11);
+    testClimbForwardButton.whileTrue(testClimbDriveMotor);
+    JoystickButton testClimbReverseButton = new JoystickButton(testOperator,12);
+    testClimbReverseButton.whileTrue(testClimbDriveMotorReverse);
     /*JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
     intakeDriveButton.whileTrue(testIntakeCommand);*/
 

@@ -10,6 +10,7 @@ import com.revrobotics.servohub.ServoHub;
 import com.revrobotics.servohub.ServoChannel.ChannelId;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbSubsystem extends SubsystemBase {
@@ -52,10 +53,24 @@ public class ClimbSubsystem extends SubsystemBase {
     targetPosition = 0;
     
   }
+  public void setDriveMotor(double value){
+    driveMotor.set(value);
+  }
   @Override
   public void periodic() {
-    climbCalculate = climbController.calculate(driveMotor.getPosition().getValueAsDouble(), targetPosition);
-    driveMotor.set(climbCalculate);
+    if ((driveMotor.getPosition().getValueAsDouble()<targetPosition) && toggleClimb == true){
+      //driveMotor.set(1);
+    }
+    else if ((driveMotor.getPosition().getValueAsDouble()>targetPosition) && toggleClimb == false){
+      //driveMotor.set(-1);
+    }
+    else{
+      //driveMotor.set(0);
+    }
+    //climbCalculate = climbController.calculate(driveMotor.getPosition().getValueAsDouble(), targetPosition);
+    //driveMotor.set(climbCalculate);
     // This method will be called once per scheduler run
+    
+    SmartDashboard.putNumber("climb motor Position", driveMotor.getPosition().getValueAsDouble());
   }
 }
