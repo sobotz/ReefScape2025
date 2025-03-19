@@ -15,9 +15,9 @@ package frc.robot;
 public final class Constants {
   public static class SwerveConstants{
     public static final double frontLeftDegreeOffset = 130.1875;
-    public static final double frontRightDegreeOffset = 126.8828125;
+    public static final double frontRightDegreeOffset = 0.8828125;
     public static final double backLeftDegreeOffset = 116.619140625;
-    public static final double backRightDegreeOffset = 60.759765625;
+    public static final double backRightDegreeOffset = 52.759765625;
     public static final double wheelRadius = 0.0508;//in meters;
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
@@ -25,17 +25,20 @@ public final class Constants {
   public static class ClawConstants{
     public static final double DEFAULT = -87;
     public static final double HASALGAEDEFAULT = -360;
-    public static final double HASFLOORALGAEDEFAULT = 0;
+    public static final double HASALGAEDEFAULT2 = 0;
     public static final double INTAKE = -87;
     public static final double FLOORALGAE = -220.0137;
     public static final double PROCESSOR = -270;
+    
     public static final double FACINGDOWNREEFALGAE = -240;
     public static final double FACINGUPREEFALGAE = -300;
+    public static final double REVERSEFACINGUPREEFALGAE = 63.5;
     public static final double BARGE = -326;
+    public static final double BARGE2 = 34;
     public static final double L1 = 60;
-    public static final double L2 = -240;
-    public static final double L3= -240;
-    public static final double L4 = -231.5;
+    public static final double L2 = -239;
+    public static final double L3= -239;
+    public static final double L4 = -228.7;
     public static final double TEMPPOSITION = -180;
   }
   public static enum ClawPosition{
@@ -45,7 +48,9 @@ public final class Constants {
     PROCESSOR,
     FACINGUPREEFALGAE,
     FACINGDOWNREEFALGAE,
+    REVERSEFACINGUPALGAE,
     BARGE,
+    BARGE2,
     L1,
     L2,
     L3,
@@ -54,9 +59,12 @@ public final class Constants {
   }
   public static enum ElevatorPosition{
     DEFAULT,
+    ALGAETEMP,
     INTAKE,
+    CLIMB,
     FLOORALGAE,
     PROCESSOR,
+    LOWESTALGAE,
     LOWERALGAE,
     MIDALGAE,
     HIGHERALGAE,
@@ -77,17 +85,20 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0.006;
     public static final double DEFAULT = 6;
-    public static final double INTAKE = 18.5;
-    public static final double FLOORALGAE = 7.6;
+    public static final double ALGAETEMP = 12;
+    public static final double INTAKE = 16.9;
+    public static final double FLOORALGAE = 7.3;
     public static final double PROCESSOR = 6;
+    public static final double CLIMB = 0.5;
+    public static final double LOWESTALGAE = 21.6;
     public static final double LOWERALGAE = 30;
     public static final double MIDALGAE = 36;
     public static final double HIGHERALGAE = 46;
     public static final double BARGE = 70;
     public static final double L1 = 5;
-    public static final double L2 = 27.5;
-    public static final double L3 = 42;
-    public static final double L4 = 70.3;
+    public static final double L2 = 28.4;
+    public static final double L3 = 44;
+    public static final double L4 = 71.5;
     public static final double TEMPPOSITION = 30;
   }
 

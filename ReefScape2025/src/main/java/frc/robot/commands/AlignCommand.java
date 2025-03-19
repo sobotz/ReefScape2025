@@ -48,6 +48,7 @@ public class AlignCommand extends Command {
       isFinished = true;
     }
     if (!alignActive){
+      System.out.println("ALIGNING FINISH");
       m_photonVisionSubsystem.enableAlign(false,0,0,0);
       m_swerveSubsystem.setDriveCommandDisabled(false);
       m_photonVisionSubsystem.align(0,0,0,false);
@@ -65,10 +66,13 @@ public class AlignCommand extends Command {
       isFinished = true;
     }
   }
-
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if (!alignActive){
+      m_clawSubsystem.setFinishReefSequence(true);
+    }
+  }
 
   // Returns true when the command should end.
   @Override

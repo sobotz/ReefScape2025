@@ -12,8 +12,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -42,11 +40,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   ElevatorPosition autoPlaceTargetElevatorPosition;
   /** PIDF Constants */
   /** Manual Control Mode */
-  private boolean manualMode;
+  //private boolean manualMode;
   boolean once;
   boolean atTargetPosition;
   double previousElevatorError;
   double atPositionCount;
+  boolean intakeFinishMode;
+  
 
  
 
@@ -56,12 +56,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
     /** Initialize position mappings */
+    intakeFinishMode = false;
     m_swerveSubsystem = swerveSubsystem;
     positionMap = new HashMap<ElevatorPosition, Double>(){{
       put(ElevatorPosition.DEFAULT, ElevatorConstants.DEFAULT);
+      put(ElevatorPosition.ALGAETEMP, ElevatorConstants.ALGAETEMP);
       put(ElevatorPosition.INTAKE, ElevatorConstants.INTAKE);
+      put(ElevatorPosition.CLIMB, ElevatorConstants.CLIMB);
       put(ElevatorPosition.FLOORALGAE,ElevatorConstants.FLOORALGAE);
       put(ElevatorPosition.PROCESSOR,ElevatorConstants.PROCESSOR);
+      put(ElevatorPosition.LOWESTALGAE,ElevatorConstants.LOWESTALGAE);
       put(ElevatorPosition.LOWERALGAE,ElevatorConstants.LOWERALGAE);
       put(ElevatorPosition.MIDALGAE, ElevatorConstants.MIDALGAE);
       put(ElevatorPosition.HIGHERALGAE, ElevatorConstants.HIGHERALGAE);
@@ -102,6 +106,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public double getElevatorSensorPosition() {
     return elevatorMotor.getPosition().getValueAsDouble();
+  }
+  public void intakeFinish(){
+    intakeFinishMode = true;
   }
 
   public boolean elevatorAtTargetPosition() {
@@ -160,6 +167,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void setAutoPlaceClawTargetPosition(ElevatorPosition position){
     autoPlaceTargetElevatorPosition = position;
   }
+ 
 
   @Override
   public void periodic() {
@@ -179,6 +187,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     else if (Math.abs(elevatorPIDCalculation) < 0.04){
       elevatorPIDCalculation *= 1.4;
     }
+
+    // if (intakeFinishMode){
+    //   if (elevatorPIDCalculation>0.7){
+    //     elevatorPIDCalculation = 0.7;
+    //   }
+    //   else if (elevatorPIDCalculation < -0.7){
+    //     elevatorPIDCalculation = -0.7;
+    //   }
+    //   if (elevatorAtTargetPosition()){
+    //     intakeFinishMode = false;
+    //   }
+    // }
     
     //elevatorMotor.set(0.03);
     //slaveMotor.set(-0.03);

@@ -5,8 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ClawPosition;
-import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
@@ -42,6 +40,7 @@ public class ReefInteractionSequentialHolderCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_clawSubsystem.setFinishReefSequence(false);
     isFinished = false;
     if (isAuto){
       if (m_swerveSubsystem.getIsRedAlliance()){
@@ -52,22 +51,22 @@ public class ReefInteractionSequentialHolderCommand extends Command {
     else if (!m_swerveSubsystem.getIsRedAlliance()){
       System.out.println("BLUE ALLIANCE");
       if (id == (int)7){
-        id = 18;
+        id = (int)18;
       }
       else if (id == (int)8){
-        id = 17;
+        id = (int)17;
       }
       else if (id == (int)9){
-        id = 22;
+        id = (int)22;
       }
       else if (id == (int)10){
-        id = 21;
+        id = (int)21;
       }
       else if (id == (int)11){
-        id = 20;
+        id = (int)20;
       }
       else if (id == (int)6){
-        id = 19;
+        id = (int)19;
       }
     }
     m_interactionCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem, xTarget, yTarget, id,false);
@@ -76,21 +75,23 @@ public class ReefInteractionSequentialHolderCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_interactionCommand.isFinished()){
-      isFinished = true;
-    }
-    if (m_photonVisionSubsystem.getEmergencyReset()){
-      isFinished = true;
-    }
     if (m_clawSubsystem.getFinishReefSequence()){
       isFinished = true;
     }
+    // if (m_interactionCommand.isFinished()){
+    //   isFinished = true;
+    // }
+    // if (m_photonVisionSubsystem.getEmergencyReset()){
+    //   isFinished = true;
+    // }
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_clawSubsystem.setFinishReefSequence(false);
+    System.out.println("FINISHED");
     m_interactionCommand.cancel();
     //m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     //m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);

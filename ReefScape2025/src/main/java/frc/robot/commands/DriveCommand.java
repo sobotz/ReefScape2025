@@ -32,15 +32,16 @@ public class DriveCommand extends Command {
   public void initialize() {}
 
   @Override
-  public void execute() {
+  public void execute() { 
     //JOYSTICK VALUES FROM LEFT JOYSTICK
     strafeVector = new Vector(m_driverJoystick.getRawAxis(0),-m_driverJoystick.getRawAxis(1));
     //JOYSTICK VALUES FROM THE RIGHT JOYSTICK
     rotationVector = new Vector(m_driverJoystick.getRawAxis(4),-m_driverJoystick.getRawAxis(5));
+    //rotationVector = new Vector(1,(rotationVector.getDegrees() + 180) % 360,true);
     //chassisSpeed = new ChassisSpeeds(0, 1,0);
     chassisSpeed = new ChassisSpeeds(strafeVector.getX() * 2,strafeVector.getY() * 2,-rotationVector.getX() * 3);
     //m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
-    //strafeVector = new Vector(0.5, 0);
+    //strafeVector = new Vector(0, 0);
     //rotationVector = new Vector(0, 0);
     //System.out.println("hello");
     //strafeVector = new Vector(0, 0.2);

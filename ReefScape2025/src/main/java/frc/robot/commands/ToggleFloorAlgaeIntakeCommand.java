@@ -31,15 +31,10 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
   public void initialize() {
     //System.out.println("on");
     isFinished = false;
-    if (!m_clawSubsystem.hasItem()){
-      m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
-      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
-      m_clawSubsystem.setDriveMotor(1);
-    }
-    else{
-      isFinished = true;
-    }
     
+    m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
+    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
+    m_clawSubsystem.setDriveMotor(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -51,16 +46,20 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
     if(m_clawSubsystem.getDriveMotorCurrent()>60){
       timer.start();
     }
-    if (timer.get()>0.6 && m_clawSubsystem.getDriveMotorCurrent()>60){
+    if (timer.get()>0.3 && m_clawSubsystem.getDriveMotorCurrent()>59){
       m_clawSubsystem.setHasAlgae(true);
       m_clawSubsystem.setHasCoral(false);
       m_clawSubsystem.setAlgaeRetainPosition();
-      isFinished = true;
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.ALGAETEMP);
+      if (m_elevatorSubsystem.elevatorAtTargetPosition() && timer.get()>0.4){
+        isFinished = true;
+      }
     }
     else if (timer.get()>0.6){
       timer.reset();
       timer.stop();
     }
+    
   }
   // Called once the command ends or is interrupted.
   @Override

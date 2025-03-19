@@ -48,13 +48,23 @@ public class CoralPlacementCommand extends Command {
     //System.out.println("placecoral button: " + m_clawSubsystem.getReefCoralPlacementButton());
     if (m_clawSubsystem.getReefCoralPlacementButton() || isAuto){
       m_photonVisionSubsystem.resetCount();
+      // if (xTarget < 0 && m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L3){
+      //   xTarget += 0.02;
+      // }
+      // if (xTarget > 0 && m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L3){
+      //   xTarget -= 0.02;
+      // }
       m_photonVisionSubsystem.enableAlign(true, xTarget, yTarget, id);
       if (isAuto){
         m_elevatorSubsystem.setAutoPlaceClawTargetPosition(ElevatorPosition.L4);
         m_clawSubsystem.setAutoPlaceClawTargetPosition(ClawPosition.L4);
       }
       m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
-      m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
+      if (!(m_clawSubsystem.getAutoPlacePosition()== ClawPosition.L4)){
+        System.out.println("WRONG");
+        m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
+      }
+      //m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
       timer.start();
     }
     else{
@@ -65,14 +75,23 @@ public class CoralPlacementCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if ((m_clawSubsystem.getAutoPlacePosition()== ClawPosition.L4) && (m_elevatorSubsystem.getElevatorSensorPosition()>58)){
+      m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
+    }
     // if (m_photonVisionSubsystem.getAtTargetPosition()){
     //   m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
     //   m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
     //   timer.start();
     // }
     //System.out.println("RUNNING");
-    if ((m_clawSubsystem.clawAtTargetPosition() && m_elevatorSubsystem.elevatorAtTargetPosition()) && m_photonVisionSubsystem.getAtTargetPosition()){
-      m_clawSubsystem.setDriveMotor(-0.6);
+    
+    if ((m_clawSubsystem.clawAtTargetPosition() && m_elevatorSubsystem.elevatorAtTargetPosition()) && (m_photonVisionSubsystem.getAtTargetPosition() && (m_clawSubsystem.getAutoPlacePosition() == m_clawSubsystem.getTargetPosition()))){
+      if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L3 || m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L2){
+        m_clawSubsystem.setDriveMotor(-0.34);
+      }
+      else{
+        m_clawSubsystem.setDriveMotor(-0.6);
+      }
       timer2.start();
     }
     else if(timer.get()>4){
@@ -82,9 +101,17 @@ public class CoralPlacementCommand extends Command {
     // if (!m_photonVisionSubsystem.getHasTarget()){
     //   timer.restart();
     // }
-    if (timer2.get()>0.4){
-      isFinished = true;
+    if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L3 || m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L2){
+      if (timer2.get()>0.6){
+        isFinished = true;
+      }
     }
+    else{
+      if (timer2.get()>0.4){
+        isFinished = true;
+      }
+    }
+    
   }
 
   // Called once the command ends or is interrupted.

@@ -5,26 +5,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FinishReefSequenceCommand extends Command {
-  /** Creates a new FinishReefSequenceCommand. */
-  ClawSubsystem m_clawSubsystem;
-  boolean isFinished;
-  public FinishReefSequenceCommand(ClawSubsystem clawSubsystem) {
+public class TestServoCommand extends Command {
+  /** Creates a new TestServoCommand. */
+  ClimbSubsystem m_climbSubsystem;
+  public TestServoCommand(ClimbSubsystem climbSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_clawSubsystem = clawSubsystem;
-    isFinished = false;
+    m_climbSubsystem = climbSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    isFinished = false;
-    m_clawSubsystem.setFinishReefSequence(true);
-    isFinished = true;
-    
+    m_climbSubsystem.testServo(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,12 +29,12 @@ public class FinishReefSequenceCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("FINISH REEF");
+    m_climbSubsystem.testServo(false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isFinished;
+    return false;
   }
 }

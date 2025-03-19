@@ -37,7 +37,7 @@ public class ToggleStationIntakeCommand extends Command {
       timer.start();
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.INTAKE);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
-      m_clawSubsystem.setDriveMotor(1);///??????CHANGE
+      m_clawSubsystem.setDriveMotor(0.8);///??????CHANGE
       //m_intakeSubsystem.setDriveMotor(-1);
     }
     else{
@@ -69,6 +69,7 @@ public class ToggleStationIntakeCommand extends Command {
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_clawSubsystem.setDriveMotor(0);
     m_intakeSubsystem.setDriveMotor(0);
+    //m_elevatorSubsystem.intakeFinish();
   }
 
   // Returns true when the command should end.

@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.IntakeStartUpCommand;
 
 
 /**
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private Command m_teleopCommand;
+  boolean once;
 
   private final RobotContainer m_robotContainer;
 
@@ -25,6 +27,7 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
+    once = true;
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -79,6 +82,10 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void teleopInit() {
+    if (once){
+      new IntakeStartUpCommand(m_robotContainer.getClawSubsystem()).schedule();
+      once = false;
+    }
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -88,8 +95,8 @@ public class Robot extends TimedRobot {
       m_teleopCommand = m_robotContainer.getTeleopCommand();
       m_teleopCommand.schedule();
     }
-    m_robotContainer.getPhotonSubsystem().enableAlign(false,0,0,0);
-    m_robotContainer.getSwerveSubsystem().setDriveCommandDisabled(false);
+    // m_robotContainer.getPhotonSubsystem().enableAlign(false,0,0,0);
+    // m_robotContainer.getSwerveSubsystem().setDriveCommandDisabled(false);
   }
 
   /** This function is called periodically during operator control. */

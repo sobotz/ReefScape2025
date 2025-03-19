@@ -37,8 +37,14 @@ public class BargeCommand extends Command {
       m_clawSubsystem.toggleBarge();
       if (m_clawSubsystem.getToggleBarge() == true){
         m_swerveSubsystem.setBargeMode(true);
-         m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.BARGE);
-        m_clawSubsystem.setClawTargetPosition(ClawPosition.BARGE);
+        m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.BARGE);
+        if (m_clawSubsystem.getPositionMap().get(ClawPosition.DEFAULT) == 0){
+          m_clawSubsystem.setClawTargetPosition(ClawPosition.BARGE2);
+        }
+        else{
+          m_clawSubsystem.setClawTargetPosition(ClawPosition.BARGE);
+        }
+        
         isFinished = true;
       }
       else{

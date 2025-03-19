@@ -4,14 +4,23 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -22,6 +31,16 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    PhotonCamera m3Camera;
    PhotonCamera m4Camera;
    PhotonCamera intakeCamera;
+
+   PhotonPoseEstimator m3Pose;
+   PhotonPoseEstimator m4Pose;
+   Transform3d m3PoseTransform3d;
+   Transform3d m4PoseTranform3d;
+   AprilTagFieldLayout aprilTags;
+   List<Pose2d> estimates = new ArrayList<>();
+   List<Pose3d> targets = new ArrayList<>();
+   PoseStrategy kStrategy;
+   
    //Camera Data
    PhotonPipelineResult m3CameraResult;
    PhotonPipelineResult m4CameraResult;
@@ -97,6 +116,11 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 
   public PhotonVisionSubsystem(SwerveSubsystem subsystem) {
+    aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+    //kStrategy = PoseStrategy.PNP_DISTANCE_TRIG_SOLVE;
+    kStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+    m3PoseTransform3d = new Transform3d(-0.2413, 0.26035, 0, new Rotation3d(0, 25, 220));
+    m4PoseTranform3d = new Transform3d(-0.2413, -0.26035, 0, new Rotation3d(0, 25, 140));
     emergencyReset = false;
     reefNumber = 0;
     aReef = false;
@@ -134,9 +158,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     robotYOffset = 0;
     robotAngleOffset = 0;
 
+
     usingM3Camera = false;
     xTarget = 0;
     yTarget = 1;
+    m3Pose = new PhotonPoseEstimator(aprilTags, kStrategy, m3PoseTransform3d);
+    m4Pose = new PhotonPoseEstimator(aprilTags, kStrategy, m4PoseTranform3d);
     
 
   }
@@ -144,7 +171,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     if (id>=6 && id<=11){
       reefNumber = 
     }
-
   }*/
   public void enableEmergencyReset(){
     emergencyReset = true;
@@ -178,7 +204,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
           tempXOffset = target.getBestCameraToTarget().getX();//distance to target front back
           tempYOffset = -target.getBestCameraToTarget().getY();//distance to target left right
           tempAngleOffset3D = target.getBestCameraToTarget().getRotation().getZ();
-          
           if (tempAngleOffset3D * (180/Math.PI)<0){
             tempAngleOffset3D = (-1)*(180+tempAngleOffset3D*(180/Math.PI));
           }else{
@@ -198,7 +223,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       tempHasTarget = 0;
     }
     //System.out.println(tempAngleOffset2D);
-
     double[] returnList ={tempXOffset,tempYOffset,tempAngleOffset3D,tempAngleOffset2D, tempHasTarget};
     return returnList; 
   }
@@ -209,100 +233,11 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     m_swerveSubsystem.setTargetID(ID);
     //System.out.println("running");
     //System.out.println(m3TargetData[4]);
-    if (m3TargetData[4] == 1 && m4TargetData[4] == 1){
-      if (Math.abs(m3TargetData[3])<Math.abs(m4TargetData[3])){
-        //System.out.println("1st");
-        hasTarget = true;
-        usingM3Camera = true;
-        cameraXOffset = m3TargetData[0];
-        cameraYOffset = m3TargetData[1];
-        cameraAngleOffset3D = m3TargetData[2];
-        cameraAngleOffset2D = m3TargetData[3]; 
-      }
-      else if (Math.abs(m3TargetData[3])>Math.abs(m4TargetData[3])){
-        //System.out.println("2st");
-        hasTarget = true;
-        usingM3Camera = false;
-        cameraXOffset = m4TargetData[0];
-        cameraYOffset = m4TargetData[1];
-        cameraAngleOffset3D = m4TargetData[2];
-        cameraAngleOffset2D = m4TargetData[3];
-      }
-      else if ((Math.abs(m3TargetData[3]) == Math.abs(m4TargetData[3])) && m3TargetData[3] != 0){
-        //System.out.println("3st");
-        hasTarget = true;
-        usingM3Camera = true;
-        cameraXOffset = m3TargetData[0];
-        cameraYOffset = m3TargetData[1];
-        cameraAngleOffset3D = m3TargetData[2];
-        cameraAngleOffset2D = m3TargetData[3];
-      }
-    }
-    else if(m3TargetData[4] == 1 && m4TargetData[4] == 0){
-      
-      hasTarget = true;
-      usingM3Camera = true;
-      cameraXOffset = m3TargetData[0];
-      cameraYOffset = m3TargetData[1];
-      cameraAngleOffset3D = m3TargetData[2];
-      cameraAngleOffset2D = m3TargetData[3];
-
-    }
-    else if (m4TargetData[4] ==1 && m3TargetData[4] == 0){
-      //System.out.println(true);
-      hasTarget = true;
-      usingM3Camera = false;
-      cameraXOffset = m4TargetData[0];
-      cameraYOffset = m4TargetData[1];
-      cameraAngleOffset3D = m4TargetData[2];
-      cameraAngleOffset2D = m4TargetData[3];
-    }
-    else{
-      //System.out.println("4st");
-      hasTarget = false;
-    }
-    double z = Math.sqrt(Math.pow(cameraXOffset,2) + Math.pow(cameraYOffset,2));
-    //System.out.println(usingM3Camera);
-    if (usingM3Camera){
-      //System.out.println(true);
-      robotAngleOffset = cameraAngleOffset3D + 40;
-      //System.out.println(robotAngleOffset);
-      Vector vx = new Vector(cameraXOffset,(320  + robotAngleOffset) % 360,true);
-      //System.out.println(vx.getX());
-      Vector vy = new Vector(0,0,true);
-      if (cameraYOffset<0){
-        vy = new Vector(Math.abs(cameraYOffset),50 + robotAngleOffset,true);
-      }
-      else if (cameraYOffset>0){
-        vy = new Vector(Math.abs(cameraYOffset),230 + robotAngleOffset,true);
-      }
-      Vector combinedVector = vx.addVector(vy);
-      robotYOffset = combinedVector.getY();
-      robotXOffset = combinedVector.getX()-0.28;
-
-      // robotYOffset = z * Math.cos((Math.PI/180) * (cameraAngleOffset2D - 50));
-      // robotXOffset = z * Math.sin((Math.PI/180) * (cameraAngleOffset2D - 50));//0.3 meters offset from the center//CHANGE TO REAL METER OFFSET
-      
-      //System.out.println("robotX: " + robotXOffset);
-    }
-    else{
-      robotAngleOffset = cameraAngleOffset3D - 42;
-      Vector vx = new Vector(cameraXOffset, 40 + robotAngleOffset,true);
-      Vector vy = new Vector(0,0,true);
-      if (cameraYOffset<0){
-        vy = new Vector(Math.abs(cameraYOffset),130 + robotAngleOffset,true);
-      }
-      else if (cameraYOffset>0){
-        vy = new Vector(Math.abs(cameraYOffset),310 + robotAngleOffset,true);
-      }
-      Vector combinedVector = vx.addVector(vy);
-      robotYOffset = combinedVector.getY();
-      robotXOffset = combinedVector.getX() + 0.28;
 
       // robotYOffset = z * Math.cos((Math.PI/180) * (180-(cameraAngleOffset2D + 50)));
       // robotXOffset = z * Math.sin((Math.PI/180) * (180-(cameraAngleOffset2D + 50))) - 0.28;
       
-    }
+    
     //System.out.println(hasTarget);
     if (hasTarget && enabled){
       //x and y are working
@@ -338,9 +273,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       m_swerveSubsystem.setDriveCommandDisabled(false);
       m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
     }
-    
   }
-
   public void resetCount(){
     m_swerveSubsystem.resetCount();
   }
@@ -365,8 +298,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     else{
       return false;
     }
-
-
   }
   public void setDriveCommandDisabled(boolean value){
     m_swerveSubsystem.setDriveCommandDisabled(value);
@@ -374,8 +305,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //m_swerveSubsystem.getTargetID();
+    
     if (alignActive){
-      //System.out.println("align active");
+      System.out.println("align active");
       align(xTarget,yTarget , id, true);
     }
     m3CameraResult = m3Camera.getLatestResult();
@@ -383,7 +315,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     //align(0, 1, 20, true);
     //System.out.println(m3Camera.getLatestResult().getBestTarget().getBestCameraToTarget().getX());
     //System.out.println(m3CameraResult.size());
-    
     //System.out.println(m3Camera.getLatestResult().getBestTarget().getBestCameraToTarget().getRotation().getAngle()  * (180/Math.PI));
     //System.out.println(m3Camera.getLatestResult().getBestTarget().getYaw());
     intakeCameraResult = intakeCamera.getLatestResult();
@@ -393,9 +324,112 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     //align(0, 0, id, false);
     //align(0,1,20,true);
     //System.out.println(m3Camera.getLatestResult().getTargets().get(0).getYaw());
+    if (m3TargetData[4] == 1 && m4TargetData[4] == 1){
+      if (Math.abs(m3TargetData[3])<Math.abs(m4TargetData[3])){
+        //System.out.println("1st");
+        hasTarget = true;
+        usingM3Camera = true;
+        cameraXOffset = m3TargetData[0];
+        cameraYOffset = m3TargetData[1];
+        cameraAngleOffset3D = m3TargetData[2];
+        cameraAngleOffset2D = m3TargetData[3];
+      }
+      else if (Math.abs(m3TargetData[3])>Math.abs(m4TargetData[3])){
+        //System.out.println("2st");
+        hasTarget = true;
+        usingM3Camera = false;
+        cameraXOffset = m4TargetData[0];
+        cameraYOffset = m4TargetData[1];
+        cameraAngleOffset3D = m4TargetData[2];
+        cameraAngleOffset2D = m4TargetData[3];
+      }
+      else if ((Math.abs(m3TargetData[3]) == Math.abs(m4TargetData[3])) && m3TargetData[3] != 0){
+        //System.out.println("3st");
+        hasTarget = true;
+        usingM3Camera = true;
+        cameraXOffset = m3TargetData[0];
+        cameraYOffset = m3TargetData[1];
+        cameraAngleOffset3D = m3TargetData[2];
+        cameraAngleOffset2D = m3TargetData[3];
+      }
+    }
+    else if(m3TargetData[4] == 1 && m4TargetData[4] == 0){
+      hasTarget = true;
+      usingM3Camera = true;
+      cameraXOffset = m3TargetData[0];
+      cameraYOffset = m3TargetData[1];
+      cameraAngleOffset3D = m3TargetData[2];
+      cameraAngleOffset2D = m3TargetData[3];
+    }
+    else if (m4TargetData[4] ==1 && m3TargetData[4] == 0){
+      //System.out.println(true);
+      hasTarget = true;
+      usingM3Camera = false;
+      cameraXOffset = m4TargetData[0];
+      cameraYOffset = m4TargetData[1];
+      cameraAngleOffset3D = m4TargetData[2];
+      cameraAngleOffset2D = m4TargetData[3];
+    }
+    else{
+      //System.out.println("4st");
+      hasTarget = false;
+    }
+    double z = Math.sqrt(Math.pow(cameraXOffset,2) + Math.pow(cameraYOffset,2));
+    //System.out.println(usingM3Camera);
+    if (usingM3Camera){
+      //System.out.println(true);
+      robotAngleOffset = cameraAngleOffset3D + 40;
+      //System.out.println(robotAngleOffset);
+      Vector vx = new Vector(cameraXOffset,(320  + robotAngleOffset) % 360,true);
+      //System.out.println(vx.getX());
+      Vector vy = new Vector(0,0,true);
+      if (cameraYOffset<0){
+        vy = new Vector(Math.abs(cameraYOffset),50 + robotAngleOffset,true);
+      }
+      else if (cameraYOffset>0){
+        vy = new Vector(Math.abs(cameraYOffset),230 + robotAngleOffset,true);
+      }
+      Vector combinedVector = vx.addVector(vy);
+      robotYOffset = combinedVector.getY();
+      robotXOffset = combinedVector.getX()-0.28;
+    }
+    else{
+      robotAngleOffset = cameraAngleOffset3D - 44;
+      Vector vx = new Vector(cameraXOffset, 40 + robotAngleOffset,true);
+      Vector vy = new Vector(0,0,true);
+      if (cameraYOffset<0){
+        vy = new Vector(Math.abs(cameraYOffset),130 + robotAngleOffset,true);
+      }
+      else if (cameraYOffset>0){
+        vy = new Vector(Math.abs(cameraYOffset),310 + robotAngleOffset,true);
+      }
+      Vector combinedVector = vx.addVector(vy);
+      robotYOffset = combinedVector.getY();
+      robotXOffset = combinedVector.getX() + 0.28;
+    }
     SmartDashboard.putNumber("xrobot", robotXOffset);
     SmartDashboard.putNumber("yrobot",robotYOffset);
     SmartDashboard.putNumber("3d angle", robotAngleOffset);
     //System.out.println(m4TargetData[1]);
+    //m3Pose.addHeadingData(Timer.getFPGATimestamp(),m_swerveSubsystem.getAutoRotation());
+    //m4Pose.addHeadingData(Timer.getFPGATimestamp(),m_swerveSubsystem.getAutoRotation());
+    
+    try{
+    m_swerveSubsystem.updateVisionPoseEstimator(m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d());
+    
+
+    SmartDashboard.putNumber("M3Pose2dx", m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d().getX());
+    SmartDashboard.putNumber("M3Pose2dy", m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d().getY());
+    }catch(Exception e){
+      System.out.println("PoseEstimator(M3 HAS NO TARGET) "+e);
+      
+    }
+    try {
+      m_swerveSubsystem.updateVisionPoseEstimator(m4Pose.update(m4CameraResult).get().estimatedPose.toPose2d());
+      SmartDashboard.putNumber("M4Pose2dx", m4Pose.update(m4CameraResult).get().estimatedPose.toPose2d().getX());
+    SmartDashboard.putNumber("M4Pose2dy", m4Pose.update(m4CameraResult).get().estimatedPose.toPose2d().getY());
+    } catch (Exception e) {
+      System.out.println("PoseEstimator(M4 HAS NO TARGET) "+e);
+    }
   }
 }

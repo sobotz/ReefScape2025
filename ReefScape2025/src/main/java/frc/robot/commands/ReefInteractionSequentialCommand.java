@@ -7,7 +7,6 @@ package frc.robot.commands;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
@@ -39,8 +38,25 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     //clawSubsystem.setAutoPlaceClawTargetPosition(targetClawPosition);
     if (isAuto){
       if (swerveSubsystem.getIsRedAlliance()){
-        id = idd -11;
-        xTarget = -xTarget;
+        if (id == (int)18){
+          id = (int)7;
+        }
+        else if (id == (int)17){
+          id = (int)8;
+        }
+        else if (id == (int)22){
+          id = (int)9;
+        }
+        else if (id == (int)21){
+          System.out.println("GOOD");
+          id = (int)10;
+        }
+        else if (id == (int)20){
+          id = (int)11;
+        }
+        else if (id == (int)19){
+          id = (int)6;
+        }
       }
       else{
         id = idd;
@@ -72,6 +88,7 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
         algaeElevatorPosition = ElevatorPosition.HIGHERALGAE;
       }
     }
+
     if (xTarget > 0){
       isRightSide = true;
     }
@@ -92,7 +109,7 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     addCommands(
       new CoralPlacementCommand(elevatorSubsystem, clawSubsystem, photonVisionSubsystem, true, xTarget, yTarget, id, isAuto),
       new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem,photonVisionSubsystem, algaeElevatorPosition, algaeClawPosition, id),
-      new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, true, 0, 0.45, id,isAuto),
+      new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, true, 0, 0.462, id,isAuto),
       new SetClawPositionCommand(clawSubsystem, ClawPosition.DEFAULT),
       new SetElevatorPositionCommand(elevatorSubsystem, ElevatorPosition.DEFAULT),
       new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, false, 0, 0, 0,isAuto));
