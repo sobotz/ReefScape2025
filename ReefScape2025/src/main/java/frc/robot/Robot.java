@@ -86,6 +86,7 @@ public class Robot extends TimedRobot {
       new IntakeStartUpCommand(m_robotContainer.getClawSubsystem()).schedule();
       once = false;
     }
+    m_robotContainer.getResetIntakeCommand().schedule();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

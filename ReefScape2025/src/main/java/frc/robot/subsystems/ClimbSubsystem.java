@@ -74,7 +74,7 @@ public class ClimbSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    System.out.println("TEST");
+    
     if (timer.get()>1){
       targetPosition = -100;
       bufferPrep = true;

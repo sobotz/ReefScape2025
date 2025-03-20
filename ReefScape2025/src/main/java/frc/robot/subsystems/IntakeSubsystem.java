@@ -9,10 +9,10 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.revrobotics.servohub.ServoChannel;
-import com.revrobotics.servohub.ServoHub;
 import com.revrobotics.servohub.ServoChannel.ChannelId;
+import com.revrobotics.servohub.ServoHub;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -21,10 +21,13 @@ public class IntakeSubsystem extends SubsystemBase {
   TalonFXS driveMotor;
   ServoHub m_servoHub;
   ServoChannel intakeServo;
+  boolean enableServo;
 
   public IntakeSubsystem(ServoHub servoHub) {
+    enableServo = false;
     m_servoHub = servoHub;
     intakeServo = servoHub.getServoChannel(ChannelId.kChannelId0);
+    
 
     driveMotor = new TalonFXS(13);
     TalonFXSConfiguration toConfigure = new TalonFXSConfiguration();
@@ -43,13 +46,35 @@ public class IntakeSubsystem extends SubsystemBase {
     System.out.println("drive");
     driveMotor.set(value);
   }
+  public void resetIntakeServo(){
+    //intakeServo.setPulseWidth(1500);
+  }
   public void openServo(){
-    intakeServo.setPulseWidth(5000);
-    intakeServo.setEnabled(true);
+    //intakeServo.setEnabled(true);
+    //intakeServo.setPowered(true);
+  
+    
+    
+    //intakeServo.setPulseWidth(2000);
+  }
+  public void setIntakeServo(boolean value){
+    enableServo = value;
   }
 
   @Override
   public void periodic() {
+    if (enableServo){
+      System.out.println("GOOD");
+      intakeServo.setEnabled(true);
+      intakeServo.setPowered(true);
+      intakeServo.setPulseWidth(1500);
+    }
+    else{
+      System.out.println("MID");
+      intakeServo.setEnabled(true);
+      intakeServo.setPowered(true);
+      intakeServo.setPulseWidth(500);
+    }
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("intakeServo", intakeServo.getPulseWidth());
   }

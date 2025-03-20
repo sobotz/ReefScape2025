@@ -6,42 +6,6 @@ package frc.robot;
 
 
 
-import frc.robot.Constants.ClawPosition;
-import frc.robot.Constants.ElevatorPosition;
-import frc.robot.commands.AutoSetStationIntakeCommand;
-import frc.robot.commands.BargeCommand;
-import frc.robot.commands.CoralLevelButtonCommand;
-import frc.robot.commands.DriveCommand;
-import frc.robot.commands.EndAutoCommand;
-import frc.robot.commands.GrabAlgaeCommand;
-
-import frc.robot.commands.ReefInteractionSequentialCommand;
-import frc.robot.commands.ReefInteractionSequentialHolderCommand;
-import frc.robot.commands.ResetClawCommand;
-import frc.robot.commands.ResetGyroCommand;
-import frc.robot.commands.SetActuatorPositionCommand;
-import frc.robot.commands.SetClawPositionCommand;
-import frc.robot.commands.TestClawDriveCommand;
-import frc.robot.commands.TestClawDriveReverseCommand;
-import frc.robot.commands.TestClimbDriveMotor;
-import frc.robot.commands.TestClimbDriveMotorReverse;
-import frc.robot.commands.TestServoCommand;
-import frc.robot.commands.ToggleClimbCommand;
-import frc.robot.commands.ToggleFloorAlgaeIntakeCommand;
-import frc.robot.commands.ToggleStationIntakeCommand;
-import frc.robot.subsystems.ClawSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-
-
-import frc.robot.commands.ProcessorCommand;
-import frc.robot.commands.ReefAlgaeGrabButton;
-import frc.robot.commands.ReefCoralPlacementButton;
-import frc.robot.subsystems.PhotonVisionSubsystem;
-
-import frc.robot.subsystems.SwerveSubsystem;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -55,6 +19,39 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ClawPosition;
+import frc.robot.Constants.ElevatorPosition;
+import frc.robot.commands.AutoSetStationIntakeCommand;
+import frc.robot.commands.BargeCommand;
+import frc.robot.commands.CoralLevelButtonCommand;
+import frc.robot.commands.DriveCommand;
+import frc.robot.commands.EndAutoCommand;
+import frc.robot.commands.GrabAlgaeCommand;
+import frc.robot.commands.ProcessorCommand;
+import frc.robot.commands.ReefAlgaeGrabButton;
+import frc.robot.commands.ReefCoralPlacementButton;
+import frc.robot.commands.ReefInteractionSequentialCommand;
+import frc.robot.commands.ReefInteractionSequentialHolderCommand;
+import frc.robot.commands.ResetClawCommand;
+import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.ResetServoCommand;
+import frc.robot.commands.SetActuatorPositionCommand;
+import frc.robot.commands.SetClawPositionCommand;
+import frc.robot.commands.TestClawDriveCommand;
+import frc.robot.commands.TestClawDriveReverseCommand;
+import frc.robot.commands.TestClimbDriveMotor;
+import frc.robot.commands.TestClimbDriveMotorReverse;
+import frc.robot.commands.TestServoCommand;
+import frc.robot.commands.TestServoIntakeCommand;
+import frc.robot.commands.ToggleClimbCommand;
+import frc.robot.commands.ToggleFloorAlgaeIntakeCommand;
+import frc.robot.commands.ToggleStationIntakeCommand;
+import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -121,6 +118,7 @@ public class RobotContainer {
   ProcessorCommand m_processorCommand;
   BargeCommand m_bargeCommand;
   ToggleClimbCommand m_toggleClimbCommand;
+  ResetServoCommand m_ResetServoCommand;
 
   ReefCoralPlacementButton m_setL1Level;
   ReefCoralPlacementButton m_setL2Level;
@@ -164,7 +162,7 @@ public class RobotContainer {
   TestServoCommand m_testServoCommand;
   TestClimbDriveMotor m_testClimbDriveMotor;
   TestClimbDriveMotorReverse m_TestClimbDriveMotorReverse;
-  
+  TestServoIntakeCommand m_TestServoIntakeCommand;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -188,6 +186,7 @@ public class RobotContainer {
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
     m_clawDriveReverseCommand = new TestClawDriveReverseCommand(m_clawSubsystem);
     m_clawDriveCommand = new TestClawDriveCommand(m_clawSubsystem);
+    m_ResetServoCommand = new ResetServoCommand(m_intakeSubsystem);
 
     m_toggleStationIntakeCommand = new ToggleStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     m_toggleFloorAlgaeIntakeCommand = new ToggleFloorAlgaeIntakeCommand(m_elevatorSubsystem, m_clawSubsystem);
@@ -258,7 +257,7 @@ public class RobotContainer {
     m_autoSetStationIntakeCommand = new AutoSetStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     
     m_testServoCommand = new TestServoCommand(m_climbSubsystem);
-    
+    m_TestServoIntakeCommand = new TestServoIntakeCommand(m_intakeSubsystem);
     NamedCommands.registerCommand("m_ReefAlgaeGrabCommand",m_ReefAlgaeGrabCommand);
     NamedCommands.registerCommand("m_reefCoralPlacementCommand",m_reefCoralPlacementCommand);
     NamedCommands.registerCommand("m_SetL4Level", m_setL4Level);
@@ -379,8 +378,8 @@ public class RobotContainer {
     driveReverseButton.whileTrue(m_testClimbDriveMotor);
     JoystickButton driveButton = new JoystickButton(testOperator, 6);
     driveButton.onTrue(m_toggleClimbCommand);
-    JoystickButton defaultButton = new JoystickButton(testOperator,8);
-    defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
+    //JoystickButton defaultButton = new JoystickButton(testOperator,8);
+    //defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
     JoystickButton testL1Button = new JoystickButton(testOperator, 1);
     testL1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.CLIMB, ClawPosition.DEFAULT));
     JoystickButton testL2Button = new JoystickButton(testOperator,2);
@@ -401,6 +400,8 @@ public class RobotContainer {
     testClimbReverseButton.whileTrue(testClimbDriveMotorReverse);
     JoystickButton testServoButton = new JoystickButton(testOperator,7);
     testServoButton.toggleOnTrue(m_testServoCommand);
+    JoystickButton testServoIntakeButton = new JoystickButton (testOperator, 8);
+    testServoIntakeButton.toggleOnTrue(m_TestServoIntakeCommand);
     //JoystickButton testClimbDriveMotor = new JoystickButton(testOperator, 7);
     //testClimbDriveMotor.whileTrue(m_testClimbDriveMotor);
     //JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
@@ -417,6 +418,9 @@ public class RobotContainer {
    */
   public Command getTeleopCommand(){
     return m_driveCommand;
+  }
+  public Command getResetIntakeCommand(){
+    return m_ResetServoCommand;
   }
   /*public Command getAutonomousCommand(){
     return autoChooser.getSelected();

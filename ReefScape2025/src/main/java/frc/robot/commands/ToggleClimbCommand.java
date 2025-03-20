@@ -28,7 +28,7 @@ public class ToggleClimbCommand extends InstantCommand {
   @Override
   public void initialize() {
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.CLIMB);
-    m_intakeSubsystem.openServo();
+    m_intakeSubsystem.setIntakeServo(true);
     m_climbSubsystem.toggleClimb();
   }
 }

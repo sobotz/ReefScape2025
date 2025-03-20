@@ -7,7 +7,9 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -302,6 +304,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public void setDriveCommandDisabled(boolean value){
     m_swerveSubsystem.setDriveCommandDisabled(value);
   }
+  // public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator pose,Pose2d prevEstimatedRobotPose,PhotonPipelineResult camResult) {
+  //       pose.setReferencePose(prevEstimatedRobotPose);
+  //       return pose.update(camResult);
+  //   }
   @Override
   public void periodic() {
     //m_swerveSubsystem.getTargetID();
@@ -431,5 +437,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     } catch (Exception e) {
       System.out.println("PoseEstimator(M4 HAS NO TARGET) "+e);
     }
+    
   }
 }
