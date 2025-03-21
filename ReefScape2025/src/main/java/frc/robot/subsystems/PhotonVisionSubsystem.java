@@ -119,10 +119,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   public PhotonVisionSubsystem(SwerveSubsystem subsystem) {
     aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
-    //kStrategy = PoseStrategy.PNP_DISTANCE_TRIG_SOLVE;
-    kStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-    m3PoseTransform3d = new Transform3d(-0.2413, 0.26035, 0, new Rotation3d(0, 25, 220));
-    m4PoseTranform3d = new Transform3d(-0.2413, -0.26035, 0, new Rotation3d(0, 25, 140));
+    kStrategy = PoseStrategy.PNP_DISTANCE_TRIG_SOLVE;
+    //kStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+    m3PoseTransform3d = new Transform3d(-0.2413, 0.26035, 0.2095, new Rotation3d(0, 0.436332, 2.44346));//RADIANS//CHANGE Z HEIGHT
+    m4PoseTranform3d = new Transform3d(-0.2413, -0.26035, 0.2095, new Rotation3d(0, 0.436332, 3.83972));//RADIANS//CHANGE Z HEIGHT
     emergencyReset = false;
     reefNumber = 0;
     aReef = false;
@@ -167,7 +167,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     m3Pose = new PhotonPoseEstimator(aprilTags, kStrategy, m3PoseTransform3d);
     m4Pose = new PhotonPoseEstimator(aprilTags, kStrategy, m4PoseTranform3d);
     
-
   }
   /*public void lightUpReef(int id, boolean isRightSide){
     if (id>=6 && id<=11){
@@ -417,26 +416,26 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("yrobot",robotYOffset);
     SmartDashboard.putNumber("3d angle", robotAngleOffset);
     //System.out.println(m4TargetData[1]);
-    //m3Pose.addHeadingData(Timer.getFPGATimestamp(),m_swerveSubsystem.getAutoRotation());
-    //m4Pose.addHeadingData(Timer.getFPGATimestamp(),m_swerveSubsystem.getAutoRotation());
+    m3Pose.addHeadingData(m_swerveSubsystem.getAutoTime(), m_swerveSubsystem.getAutoRotation());//buffer saves last second value, getAutoTime to remove latency
+    m4Pose.addHeadingData(m_swerveSubsystem.getAutoTime(), m_swerveSubsystem.getAutoRotation());
     
     try{
-    m_swerveSubsystem.updateVisionPoseEstimator(m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d());
-    
+      EstimatedRobotPose m3RobotPose  = m3Pose.update(m3CameraResult).get();
+      m_swerveSubsystem.updateVisionPoseEstimator(m3RobotPose.estimatedPose.toPose2d(),m3RobotPose.timestampSeconds);
 
-    SmartDashboard.putNumber("M3Pose2dx", m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d().getX());
-    SmartDashboard.putNumber("M3Pose2dy", m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d().getY());
+      SmartDashboard.putNumber("M3Pose2dx", m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d().getX());
+      SmartDashboard.putNumber("M3Pose2dy", m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d().getY());
     }catch(Exception e){
       System.out.println("PoseEstimator(M3 HAS NO TARGET) "+e);
       
     }
     try {
-      m_swerveSubsystem.updateVisionPoseEstimator(m4Pose.update(m4CameraResult).get().estimatedPose.toPose2d());
+      EstimatedRobotPose m4RobotPose = m4Pose.update(m4CameraResult).get();
+      m_swerveSubsystem.updateVisionPoseEstimator(m4RobotPose.estimatedPose.toPose2d(),m4RobotPose.timestampSeconds);
       SmartDashboard.putNumber("M4Pose2dx", m4Pose.update(m4CameraResult).get().estimatedPose.toPose2d().getX());
     SmartDashboard.putNumber("M4Pose2dy", m4Pose.update(m4CameraResult).get().estimatedPose.toPose2d().getY());
     } catch (Exception e) {
       System.out.println("PoseEstimator(M4 HAS NO TARGET) "+e);
     }
-    
   }
 }

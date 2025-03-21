@@ -97,6 +97,7 @@ public class SwerveSubsystem extends SubsystemBase {
   double previousYError;
   double xAtPositionCount;
   double yAtPositionCount;
+  double autoTime;
   /*Update requirements
    * *******SWERVE SUBSYSTEM*******
    * ID every device -- DONE
@@ -121,6 +122,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveSubsystem() {
     //SWERVE MOTORS INSTANTIATION
+    autoTime = 0;
     isRedAlliance = false;
     atTargetPosition = false;
     bargeMode = false;
@@ -444,8 +446,11 @@ public class SwerveSubsystem extends SubsystemBase {
     once = true;
   }
   
-  public void updateVisionPoseEstimator(Pose2d pose ){
-    m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+  public void updateVisionPoseEstimator(Pose2d pose, double time ){
+    m_odometer.addVisionMeasurement(pose,time);
+  }
+  public double getAutoTime(){
+    return autoTime;
   }
   @Override
   public void periodic() {
@@ -464,6 +469,7 @@ public class SwerveSubsystem extends SubsystemBase {
       once = false;
     }
     currentRobotDegree = ((((robotGyro.getYaw().getValueAsDouble() - robotDegreeOffset) % 360) + 360) % 360);
+    autoTime = Timer.getFPGATimestamp();
     m_odometer.update(autoRobotDegree,new SwerveModulePosition[]{
       frontLeftSwerveModule.getSwerveModulePosition(),
       frontRightSwerveModule.getSwerveModulePosition(),

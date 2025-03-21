@@ -64,13 +64,11 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     if (enableServo){
-      System.out.println("GOOD");
       intakeServo.setEnabled(true);
       intakeServo.setPowered(true);
       intakeServo.setPulseWidth(1500);
     }
     else{
-      System.out.println("MID");
       intakeServo.setEnabled(true);
       intakeServo.setPowered(true);
       intakeServo.setPulseWidth(500);
