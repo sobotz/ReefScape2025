@@ -32,25 +32,25 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   //Cameras
    PhotonCamera m3Camera;
    PhotonCamera m4Camera;
-   PhotonCamera intakeCamera;
+   
 
    PhotonPoseEstimator m3Pose;
    PhotonPoseEstimator m4Pose;
    Transform3d m3PoseTransform3d;
    Transform3d m4PoseTranform3d;
    AprilTagFieldLayout aprilTags;
-   List<Pose2d> estimates = new ArrayList<>();
-   List<Pose3d> targets = new ArrayList<>();
+   List<Pose2d> estimates;
+   List<Pose3d> targets;
    PoseStrategy kStrategy;
    
    //Camera Data
    PhotonPipelineResult m3CameraResult;
    PhotonPipelineResult m4CameraResult;
-   PhotonPipelineResult intakeCameraResult;
+   
 
    Transform3d m3CameraTargetInfo;
    Transform3d m4CameraTargetInfo;
-   Transform3d intakeCameraTargetInfo;
+   
 
    double cameraXOffset;
    double cameraYOffset;
@@ -63,20 +63,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   
    double[] m3TargetData;
    double[] m4TargetData;
-   double[] intakeTargetData;
-  
-   double intakeCameraxOffset;
-   double intakeCamerayOffset;
-   double intakeCameraAngleOffset3D;
-   double intakeCameraAngleOffset2D;
+   
 
    List<PhotonTrackedTarget> m3CameraTargets;
    List<PhotonTrackedTarget> m4CameraTargets;
-   List<PhotonTrackedTarget> intakeCameraTargets;
+   
 
    PhotonTrackedTarget m3CameraCurrentTarget;
    PhotonTrackedTarget m4CameraCurrentTarget;
-   PhotonTrackedTarget intakeCameraCurrentTarget;
+   
 
    double tempXOffset;
    double tempYOffset;
@@ -89,7 +84,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
    int m3CameraTargetId;
    int m4CameraTargetId;
-   int intakeCameraTargetId;
    int id;
    boolean usingM3Camera;
 
@@ -115,14 +109,18 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
    double reefNumber;
    boolean emergencyReset;
+   EstimatedRobotPose m3RobotPose;
+   EstimatedRobotPose m4RobotPose;
 
 
   public PhotonVisionSubsystem(SwerveSubsystem subsystem) {
-    aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+    targets = new ArrayList<>();
+    estimates = new ArrayList<>();
+    aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     kStrategy = PoseStrategy.PNP_DISTANCE_TRIG_SOLVE;
     //kStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-    m3PoseTransform3d = new Transform3d(-0.2413, 0.26035, 0.2095, new Rotation3d(0, 0.436332, 2.44346));//RADIANS//CHANGE Z HEIGHT
-    m4PoseTranform3d = new Transform3d(-0.2413, -0.26035, 0.2095, new Rotation3d(0, 0.436332, 3.83972));//RADIANS//CHANGE Z HEIGHT
+    m3PoseTransform3d = new Transform3d(-0.225425, -0.2794, 0.20955, new Rotation3d(0, -0.436332,2.44346));//RADIANS//CHANGE Z HEIGHT2.44346//2.26893
+    m4PoseTranform3d = new Transform3d(-0.2225425, 0.2794, 0.20955, new Rotation3d(0, -0.436332,-2.44346));//RADIANS//CHANGE Z HEIGHT
     emergencyReset = false;
     reefNumber = 0;
     aReef = false;
@@ -144,7 +142,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     alignActive = false;
     m3Camera = new PhotonCamera(Constants.PhotonVisionConstants.m3CameraName);
     m4Camera = new PhotonCamera(Constants.PhotonVisionConstants.m4CameraName);
-    intakeCamera = new PhotonCamera(Constants.PhotonVisionConstants.m4CameraName);
+  
     id = 20;
     cameraXOffset = 0;
     cameraYOffset = 0;
@@ -167,6 +165,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     m3Pose = new PhotonPoseEstimator(aprilTags, kStrategy, m3PoseTransform3d);
     m4Pose = new PhotonPoseEstimator(aprilTags, kStrategy, m4PoseTranform3d);
     
+    m3CameraResult = m3Camera.getLatestResult();
+    m4CameraResult = m4Camera.getLatestResult();
+    m3TargetData = getData(m3CameraResult);
+    m4TargetData = getData(m4CameraResult);
+    
+  
   }
   /*public void lightUpReef(int id, boolean isRightSide){
     if (id>=6 && id<=11){
@@ -193,6 +197,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       setDriveCommandDisabled(false);
     }
   }
+
+  
   public double[] getData(PhotonPipelineResult result){
     if(result.hasTargets() && result.getTargets().stream().anyMatch(t -> Arrays.asList(id).contains(t.getFiducialId()))){
       // get all targets
@@ -240,95 +246,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       
     
     //System.out.println(hasTarget);
-    if (hasTarget && enabled){
-      //x and y are working
-      if (Math.abs(cameraAngleOffset2D)>60){
-        robotAngleOffset = 0;
-      }
-      m_swerveSubsystem.setDriveCommandDisabled(true);
-      m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,enabled);
-    }else{
-      m_swerveSubsystem.setDriveCommandDisabled(false);
-      m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0,false);
-    }
-  }
-  public void intakeAlign(double robotX,double robotY,boolean enabled){
-    if (intakeTargetData[4] == 1){
-      if (Math.abs(m3TargetData[3])<Math.abs(m4TargetData[3])){
-        //System.out.println("1st");
-        hasTarget = true;
-        cameraXOffset = m3TargetData[0];
-        cameraYOffset = m3TargetData[1];
-        cameraAngleOffset3D = m3TargetData[2];
-        cameraAngleOffset2D = m3TargetData[3]; 
-      }
-    }
-    else{
-      //System.out.println("4st");
-      hasTarget = false;
-    }
-    if (hasTarget && enabled){
-      m_swerveSubsystem.reefControlledDrive(0, cameraXOffset, cameraAngleOffset3D, robotX, robotY, enabled);
-    }
-    else{
-      m_swerveSubsystem.setDriveCommandDisabled(false);
-      m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
-    }
-  }
-  public void resetCount(){
-    m_swerveSubsystem.resetCount();
-  }
-  public boolean getHasTarget(){
-    return hasTarget;
-  }
-  public boolean getAtTargetPosition(){
-    return m_swerveSubsystem.getAtTargetPosition(hasTarget);
-  }
-  public boolean hasRightID(int id){
-    if (hasID(m3CameraResult,id) || hasID(m3CameraResult,id)){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
-  public boolean hasID(PhotonPipelineResult pipeline, int idd){
-    if(pipeline.hasTargets() && pipeline.getTargets().stream().anyMatch(t -> Arrays.asList(idd).contains(t.getFiducialId()))){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
-  public void setDriveCommandDisabled(boolean value){
-    m_swerveSubsystem.setDriveCommandDisabled(value);
-  }
-  // public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator pose,Pose2d prevEstimatedRobotPose,PhotonPipelineResult camResult) {
-  //       pose.setReferencePose(prevEstimatedRobotPose);
-  //       return pose.update(camResult);
-  //   }
-  @Override
-  public void periodic() {
-    //m_swerveSubsystem.getTargetID();
-    
-    if (alignActive){
-      System.out.println("align active");
-      align(xTarget,yTarget , id, true);
-    }
-    m3CameraResult = m3Camera.getLatestResult();
-    m4CameraResult = m4Camera.getLatestResult();
-    //align(0, 1, 20, true);
-    //System.out.println(m3Camera.getLatestResult().getBestTarget().getBestCameraToTarget().getX());
-    //System.out.println(m3CameraResult.size());
-    //System.out.println(m3Camera.getLatestResult().getBestTarget().getBestCameraToTarget().getRotation().getAngle()  * (180/Math.PI));
-    //System.out.println(m3Camera.getLatestResult().getBestTarget().getYaw());
-    intakeCameraResult = intakeCamera.getLatestResult();
-    m3TargetData = getData(m3CameraResult);
-    m4TargetData = getData(m4CameraResult);
-    intakeTargetData = getData(intakeCameraResult);
-    //align(0, 0, id, false);
-    //align(0,1,20,true);
-    //System.out.println(m3Camera.getLatestResult().getTargets().get(0).getYaw());
     if (m3TargetData[4] == 1 && m4TargetData[4] == 1){
       if (Math.abs(m3TargetData[3])<Math.abs(m4TargetData[3])){
         //System.out.println("1st");
@@ -379,6 +296,125 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       //System.out.println("4st");
       hasTarget = false;
     }
+    if (hasTarget && enabled){
+      //x and y are working
+      if (Math.abs(cameraAngleOffset2D)>60){
+        robotAngleOffset = 0;
+      }
+      m_swerveSubsystem.setDriveCommandDisabled(true);
+      m_swerveSubsystem.reefControlledDrive(robotXOffset, robotYOffset, robotAngleOffset, x, y,enabled);
+    }else{
+      m_swerveSubsystem.setDriveCommandDisabled(false);
+      m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0,false);
+    }
+  }
+  // public void intakeAlign(double robotX,double robotY,boolean enabled){
+  //   if (intakeTargetData[4] == 1){
+  //     if (Math.abs(m3TargetData[3])<Math.abs(m4TargetData[3])){
+  //       //System.out.println("1st");
+  //       hasTarget = true;
+  //       cameraXOffset = m3TargetData[0];
+  //       cameraYOffset = m3TargetData[1];
+  //       cameraAngleOffset3D = m3TargetData[2];
+  //       cameraAngleOffset2D = m3TargetData[3]; 
+  //     }
+  //   }
+  //   else{
+  //     //System.out.println("4st");
+  //     hasTarget = false;
+  //   }
+  //   if (hasTarget && enabled){
+  //     m_swerveSubsystem.reefControlledDrive(0, cameraXOffset, cameraAngleOffset3D, robotX, robotY, enabled);
+  //   }
+  //   else{
+  //     m_swerveSubsystem.setDriveCommandDisabled(false);
+
+  //     m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
+  //   }
+  // }
+  public void resetCount(){
+    m_swerveSubsystem.resetCount();
+  }
+  public boolean getHasTarget(){
+    return hasTarget;
+  }
+  public boolean getAtTargetPosition(){
+    return m_swerveSubsystem.getAtTargetPosition(hasTarget);
+  }
+  public boolean hasRightID(int id){
+    if (hasID(m3CameraResult,id) || hasID(m3CameraResult,id)){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  public boolean hasID(PhotonPipelineResult pipeline, int idd){
+    if(pipeline.hasTargets() && pipeline.getTargets().stream().anyMatch(t -> Arrays.asList(idd).contains(t.getFiducialId()))){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  public void setDriveCommandDisabled(boolean value){
+    m_swerveSubsystem.setDriveCommandDisabled(value);
+  }
+  // public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator pose,Pose2d prevEstimatedRobotPose,PhotonPipelineResult camResult) {
+  //       pose.setReferencePose(prevEstimatedRobotPose);
+  //       return pose.update(camResult);
+  //   }
+  @Override
+  public void periodic() {
+    //m_swerveSubsystem.getTargetID();
+
+    m3Pose.addHeadingData(m_swerveSubsystem.getAutoTime(), m_swerveSubsystem.getAutoRotation());//buffer saves last second value, getAutoTime to remove latency
+    m4Pose.addHeadingData(m_swerveSubsystem.getAutoTime(), m_swerveSubsystem.getAutoRotation());
+    m3CameraResult = m3Camera.getLatestResult();
+    m4CameraResult = m4Camera.getLatestResult();
+    m3TargetData = getData(m3CameraResult);
+    m4TargetData = getData(m4CameraResult);
+    
+    if (m3CameraResult.hasTargets()){
+    try{
+      m3RobotPose  = m3Pose.update(m3CameraResult).get();
+      //System.out.println("M3");
+      m_swerveSubsystem.updateVisionPoseEstimator(m3RobotPose.estimatedPose.toPose2d(),m3RobotPose.timestampSeconds);
+      SmartDashboard.putNumber("M3Pose2dx", m3RobotPose.estimatedPose.toPose2d().getX());
+      SmartDashboard.putNumber("M3Pose2dy", m3RobotPose.estimatedPose.toPose2d().getY());
+    }catch (Exception e) {
+      //System.out.println("PoseEstimator(M3 HAS NO TARGET) "+e);
+    }
+      
+    }
+    if (m4CameraResult.hasTargets()){
+      try{
+        m4RobotPose  =  m4Pose.update(m4CameraResult).get();
+        //System.out.println("M4");
+        m_swerveSubsystem.updateVisionPoseEstimator(m4RobotPose.estimatedPose.toPose2d(),m4RobotPose.timestampSeconds);
+        SmartDashboard.putNumber("M4Pose2dx", m4RobotPose.estimatedPose.toPose2d().getX());
+        SmartDashboard.putNumber("M4Pose2dy", m4RobotPose.estimatedPose.toPose2d().getY());
+      }catch(Exception e){
+        //System.out.println("PoseEstimator(M4 HAS NO TARGET) "+e);
+      }
+      
+    }
+    if (alignActive){
+      System.out.println("align active");
+      align(xTarget,yTarget , id, true);
+    }
+    
+
+    //align(0, 1, 20, true);
+    //System.out.println(m3Camera.getLatestResult().getBestTarget().getBestCameraToTarget().getX());
+    //System.out.println(m3CameraResult.size());
+    //System.out.println(m3Camera.getLatestResult().getBestTarget().getBestCameraToTarget().getRotation().getAngle()  * (180/Math.PI));
+    //System.out.println(m3Camera.getLatestResult().getBestTarget().getYaw());
+    
+    //align(0, 0, id, false);
+    //align(0,1,20,true);
+    //System.out.println(m3Camera.getLatestResult().getTargets().get(0).getYaw());
+    
     double z = Math.sqrt(Math.pow(cameraXOffset,2) + Math.pow(cameraYOffset,2));
     //System.out.println(usingM3Camera);
     if (usingM3Camera){
@@ -416,26 +452,22 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("yrobot",robotYOffset);
     SmartDashboard.putNumber("3d angle", robotAngleOffset);
     //System.out.println(m4TargetData[1]);
-    m3Pose.addHeadingData(m_swerveSubsystem.getAutoTime(), m_swerveSubsystem.getAutoRotation());//buffer saves last second value, getAutoTime to remove latency
-    m4Pose.addHeadingData(m_swerveSubsystem.getAutoTime(), m_swerveSubsystem.getAutoRotation());
+    //System.out.println(m_swerveSubsystem.getAutoRotation().getDegrees());
     
+    //System.out.println(m_swerveSubsystem.getAutoTime());
     try{
-      EstimatedRobotPose m3RobotPose  = m3Pose.update(m3CameraResult).get();
-      m_swerveSubsystem.updateVisionPoseEstimator(m3RobotPose.estimatedPose.toPose2d(),m3RobotPose.timestampSeconds);
-
-      SmartDashboard.putNumber("M3Pose2dx", m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d().getX());
-      SmartDashboard.putNumber("M3Pose2dy", m3Pose.update(m3CameraResult).get().estimatedPose.toPose2d().getY());
-    }catch(Exception e){
-      System.out.println("PoseEstimator(M3 HAS NO TARGET) "+e);
+      //EstimatedRobotPose m3RobotPose  = m3Pose.update(m3CameraResult).get();
+      //m_swerveSubsystem.updateVisionPoseEstimator(m3RobotPose.estimatedPose.toPose2d(),m3RobotPose.timestampSeconds);
       
+    }catch(Exception e){
+      //System.out.println("PoseEstimator(M3 HAS NO TARGET) "+e);
     }
     try {
-      EstimatedRobotPose m4RobotPose = m4Pose.update(m4CameraResult).get();
-      m_swerveSubsystem.updateVisionPoseEstimator(m4RobotPose.estimatedPose.toPose2d(),m4RobotPose.timestampSeconds);
-      SmartDashboard.putNumber("M4Pose2dx", m4Pose.update(m4CameraResult).get().estimatedPose.toPose2d().getX());
-    SmartDashboard.putNumber("M4Pose2dy", m4Pose.update(m4CameraResult).get().estimatedPose.toPose2d().getY());
+      //EstimatedRobotPose m4RobotPose = m4Pose.update(m4CameraResult).get();
+      //m_swerveSubsystem.updateVisionPoseEstimator(m4RobotPose.estimatedPose.toPose2d(),m4RobotPose.timestampSeconds);
+      
     } catch (Exception e) {
-      System.out.println("PoseEstimator(M4 HAS NO TARGET) "+e);
+      //System.out.println("PoseEstimator(M4 HAS NO TARGET) "+e);
     }
   }
 }

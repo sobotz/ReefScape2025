@@ -24,8 +24,8 @@ public class DriveCommand extends Command {
     this.m_swerveSubsystem = swerveSubsystem;
     this.m_driverJoystick = stick;
 
-    strafeVector = new Vector(0,0);
-    rotationVector = new Vector(0,0);
+    //strafeVector = new Vector(0,0);
+    //rotationVector = new Vector(0,0);
   }
 
   @Override

@@ -182,7 +182,7 @@ public class SwerveSubsystem extends SubsystemBase {
     yVelocityController = new PIDController(0.022,0,0.001);
     //yVelocityController.setTolerance(0.01);
 
-    degreeVelocityController = new PIDController(0.011,0.000,0.000);//d0.07
+    degreeVelocityController = new PIDController(0.010,0.000,0.000);//d0.07
     //degreeVelocityController.setTolerance(0.01);
     targetID = 0;
     once = true;
@@ -239,9 +239,9 @@ public class SwerveSubsystem extends SubsystemBase {
               // Boolean supplier that controls when the path will be mirrored for the red alliance
               // This will flip the path being followed to the red side of the field.
               // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-              // var alliance = DriverStation.getAlliance();
-              // return alliance.get() == DriverStation.Alliance.Red;
-              return false;
+              var alliance = DriverStation.getAlliance();
+              return alliance.get() == DriverStation.Alliance.Red;
+              //return false;
             },
             this // Reference to this subsystem to set requirements
     );
@@ -276,6 +276,7 @@ public class SwerveSubsystem extends SubsystemBase {
         strafeVector.setMagnitude(strafeVector.getMagnitude() * .1);
         //rotationalMagnitude = -rotationController.calculate(currentRobotDegree,180);
       }
+      //System.out.println("working");
       drive(strafeVector, rotationalMagnitude, currentRobotDegree, false);
     }
   }
@@ -447,7 +448,9 @@ public class SwerveSubsystem extends SubsystemBase {
   }
   
   public void updateVisionPoseEstimator(Pose2d pose, double time ){
+    System.out.println("UPDATED");
     m_odometer.addVisionMeasurement(pose,time);
+    m_odometer.updateWithTime(time, autoRobotDegree, getAllSwerveModulePositions());
   }
   public double getAutoTime(){
     return autoTime;

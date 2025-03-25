@@ -21,7 +21,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
+import frc.robot.commands.AutoCoralEjectCommand;
+import frc.robot.commands.AutoL4Command;
 import frc.robot.commands.AutoSetStationIntakeCommand;
+import frc.robot.commands.AutoWaitL4Command;
 import frc.robot.commands.BargeCommand;
 import frc.robot.commands.CoralLevelButtonCommand;
 import frc.robot.commands.DriveCommand;
@@ -163,6 +166,10 @@ public class RobotContainer {
   TestClimbDriveMotor m_testClimbDriveMotor;
   TestClimbDriveMotorReverse m_TestClimbDriveMotorReverse;
   TestServoIntakeCommand m_TestServoIntakeCommand;
+  AutoL4Command m_autoL4Command;
+  AutoCoralEjectCommand m_autoCoralEjectCommand;
+  AutoWaitL4Command m_autoWaitL4Command;
+  AutoWaitL4Command m_autoWaitL4Command2;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -255,6 +262,10 @@ public class RobotContainer {
     m_autoLReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.449, 19, true);
 
     m_autoSetStationIntakeCommand = new AutoSetStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
+    m_autoL4Command = new AutoL4Command(m_elevatorSubsystem, m_clawSubsystem);
+    m_autoCoralEjectCommand = new AutoCoralEjectCommand(m_elevatorSubsystem, m_clawSubsystem);
+    m_autoWaitL4Command = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1);
+    m_autoWaitL4Command2 = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1);
     
     m_testServoCommand = new TestServoCommand(m_climbSubsystem);
     m_TestServoIntakeCommand = new TestServoIntakeCommand(m_intakeSubsystem);
@@ -276,6 +287,10 @@ public class RobotContainer {
     
     NamedCommands.registerCommand("m_toggleStationIntakeCommand", m_toggleStationIntakeCommand);
     NamedCommands.registerCommand("m_autoSetStationIntakeCommand", m_autoSetStationIntakeCommand);
+    NamedCommands.registerCommand("m_autoL4Command", m_autoL4Command);
+    NamedCommands.registerCommand("m_autoCoralEjectCommand", m_autoCoralEjectCommand);
+    NamedCommands.registerCommand("m_autoWaitL4Command", m_autoWaitL4Command);
+    NamedCommands.registerCommand("m_autoWaitL4Command2", m_autoWaitL4Command2);
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
