@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5782500000000006,
-        "y": 2.8257499999999993
+        "x": 5.954464285714286,
+        "y": 4.03924512987013
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5869779349577504,
-        "y": 1.6773048084767344
+        "x": 7.317042014666147,
+        "y": 4.673205713727125
       },
       "isLocked": false,
-      "linkedName": "ReefC"
+      "linkedName": "DAlgae"
     },
     {
       "anchor": {
-        "x": 1.6965000000000001,
-        "y": 0.7002499999999998
+        "x": 7.3860998376623375,
+        "y": 6.047808441558441
       },
       "prevControl": {
-        "x": 2.781218904645869,
-        "y": 1.9253740108017796
+        "x": 6.7943810912690425,
+        "y": 5.14397443559068
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RightCS"
+      "linkedName": "Barge"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 26.0,
-    "maxAcceleration": 3.2,
+    "maxVelocity": 22.0,
+    "maxAcceleration": 2.3,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 540.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -126.0
+    "rotation": 150.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

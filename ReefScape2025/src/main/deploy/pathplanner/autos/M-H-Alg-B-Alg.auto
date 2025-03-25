@@ -5,57 +5,52 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "CoralID17"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid-H"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "m_autoWaitL4Command"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ID22-CS"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CS-ID17"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
+            "name": "m_autoCoralEjectCommand"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ID17-CS"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
+            "pathName": "H-DAlgae"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CS-ID17"
+            "pathName": "DAlg-Barge"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge-EAlgae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "EAlgae-Barge"
           }
         }
       ]
