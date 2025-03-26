@@ -73,7 +73,7 @@ public class ClawSubsystem extends SubsystemBase {
     wristMotor = new TalonFX(18);
     wristMotor.setNeutralMode(NeutralModeValue.Coast);
     limitConfigs = new CurrentLimitsConfigs();
-    limitConfigs.StatorCurrentLimit = 60;
+    limitConfigs.StatorCurrentLimit = 40;
     limitConfigs.StatorCurrentLimitEnable = true;
     wristMotor.getConfigurator().apply(limitConfigs);
     clawDriveMotor = new TalonFX(16);

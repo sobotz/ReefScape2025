@@ -119,8 +119,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     kStrategy = PoseStrategy.PNP_DISTANCE_TRIG_SOLVE;
     //kStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-    m3PoseTransform3d = new Transform3d(-0.225425, -0.2794, 0.20955, new Rotation3d(0, -0.436332,2.44346));//RADIANS//CHANGE Z HEIGHT2.44346//2.26893
-    m4PoseTranform3d = new Transform3d(-0.2225425, 0.2794, 0.20955, new Rotation3d(0, -0.436332,-2.44346));//RADIANS//CHANGE Z HEIGHT
+    m3PoseTransform3d = new Transform3d(-0.225425, -0.2794, 0.20955, new Rotation3d(0, -0.349066,2.44346));//RADIANS//CHANGE Z HEIGHT2.44346//2.26893
+    m4PoseTranform3d = new Transform3d(-0.2225425, 0.2794, 0.20955, new Rotation3d(0, -0.349066,-2.44346));//RADIANS//CHANGE Z HEIGHT
     emergencyReset = false;
     reefNumber = 0;
     aReef = false;

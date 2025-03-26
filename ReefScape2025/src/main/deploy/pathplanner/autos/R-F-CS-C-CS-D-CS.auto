@@ -30,9 +30,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "F-RightCS"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "m_toggleStationIntakeCommand"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "F-RightCS"
+                }
+              }
+            ]
           }
         },
         {
@@ -61,9 +74,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "C-RightCS"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "m_toggleStationIntakeCommand"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C-RightCS"
+                }
+              }
+            ]
           }
         },
         {
@@ -92,9 +118,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "D-RightCS"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "m_toggleStationIntakeCommand"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "D-RightCS"
+                }
+              }
+            ]
           }
         }
       ]

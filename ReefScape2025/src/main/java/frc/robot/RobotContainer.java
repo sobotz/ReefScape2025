@@ -264,7 +264,7 @@ public class RobotContainer {
     m_autoSetStationIntakeCommand = new AutoSetStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     m_autoL4Command = new AutoL4Command(m_elevatorSubsystem, m_clawSubsystem);
     m_autoCoralEjectCommand = new AutoCoralEjectCommand(m_elevatorSubsystem, m_clawSubsystem);
-    m_autoWaitL4Command = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1);
+    m_autoWaitL4Command = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1.26);
     m_autoWaitL4Command2 = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1);
     
     m_testServoCommand = new TestServoCommand(m_climbSubsystem);

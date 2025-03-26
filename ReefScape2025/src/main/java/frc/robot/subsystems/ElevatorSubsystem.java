@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorPosition;
 
+
 public class ElevatorSubsystem extends SubsystemBase {
   SwerveSubsystem m_swerveSubsystem;
 
@@ -46,6 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   double previousElevatorError;
   double atPositionCount;
   boolean intakeFinishMode;
+  boolean isAuto;
   
 
  
@@ -56,6 +58,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
     /** Initialize position mappings */
+    isAuto = false;
     intakeFinishMode = false;
     m_swerveSubsystem = swerveSubsystem;
     positionMap = new HashMap<ElevatorPosition, Double>(){{
@@ -109,6 +112,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
   public void intakeFinish(){
     intakeFinishMode = true;
+  }
+  public void setIsAuto(boolean value){
+    isAuto = value;
   }
 
   public boolean elevatorAtTargetPosition() {
@@ -171,6 +177,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
     if (once){
       elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
       slaveMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -180,7 +187,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     //System.out.println("Manual Mode: " + manualMode);
     
     elevatorPIDCalculation = elevatorController.calculate(getElevatorSensorPosition(), positionMap.get(targetPosition));
-    
+    if (isAuto){
+      if (elevatorAtTargetPosition()){
+        isAuto = false;
+      }
+      if (elevatorPIDCalculation>0.7){
+        elevatorPIDCalculation = 0.7;
+      }
+      else if (elevatorPIDCalculation<-0.7){
+        elevatorPIDCalculation = -0.7;
+      }
+    }
     if (Math.abs(elevatorPIDCalculation)<0.03){
       elevatorPIDCalculation *= 1.6;
     }

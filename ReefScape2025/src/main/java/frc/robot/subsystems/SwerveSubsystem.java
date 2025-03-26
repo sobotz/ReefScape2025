@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -129,16 +130,20 @@ public class SwerveSubsystem extends SubsystemBase {
     xAtPositionCount = 0;
     yAtPositionCount = 0;
     frontLeftDriveMotor = new TalonFX(2,"Drivetrain");
+    frontLeftDriveMotor.setNeutralMode(NeutralModeValue.Brake);
     frontLeftTurnMotor = new TalonFX(1,"Drivetrain");
     frontRightDriveMotor = new TalonFX(4,"Drivetrain");
+    frontRightDriveMotor.setNeutralMode(NeutralModeValue.Brake);
     frontRightTurnMotor = new TalonFX(3,"Drivetrain");
     backLeftDriveMotor = new TalonFX(8,"Drivetrain");
+    backLeftDriveMotor.setNeutralMode(NeutralModeValue.Brake);
     backLeftTurnMotor = new TalonFX(7,"Drivetrain");
     backRightDriveMotor = new TalonFX(6,"Drivetrain");
+    backRightDriveMotor.setNeutralMode(NeutralModeValue.Brake);
     backRightTurnMotor = new TalonFX(5,"Drivetrain");
 
     limitConfigs = new CurrentLimitsConfigs();
-    limitConfigs.StatorCurrentLimit = 50;
+    limitConfigs.StatorCurrentLimit = 40;
     limitConfigs.StatorCurrentLimitEnable = true;
     frontLeftDriveMotor.getConfigurator().apply(limitConfigs);
     frontLeftTurnMotor.getConfigurator().apply(limitConfigs);
@@ -171,9 +176,9 @@ public class SwerveSubsystem extends SubsystemBase {
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0);
 
-    xTranslationController = new PIDController(0.69, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
+    xTranslationController = new PIDController(0.7, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
     xTranslationController.setTolerance(0.0);
-    yTranslationController =new PIDController(0.69, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
+    yTranslationController =new PIDController(0.7, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
     yTranslationController.setTolerance(0.0);
 
     xVelocityController = new PIDController(0.022,0,0.001);
@@ -182,17 +187,17 @@ public class SwerveSubsystem extends SubsystemBase {
     yVelocityController = new PIDController(0.022,0,0.001);
     //yVelocityController.setTolerance(0.01);
 
-    degreeVelocityController = new PIDController(0.010,0.000,0.000);//d0.07
+    degreeVelocityController = new PIDController(0.009,0.000,0.000);//d0.07
     //degreeVelocityController.setTolerance(0.01);
     targetID = 0;
     once = true;
     robotDegreeOffset = 0;
     driveCommandDisabled = false;
     rotationalVelocityMagnitude =0;
-    m_frontLeftLocation = new Translation2d(0.355, 0.355);
-    m_frontRightLocation = new Translation2d(0.355, -0.355);
-    m_backLeftLocation = new Translation2d(-0.355, 0.355);
-    m_backRightLocation = new Translation2d(-0.355, -0.355);
+    m_frontLeftLocation = new Translation2d(0.333, 0.27);
+    m_frontRightLocation = new Translation2d(0.333, -0.27);
+    m_backLeftLocation = new Translation2d(-0.333, 0.27);
+    m_backRightLocation = new Translation2d(-0.33, -0.27);
 
     m_kinematics = new SwerveDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
     autoRobotDegree = new Rotation2d();
@@ -448,7 +453,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
   
   public void updateVisionPoseEstimator(Pose2d pose, double time ){
-    System.out.println("UPDATED");
+    //System.out.println("UPDATED");
     m_odometer.addVisionMeasurement(pose,time);
     m_odometer.updateWithTime(time, autoRobotDegree, getAllSwerveModulePositions());
   }
@@ -468,6 +473,7 @@ public class SwerveSubsystem extends SubsystemBase {
     //Set the current degree of the robot 
     if (once){
       robotGyro.reset();
+      
       robotDegreeOffset = ((((robotGyro.getYaw().getValueAsDouble()) % 360) + 360) % 360);
       once = false;
     }

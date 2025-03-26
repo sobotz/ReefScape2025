@@ -49,6 +49,7 @@ public class ToggleStationIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_clawSubsystem.setDriveMotor(0.8);
     if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_clawSubsystem.clawAtTargetPosition()){
       m_intakeSubsystem.setDriveMotor(1.0);
     }

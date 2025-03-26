@@ -50,6 +50,7 @@ public class AutoCoralEjectCommand extends Command {
     m_clawSubsystem.setDriveMotor(0);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    m_elevatorSubsystem.setIsAuto(true);
   }
 
   // Returns true when the command should end.

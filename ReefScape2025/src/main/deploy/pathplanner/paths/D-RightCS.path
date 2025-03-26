@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9195000000000007,
-        "y": 2.61125
+        "x": 3.883,
+        "y": 2.647
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.505415657495489,
-        "y": 2.2849556788194363
+        "x": 3.4689156574954882,
+        "y": 2.320705678819436
       },
       "isLocked": false,
       "linkedName": "ReefD"
@@ -29,12 +29,26 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.195881466599695,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 540.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 26.0,
-    "maxAcceleration": 3.2,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.7,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 540.0,
     "nominalVoltage": 12.0,
