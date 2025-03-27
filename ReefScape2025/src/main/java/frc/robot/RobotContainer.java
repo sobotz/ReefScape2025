@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.commands.AutoCoralEjectCommand;
+import frc.robot.commands.AutoIntakeCommand;
 import frc.robot.commands.AutoL4Command;
 import frc.robot.commands.AutoSetStationIntakeCommand;
 import frc.robot.commands.AutoWaitL4Command;
@@ -170,6 +171,7 @@ public class RobotContainer {
   AutoCoralEjectCommand m_autoCoralEjectCommand;
   AutoWaitL4Command m_autoWaitL4Command;
   AutoWaitL4Command m_autoWaitL4Command2;
+  AutoIntakeCommand m_autoIntakeCommand;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -264,11 +266,13 @@ public class RobotContainer {
     m_autoSetStationIntakeCommand = new AutoSetStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     m_autoL4Command = new AutoL4Command(m_elevatorSubsystem, m_clawSubsystem);
     m_autoCoralEjectCommand = new AutoCoralEjectCommand(m_elevatorSubsystem, m_clawSubsystem);
-    m_autoWaitL4Command = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1.26);
+    m_autoWaitL4Command = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1.2);
     m_autoWaitL4Command2 = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1);
+    m_autoIntakeCommand = new AutoIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     
     m_testServoCommand = new TestServoCommand(m_climbSubsystem);
     m_TestServoIntakeCommand = new TestServoIntakeCommand(m_intakeSubsystem);
+    NamedCommands.registerCommand("m_autoIntakeCommand",m_autoIntakeCommand);
     NamedCommands.registerCommand("m_ReefAlgaeGrabCommand",m_ReefAlgaeGrabCommand);
     NamedCommands.registerCommand("m_reefCoralPlacementCommand",m_reefCoralPlacementCommand);
     NamedCommands.registerCommand("m_SetL4Level", m_setL4Level);

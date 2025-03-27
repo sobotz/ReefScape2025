@@ -36,7 +36,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "m_toggleStationIntakeCommand"
+                  "name": "m_autoIntakeCommand"
                 }
               },
               {
@@ -80,7 +80,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "m_toggleStationIntakeCommand"
+                  "name": "m_autoIntakeCommand"
                 }
               },
               {
@@ -124,7 +124,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "m_toggleStationIntakeCommand"
+                  "name": "m_autoIntakeCommand"
                 }
               },
               {

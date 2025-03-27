@@ -191,11 +191,11 @@ public class ElevatorSubsystem extends SubsystemBase {
       if (elevatorAtTargetPosition()){
         isAuto = false;
       }
-      if (elevatorPIDCalculation>0.7){
-        elevatorPIDCalculation = 0.7;
+      if (elevatorPIDCalculation>0.6){
+        elevatorPIDCalculation = 0.6;
       }
-      else if (elevatorPIDCalculation<-0.7){
-        elevatorPIDCalculation = -0.7;
+      else if (elevatorPIDCalculation<-0.6){
+        elevatorPIDCalculation = -0.6;
       }
     }
     if (Math.abs(elevatorPIDCalculation)<0.03){
