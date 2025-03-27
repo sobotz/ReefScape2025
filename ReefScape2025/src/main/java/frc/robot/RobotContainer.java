@@ -383,10 +383,10 @@ public class RobotContainer {
     toggleFloorAlgaeIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);
     JoystickButton bargeButton = new JoystickButton(A1, 12);
     bargeButton.onTrue(m_bargeCommand);
-    JoystickButton processorButton = new JoystickButton(A1, 10);
+    JoystickButton processorButton = new JoystickButton(A1, 11);
     processorButton.onTrue(m_processorCommand);
-    //JoystickButton climbButton = new JoystickButton(A1, 11);
-    //climbButton.onTrue(m_toggleClimbCommand);
+    JoystickButton climbButton = new JoystickButton(A1, 10);
+    climbButton.onTrue(m_toggleClimbCommand);
     //JoystickButton wristResetButton = new JoystickButton(A1,11);
     //wristResetButton.whileTrue(m_resetClawCommand);
     //DRIVER BUTTONS-

@@ -197,7 +197,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       else if (elevatorPIDCalculation<-0.6){
         elevatorPIDCalculation = -0.6;
       }
-    }
+    } 
     if (Math.abs(elevatorPIDCalculation)<0.03){
       elevatorPIDCalculation *= 1.6;
     }
