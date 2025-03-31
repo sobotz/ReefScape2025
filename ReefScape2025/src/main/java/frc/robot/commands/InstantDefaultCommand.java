@@ -5,22 +5,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants.ClawPosition;
+import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeStartUpCommand extends InstantCommand {
+public class InstantDefaultCommand extends InstantCommand {
+  ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
-  public IntakeStartUpCommand(ClawSubsystem clawSubsystem) {
+  public InstantDefaultCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_clawSubsystem.setHasCoral(true);
-    m_clawSubsystem.setDriveMotor(0);
+    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
+    m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
   }
 }

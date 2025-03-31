@@ -12,10 +12,12 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.servohub.ServoHub;
 
+import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -66,6 +68,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   ServoHub servoHub;
+  AutoFactory autoFactory;
 
   TestClimbDriveMotor testClimbDriveMotor;
   TestClimbDriveMotorReverse testClimbDriveMotorReverse;
@@ -190,7 +193,7 @@ public class RobotContainer {
     m_elevatorSubsystem = new ElevatorSubsystem(m_swerveSubsystem);
     m_clawSubsystem = new ClawSubsystem();
     m_intakeSubsystem = new IntakeSubsystem(servoHub);
-    m_climbSubsystem = new ClimbSubsystem(servoHub);
+    m_climbSubsystem = new ClimbSubsystem(m_swerveSubsystem, servoHub);
 
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
     m_clawDriveReverseCommand = new TestClawDriveReverseCommand(m_clawSubsystem);
@@ -236,32 +239,32 @@ public class RobotContainer {
     m_setL3Level = new ReefCoralPlacementButton(m_clawSubsystem);
     m_setL4Level = new ReefCoralPlacementButton(m_clawSubsystem);
 
-    m_reefACommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.449, 7,false);
-    m_reefBCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.449, 7,false); 
-    m_reefCCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.449, 8,false);
-    m_reefDCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.449, 8,false);
-    m_reefECommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.449, 9,false);
-    m_reefFCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.449, 9,false);
-    m_reefGCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.449, 10,false);
-    m_reefHCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.449, 10,false);
-    m_reefICommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.449, 11,false); 
-    m_reefJCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.449, 11,false);
-    m_reefKCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.449, 6,false);
-    m_reefLCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.449, 6,false);
+    m_reefACommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.435, 7,false);
+    m_reefBCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.435, 7,false); 
+    m_reefCCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.435, 8,false);
+    m_reefDCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.435, 8,false);
+    m_reefECommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.435, 9,false);
+    m_reefFCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.435, 9,false);
+    m_reefGCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.435, 10,false);
+    m_reefHCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.435, 10,false);
+    m_reefICommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.435, 11,false); 
+    m_reefJCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.435, 11,false);
+    m_reefKCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,-0.162,0.435, 6,false);
+    m_reefLCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.435, 6,false);
 
     //AUTOPATHS
-    m_autoAReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.449, 18, true);
-    m_autoBReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.449, 18, true);
-    m_autoCReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.449, 17, true);
-    m_autoDReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.449, 17, true);//new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.416, 17, true);
-    m_autoEReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.449, 22, true);
-    m_autoFReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.449, 22, true);
-    m_autoGReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.449, 21, true);
-    m_autoHReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.449, 21, true);
-    m_autoIReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.449, 20, true);
-    m_autoJReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.449, 20, true);
-    m_autoKReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.449, 19, true);
-    m_autoLReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.449, 19, true);
+    m_autoAReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 18, true);
+    m_autoBReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 18, true);
+    m_autoCReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 17, true);
+    m_autoDReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 17, true);//new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.416, 17, true);
+    m_autoEReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 22, true);
+    m_autoFReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 22, true);
+    m_autoGReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 21, true);
+    m_autoHReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 21, true);
+    m_autoIReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 20, true);
+    m_autoJReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 20, true);
+    m_autoKReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 19, true);
+    m_autoLReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 19, true);
 
     m_autoSetStationIntakeCommand = new AutoSetStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     m_autoL4Command = new AutoL4Command(m_elevatorSubsystem, m_clawSubsystem);
@@ -298,15 +301,29 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    m_resetClawCommand = new ResetClawCommand(m_clawSubsystem);
+    m_resetClawCommand = new ResetClawCommand(m_clawSubsystem,A1);
     m_testClimbDriveMotor = new TestClimbDriveMotor(m_climbSubsystem);
     m_TestClimbDriveMotorReverse = new TestClimbDriveMotorReverse(m_climbSubsystem);
     //test;
     //autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
+    autoFactory = new AutoFactory(
+            m_swerveSubsystem::getPose, // A function that returns the current robot pose
+            m_swerveSubsystem::resetPose, // A function that resets the current robot pose to the provided Pose2d
+            m_swerveSubsystem::followTrajectory, // The drive subsystem trajectory follower 
+            true, // If alliance flipping should be enabled 
+            m_swerveSubsystem // The drive subsystem
+        );
+    
     configureBindings();
   }
   public SwerveSubsystem getSwerveSubsystem(){
     return m_swerveSubsystem;
+  }
+  public Command testAuto(){
+    return Commands.sequence(
+      autoFactory.resetOdometry("TestAuto"),
+      autoFactory.trajectoryCmd("TestAuto")
+    );
   }
   /*public Command getAutonomousCommand(){
     try{
@@ -351,6 +368,7 @@ public class RobotContainer {
     JoystickButton reefBButton = new JoystickButton(A2, 2);
     reefBButton.toggleOnTrue(m_reefBCommand);
 
+  
     JoystickButton reefCButton = new JoystickButton(A2,3);
     reefCButton.toggleOnTrue(m_reefCCommand);
     JoystickButton reefDButton = new JoystickButton(A2,4);
@@ -394,33 +412,33 @@ public class RobotContainer {
     resetGyroButton.onTrue(m_resetGyroCommand);
 
     JoystickButton driveReverseButton = new JoystickButton(testOperator, 5);
-    driveReverseButton.whileTrue(m_testClimbDriveMotor);
+    driveReverseButton.whileTrue(m_clawDriveCommand);
     JoystickButton driveButton = new JoystickButton(testOperator, 6);
-    driveButton.onTrue(m_toggleClimbCommand);
-    //JoystickButton defaultButton = new JoystickButton(testOperator,8);
-    //defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
+    driveButton.whileTrue(m_clawDriveReverseCommand);
+    JoystickButton defaultButton = new JoystickButton(testOperator,8);
+    defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
     JoystickButton testL1Button = new JoystickButton(testOperator, 1);
-    testL1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.CLIMB, ClawPosition.DEFAULT));
+    testL1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1));
     JoystickButton testL2Button = new JoystickButton(testOperator,2);
     testL2Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L2, ClawPosition.L2));
     JoystickButton testL3Button = new JoystickButton(testOperator,3);
     testL3Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L3, ClawPosition.L3));
     JoystickButton testL4Button = new JoystickButton(testOperator,4);
     testL4Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L4, ClawPosition.L4));
-    //JoystickButton intakeButton = new JoystickButton(testOperator,7);
-    //intakeButton.toggleOnTrue(m_toggleStationIntakeCommand);//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
+    JoystickButton intakeButton = new JoystickButton(testOperator,7);
+    intakeButton.toggleOnTrue(m_toggleStationIntakeCommand);//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
     JoystickButton groundIntakeButton = new JoystickButton(testOperator, 9);
     groundIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);
     JoystickButton bargeButtonTest = new JoystickButton(testOperator, 10);
     bargeButtonTest.onTrue(m_bargeCommand);
-    JoystickButton testClimbForwardButton = new JoystickButton(testOperator, 11);
-    testClimbForwardButton.whileTrue(testClimbDriveMotor);
-    JoystickButton testClimbReverseButton = new JoystickButton(testOperator,12);
-    testClimbReverseButton.whileTrue(testClimbDriveMotorReverse);
-    JoystickButton testServoButton = new JoystickButton(testOperator,7);
-    testServoButton.toggleOnTrue(m_testServoCommand);
-    JoystickButton testServoIntakeButton = new JoystickButton (testOperator, 8);
-    testServoIntakeButton.toggleOnTrue(m_TestServoIntakeCommand);
+    //JoystickButton testClimbForwardButton = new JoystickButton(testOperator, 11);
+    // testClimbForwardButton.whileTrue(testClimbDriveMotor);
+    // JoystickButton testClimbReverseButton = new JoystickButton(testOperator,12);
+    // testClimbReverseButton.whileTrue(testClimbDriveMotorReverse);
+    // JoystickButton testServoButton = new JoystickButton(testOperator,7);
+    // testServoButton.toggleOnTrue(m_testServoCommand);
+    // JoystickButton testServoIntakeButton = new JoystickButton (testOperator, 8);
+    // testServoIntakeButton.toggleOnTrue(m_TestServoIntakeCommand);
     //JoystickButton testClimbDriveMotor = new JoystickButton(testOperator, 7);
     //testClimbDriveMotor.whileTrue(m_testClimbDriveMotor);
     //JoystickButton intakeDriveButton = new JoystickButton(testOperator,7);
@@ -447,12 +465,16 @@ public class RobotContainer {
   public Command getAutonomousCommand(){
     //return new PathPlannerAuto("New Auto");
     //return autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
-    return autoChooser.getSelected().andThen(new EndAutoCommand(m_swerveSubsystem));
+    //return autoChooser.getSelected().andThen(new EndAutoCommand(m_swerveSubsystem));
+    return testAuto();
   }
   public PhotonVisionSubsystem getPhotonSubsystem(){
     return m_PhotonVisionSubsytem;
   }
   public ClawSubsystem getClawSubsystem(){
     return m_clawSubsystem;
+  }
+  public ResetClawCommand getResetClawCommand(){
+    return m_resetClawCommand;
   }
 }

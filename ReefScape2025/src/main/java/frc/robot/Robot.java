@@ -82,11 +82,7 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void teleopInit() {
-    if (once){
-      new IntakeStartUpCommand(m_robotContainer.getClawSubsystem()).schedule();
-      once = false;
-    }
-    m_robotContainer.getResetIntakeCommand().schedule();
+    
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -103,8 +99,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    if (once){
+      new IntakeStartUpCommand(m_robotContainer.getClawSubsystem()).schedule();
+      once = false;
+    }
     m_teleopCommand = m_robotContainer.getTeleopCommand();
     m_teleopCommand.schedule();
+    m_robotContainer.getResetClawCommand().schedule();
   }
 
   @Override

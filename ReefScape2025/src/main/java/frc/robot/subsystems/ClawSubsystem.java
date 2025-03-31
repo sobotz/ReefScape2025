@@ -90,9 +90,9 @@ public class ClawSubsystem extends SubsystemBase {
 
     clawPositionMap = new HashMap<ClawPosition, Double>(){{
       put(ClawPosition.DEFAULT, ClawConstants.DEFAULT);
-      
       put(ClawPosition.FLOORALGAE,ClawConstants.FLOORALGAE);
       put(ClawPosition.PROCESSOR,ClawConstants.PROCESSOR);
+      put(ClawPosition.PROCESSOR2,ClawConstants.PROCESSOR2);
       put(ClawPosition.FACINGDOWNREEFALGAE, ClawConstants.FACINGDOWNREEFALGAE);
       put(ClawPosition.FACINGUPREEFALGAE,ClawConstants.FACINGUPREEFALGAE);
       put(ClawPosition.REVERSEFACINGUPALGAE,ClawConstants.REVERSEFACINGUPREEFALGAE);
@@ -106,7 +106,7 @@ public class ClawSubsystem extends SubsystemBase {
       put(ClawPosition.TEMPPOSITION, ClawConstants.TEMPPOSITION);
     }};
     clawTargetPosition = ClawPosition.DEFAULT;
-    autoPlaceClawTargetPosition = ClawPosition.L1;
+    autoPlaceClawTargetPosition = ClawPosition.L4;
     clawPIDCalculation = 0;
     atTarget = false;
     hasCoral = false;
@@ -151,9 +151,9 @@ public class ClawSubsystem extends SubsystemBase {
     return clawTargetPosition;
   }
   public boolean clawAtTargetPosition(){
-    if ((Math.abs(clawController.getError())<0.18) && (Math.abs(clawPIDCalculation)<0.05)){
+    if ((Math.abs(clawController.getError())<0.19) && (Math.abs(clawPIDCalculation)<0.065)){
       //System.out.println("inrange");
-      if (Math.abs(previousClawError - clawController.getError()) <0.04){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousClawError - clawController.getError()) <0.065){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;
       }  
       else{
@@ -205,6 +205,7 @@ public class ClawSubsystem extends SubsystemBase {
     if (value == 0){
       driveMotorIsControlled = false;
       if (hasCoral && !hasAlgae){
+        System.out.println("working");
         intakeTimer.start();
         clawDriveMotor.set(0.25);
       }
@@ -247,6 +248,9 @@ public class ClawSubsystem extends SubsystemBase {
   public void setAlgaeRetainPosition(){
     algaeRetainPosition = getClawDriveMotorPosition()+1.2;
   }
+  public void processorPosition(){
+    algaeRetainPosition += 10;
+  }
 
   public boolean getProximityTripped(){
     return proxTripped;
@@ -256,6 +260,9 @@ public class ClawSubsystem extends SubsystemBase {
   }
   public void setResetClaw(boolean value){
     resetClaw = value;
+    if (resetClaw == false){
+      once = true;
+    }
   }
   public void setWristMotor(double value){
     wristMotor.set(value);
@@ -267,7 +274,6 @@ public class ClawSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
     driveMotorCurrent = clawDriveMotor.getTorqueCurrent().getValueAsDouble();
     proxTripped = !proxSensor.get();
     if (once){
@@ -275,24 +281,27 @@ public class ClawSubsystem extends SubsystemBase {
       once = false;
     }
     if (intakeTimer.get()>0.7){
+      System.out.println("working");
       intakeTimer.reset();
       intakeTimer.stop();
       clawDriveMotor.set(0);
     }
     
-    SmartDashboard.putBoolean("clawProx", proxTripped);
+    //SmartDashboard.putBoolean("clawProx", proxTripped);
     //System.out.println(wristMotor.getPosition().getValueAsDouble() * 360);
     //System.out.println(wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition);
     //System.out.println(getClawSensorPosition());
-    SmartDashboard.putNumber("clawSensorPosition",getClawSensorPosition());
+    //SmartDashboard.putNumber("clawSensorPosition",getClawSensorPosition());
     //System.out.println(getClawSensorPosition());
     // This method will be called once per scheduler run
     clawPIDCalculation = -1.5 * clawController.calculate(getClawSensorPosition(), clawPositionMap.get(clawTargetPosition));
     //System.out.println(clawPositionMap.get(clawTargetPosition));
     //SmartDashboard.putNumber("getTargetPosition",clawPositionMap.get(clawTargetPosition));
-    SmartDashboard.putNumber("Claw Error",clawController.getError());
-    SmartDashboard.putNumber("Claw Calculation",clawPIDCalculation);
-    SmartDashboard.putNumber("clawDrive Current",driveMotorCurrent);
+    //SmartDashboard.putNumber("Claw Error",clawController.getError());
+    //SmartDashboard.putNumber("Claw Calculation",clawPIDCalculation);
+    //SmartDashboard.putNumber("clawDrive Current",driveMotorCurrent);
+    SmartDashboard.putBoolean("CORAL", reefCoralPlacementButton);
+    SmartDashboard.putBoolean("ALGAE", reefAlgaeGrabButton);
     //System.out.println(clawController.getError());
     //System.out.println(clawPIDCalculation);
     //System.out.println((-1 * clawSensor.getAbsolutePosition().getValueAsDouble()* 360) % 360);
@@ -310,7 +319,7 @@ public class ClawSubsystem extends SubsystemBase {
         clawPIDCalculation = clawPIDCalc    ulation * .95;
       }*/
       if (Math.abs(clawPIDCalculation)<0.01){
-        clawPIDCalculation = clawPIDCalculation * 4.5;
+        clawPIDCalculation = clawPIDCalculation * 4.3;
         //System.out.println("activated");
       }
       else if (Math.abs(clawPIDCalculation)<0.02){
@@ -320,11 +329,11 @@ public class ClawSubsystem extends SubsystemBase {
       /*else if (Math.abs(clawPIDCalculation)<0.025){
         clawPIDCalculation = clawPIDCalculation * 1.02;
       }*/
-      
+    System.out.println(clawPIDCalculation);
     if (!resetClaw){
-      wristMotor.set(clawPIDCalculation);
+      //wristMotor.set(clawPIDCalculation);
     }
-    if (hasAlgae && !driveMotorIsControlled){
+    if ((hasAlgae && !driveMotorIsControlled) && !hasCoral){
       //System.out.println("claw setpoint activated");
       clawDriveMotor.set(retainAlgaeController.calculate(getClawDriveMotorPosition(),algaeRetainPosition));
     }

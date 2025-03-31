@@ -33,8 +33,14 @@ public class ProcessorCommand extends Command {
     if (m_clawSubsystem.hasItem()){
       m_clawSubsystem.toggleProcessor();
       if (m_clawSubsystem.getToggleProcessor() == true){
+        m_clawSubsystem.processorPosition();
         m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.PROCESSOR);
-        m_clawSubsystem.setClawTargetPosition(ClawPosition.PROCESSOR);
+        if (m_clawSubsystem.getPositionMap().get(ClawPosition.DEFAULT) == 0){
+          m_clawSubsystem.setClawTargetPosition(ClawPosition.PROCESSOR2);
+        }
+        else{
+          m_clawSubsystem.setClawTargetPosition(ClawPosition.PROCESSOR);
+        }
         isFinished = true;
       }
       else{

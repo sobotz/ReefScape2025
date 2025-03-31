@@ -66,12 +66,13 @@ public class IntakeSubsystem extends SubsystemBase {
     if (enableServo){
       intakeServo.setEnabled(true);
       intakeServo.setPowered(true);
-      intakeServo.setPulseWidth(1500);
+      intakeServo.setPulseWidth(1900);
     }
     else{
+      
       intakeServo.setEnabled(true);
       intakeServo.setPowered(true);
-      intakeServo.setPulseWidth(500);
+      intakeServo.setPulseWidth(1300);
     }
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("intakeServo", intakeServo.getPulseWidth());

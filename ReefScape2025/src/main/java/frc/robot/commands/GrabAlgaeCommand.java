@@ -44,6 +44,7 @@ public class GrabAlgaeCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
+    //if (!(m_clawSubsystem.getHasCoral() && (!m_clawSubsystem.getReefCoralPlacementButton() && m_clawSubsystem.getReefAlgaeGrabButton()))){
     if (m_clawSubsystem.getReefAlgaeGrabButton()){
       m_photonVisionSubsystem.resetCount();
       if (m_clawSubsystem.getReefCoralPlacementButton()){
@@ -73,9 +74,9 @@ public class GrabAlgaeCommand extends Command {
         }
         clawPosition = ClawPosition.REVERSEFACINGUPALGAE;
       }
-      
-      
-      
+        
+        
+        
       m_clawSubsystem.setClawTargetPosition(clawPosition);
       m_clawSubsystem.setDriveMotor(1);
       timer.start();
@@ -83,9 +84,12 @@ public class GrabAlgaeCommand extends Command {
     else{
       isFinished = true;
     }
-    
-    
   }
+    //else{
+    //  isFinished = true;
+    //}
+  //}
+  
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

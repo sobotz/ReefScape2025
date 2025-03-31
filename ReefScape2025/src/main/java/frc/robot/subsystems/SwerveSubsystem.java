@@ -14,8 +14,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-
-
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -99,6 +98,10 @@ public class SwerveSubsystem extends SubsystemBase {
   double xAtPositionCount;
   double yAtPositionCount;
   double autoTime;
+  private PIDController xController;
+  private PIDController yController;
+  private PIDController headingController;
+  
   /*Update requirements
    * *******SWERVE SUBSYSTEM*******
    * ID every device -- DONE
@@ -123,6 +126,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveSubsystem() {
     //SWERVE MOTORS INSTANTIATION
+    xController = new PIDController(1.0, 0.0, 0.0);
+    yController = new PIDController(1.0, 0.0, 0.0);
+    headingController = new PIDController(1, 0.0, 0.0);
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
+   
     autoTime = 0;
     isRedAlliance = false;
     atTargetPosition = false;
@@ -230,6 +238,7 @@ public class SwerveSubsystem extends SubsystemBase {
     previousXError = 0;
     previousYError = 0;
     
+
     AutoBuilder.configure(
             this::getPose, // Robot pose supplier
             this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -245,11 +254,36 @@ public class SwerveSubsystem extends SubsystemBase {
               // This will flip the path being followed to the red side of the field.
               // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
               var alliance = DriverStation.getAlliance();
-              return alliance.get() == DriverStation.Alliance.Red;
-              //return false;
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
             },
             this // Reference to this subsystem to set requirements
     );
+  }
+  public void followTrajectory(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = getPose();
+
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + xController.calculate(pose.getX(), sample.x),
+            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
+        );
+
+        // Apply the generated speeds
+        driveFieldRelative(speeds);
+    }
+  public void driveFieldRelative(ChassisSpeeds speed){
+    System.out.println(speed.vxMetersPerSecond);
+    System.out.println(speed.vyMetersPerSecond);
+    xVelocity += xVelocityController.calculate(getSpeeds().vxMetersPerSecond, speed.vxMetersPerSecond);//ACTUTALY IN AUTO ITS FORWARD IS POSITIVE
+    yVelocity += yVelocityController.calculate(getSpeeds().vyMetersPerSecond, speed.vyMetersPerSecond);//ACTUTALLY IN AUTO LEFT IS POSITIVE
+    Vector strafeVector = new Vector(-yVelocity, xVelocity);
+    rotationalVelocityMagnitude += -degreeVelocityController.calculate(getSpeeds().omegaRadiansPerSecond, speed.omegaRadiansPerSecond);
+    drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree, false);
   }
   public double getCurrentRobotDegree(){
     return currentRobotDegree;
@@ -454,8 +488,8 @@ public class SwerveSubsystem extends SubsystemBase {
   
   public void updateVisionPoseEstimator(Pose2d pose, double time ){
     //System.out.println("UPDATED");
-    m_odometer.addVisionMeasurement(pose,time);
-    m_odometer.updateWithTime(time, autoRobotDegree, getAllSwerveModulePositions());
+    //m_odometer.addVisionMeasurement(pose,time);
+    //m_odometer.updateWithTime(time, autoRobotDegree, getAllSwerveModulePositions());
   }
   public double getAutoTime(){
     return autoTime;
@@ -473,7 +507,6 @@ public class SwerveSubsystem extends SubsystemBase {
     //Set the current degree of the robot 
     if (once){
       robotGyro.reset();
-      
       robotDegreeOffset = ((((robotGyro.getYaw().getValueAsDouble()) % 360) + 360) % 360);
       once = false;
     }
@@ -488,13 +521,13 @@ public class SwerveSubsystem extends SubsystemBase {
     
     SmartDashboard.putNumber("x Trans", m_odometer.getEstimatedPosition().getX());
     SmartDashboard.putNumber("y Trans", m_odometer.getEstimatedPosition().getY());
-    SmartDashboard.putNumber("x Vel", getSpeeds().vxMetersPerSecond);
-    SmartDashboard.putNumber("y Vel", getSpeeds().vyMetersPerSecond);
-    SmartDashboard.putNumber("raw drive sensor", frontLeftSwerveModule.getRawDriveSensorPosition());
-    SmartDashboard.putNumber("Angular Velocity",robotGyro.getAngularVelocityZWorld().getValueAsDouble() * (Math.PI/180));
-    SmartDashboard.putNumber("degree",currentRobotDegree);
-    SmartDashboard.putNumber("xOffsetDrive", xTranslationController.getPositionError());
-    SmartDashboard.putNumber("yOffsetDrive", yTranslationController.getPositionError());
+    //SmartDashboard.putNumber("x Vel", getSpeeds().vxMetersPerSecond);
+    //SmartDashboard.putNumber("y Vel", getSpeeds().vyMetersPerSecond);
+    //SmartDashboard.putNumber("raw drive sensor", frontLeftSwerveModule.getRawDriveSensorPosition());
+    //SmartDashboard.putNumber("Angular Velocity",robotGyro.getAngularVelocityZWorld().getValueAsDouble() * (Math.PI/180));
+    //SmartDashboard.putNumber("degree",currentRobotDegree);
+    //SmartDashboard.putNumber("xOffsetDrive", xTranslationController.getPositionError());
+    //SmartDashboard.putNumber("yOffsetDrive", yTranslationController.getPositionError());
     //System.out.println(isRedAlliance);
     
   }

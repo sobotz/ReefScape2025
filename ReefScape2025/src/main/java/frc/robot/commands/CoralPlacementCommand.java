@@ -75,7 +75,7 @@ public class CoralPlacementCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if ((m_clawSubsystem.getAutoPlacePosition()== ClawPosition.L4) && (m_elevatorSubsystem.getElevatorSensorPosition()>58)){
+    if ((m_clawSubsystem.getAutoPlacePosition()== ClawPosition.L4) && (m_elevatorSubsystem.getElevatorSensorPosition()>42)){
       m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
     }
     // if (m_photonVisionSubsystem.getAtTargetPosition()){

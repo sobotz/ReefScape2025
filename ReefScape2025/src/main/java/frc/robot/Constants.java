@@ -15,7 +15,7 @@ package frc.robot;
 public final class Constants {
   public static class SwerveConstants{
     public static final double frontLeftDegreeOffset = 130.1875;
-    public static final double frontRightDegreeOffset = 298.8828125;
+    public static final double frontRightDegreeOffset = 293.8828125;
     public static final double backLeftDegreeOffset = 116.619140625;
     public static final double backRightDegreeOffset = 50.759765625;
     public static final double wheelRadius = 0.0508;//in meters;
@@ -29,7 +29,7 @@ public final class Constants {
     public static final double INTAKE = -87;
     public static final double FLOORALGAE = -220.0137;
     public static final double PROCESSOR = -270;
-    
+    public static final double PROCESSOR2 = 90;
     public static final double FACINGDOWNREEFALGAE = -240;
     public static final double FACINGUPREEFALGAE = -300;
     public static final double REVERSEFACINGUPREEFALGAE = 63.5;
@@ -46,6 +46,7 @@ public final class Constants {
     INTAKE,
     FLOORALGAE,
     PROCESSOR,
+    PROCESSOR2,
     FACINGUPREEFALGAE,
     FACINGDOWNREEFALGAE,
     REVERSEFACINGUPALGAE,
@@ -86,7 +87,7 @@ public final class Constants {
     public static final double kD = 0.006;
     public static final double DEFAULT = 6;
     public static final double ALGAETEMP = 12;
-    public static final double INTAKE = 16.9;
+    public static final double INTAKE = 16.3;
     public static final double FLOORALGAE = 7.3;
     public static final double PROCESSOR = 6;
     public static final double CLIMB = 0.5;

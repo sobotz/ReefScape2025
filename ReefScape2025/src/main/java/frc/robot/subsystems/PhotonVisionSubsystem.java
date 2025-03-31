@@ -385,7 +385,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     }catch (Exception e) {
       //System.out.println("PoseEstimator(M3 HAS NO TARGET) "+e);
     }
-      
     }
     if (m4CameraResult.hasTargets()){
       try{
@@ -397,7 +396,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       }catch(Exception e){
         //System.out.println("PoseEstimator(M4 HAS NO TARGET) "+e);
       }
-      
     }
     if (alignActive){
       System.out.println("align active");

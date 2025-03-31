@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 7.098,
-        "y": 4.17125
+        "y": 4.178
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.644782418345092,
-        "y": 4.167368740261543
+        "x": 6.644765799505068,
+        "y": 4.178
       },
       "isLocked": false,
       "linkedName": "StartHPosition"
     },
     {
       "anchor": {
-        "x": 6.082670454545454,
-        "y": 4.174573863636363
+        "x": 6.007,
+        "y": 4.178
       },
       "prevControl": {
-        "x": 6.418050925363914,
-        "y": 4.1858132949577405
+        "x": 6.342568748578946,
+        "y": 4.178
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 22.0,
-    "maxAcceleration": 2.3,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 1.3,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 540.0,
     "nominalVoltage": 12.0,
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

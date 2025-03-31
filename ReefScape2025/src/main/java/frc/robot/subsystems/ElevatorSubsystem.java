@@ -102,7 +102,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorController.setTolerance(0.002); 
     elevatorPIDCalculation = 0; 
     targetPosition = ElevatorPosition.DEFAULT;
-    autoPlaceTargetElevatorPosition = ElevatorPosition.L1;
+    autoPlaceTargetElevatorPosition = ElevatorPosition.L4;
     once = true;
     atTargetPosition = false;
   }
@@ -118,9 +118,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean elevatorAtTargetPosition() {
-    if (Math.abs(elevatorController.getError())<0.4 && Math.abs(elevatorPIDCalculation)<0.06){
+    if (Math.abs(elevatorController.getError())<0.43 && Math.abs(elevatorPIDCalculation)<0.07){
       atTargetPosition = false;
-      if (Math.abs(previousElevatorError - elevatorController.getError()) < 0.06){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousElevatorError - elevatorController.getError()) < 0.07){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;
       }
       else{
@@ -177,7 +177,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
+    //System.out.println(targetPosition);
     if (once){
       elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
       slaveMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -198,6 +198,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDCalculation = -0.6;
       }
     } 
+    if (elevatorPIDCalculation > 0.9){
+      elevatorPIDCalculation = 0.9;
+    }
+    else if (elevatorPIDCalculation < -0.9){
+      elevatorPIDCalculation = -0.9;
+    }
     if (Math.abs(elevatorPIDCalculation)<0.03){
       elevatorPIDCalculation *= 1.6;
     }
@@ -223,8 +229,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Error", elevatorController.getError());
     SmartDashboard.putNumber("Elevator Position", elevatorMotor.getPosition().getValueAsDouble());
     
-    elevatorMotor.set((elevatorPIDCalculation));
-    slaveMotor.set((-elevatorPIDCalculation));
+    //elevatorMotor.set((elevatorPIDCalculation));
+    //slaveMotor.set((-elevatorPIDCalculation));
     
     
     //System.out.println(atTargetPosition);

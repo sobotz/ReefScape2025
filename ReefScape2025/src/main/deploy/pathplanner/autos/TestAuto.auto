@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "TestPath"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "m_autoWaitL4Command"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid-H"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_autoCoralEjectCommand"
           }
         }
       ]
