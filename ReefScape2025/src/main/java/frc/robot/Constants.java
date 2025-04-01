@@ -85,7 +85,12 @@ public final class Constants {
     public static final double kP = 0.15;
     public static final double kI = 0;
     public static final double kD = 0.006;
-    public static final double DEFAULT = 6;
+    public static final double kG = 0.45;
+    public static final double kS = 0;
+    public static final double kV = 0.136;
+    public static final double kA = 0.003;
+
+        public static final double DEFAULT = 6;
     public static final double ALGAETEMP = 12;
     public static final double INTAKE = 16.3;
     public static final double FLOORALGAE = 7.3;
