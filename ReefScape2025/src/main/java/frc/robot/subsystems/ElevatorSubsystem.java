@@ -8,9 +8,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+<<<<<<< HEAD
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+=======
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+>>>>>>> 4e29b3b68d3089a8a04913277258c69794ef8abb
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,7 +23,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorPosition;
 
@@ -37,10 +41,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Mapping of Enum Positions to Heights */
   private final Map<ElevatorPosition, Double> positionMap;
-
   /** Motion Magic Control */
 
   private double elevatorPIDCalculation;
+  private final MotionMagicVoltage motionMagicController;
+
   private ElevatorPosition targetPosition; 
   ElevatorPosition autoPlaceTargetElevatorPosition;
   /** PIDF Constants */
@@ -53,6 +58,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   boolean intakeFinishMode;
   boolean isAuto;
   
+<<<<<<< HEAD
   /*Motion Magic */
   TalonFXConfiguration talonFXConfiguration;
   Slot0Configs slot0Configs;
@@ -62,6 +68,45 @@ public class ElevatorSubsystem extends SubsystemBase {
   
    
   
+=======
+
+
+  public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
+    /** Initialize position mappings */
+    isAuto = false;
+    intakeFinishMode = false;
+    m_swerveSubsystem = swerveSubsystem;
+    positionMap = new HashMap<ElevatorPosition, Double>(){{
+      put(ElevatorPosition.DEFAULT, ElevatorConstants.DEFAULT);
+      put(ElevatorPosition.ALGAETEMP, ElevatorConstants.ALGAETEMP);
+      put(ElevatorPosition.INTAKE, ElevatorConstants.INTAKE);
+      put(ElevatorPosition.CLIMB, ElevatorConstants.CLIMB);
+      put(ElevatorPosition.FLOORALGAE,ElevatorConstants.FLOORALGAE);
+      put(ElevatorPosition.PROCESSOR,ElevatorConstants.PROCESSOR);
+      put(ElevatorPosition.LOWESTALGAE,ElevatorConstants.LOWESTALGAE);
+      put(ElevatorPosition.LOWERALGAE,ElevatorConstants.LOWERALGAE);
+      put(ElevatorPosition.MIDALGAE, ElevatorConstants.MIDALGAE);
+      put(ElevatorPosition.HIGHERALGAE, ElevatorConstants.HIGHERALGAE);
+      put(ElevatorPosition.BARGE, ElevatorConstants.BARGE);
+      put(ElevatorPosition.L1, ElevatorConstants.L1);
+      put(ElevatorPosition.L2, ElevatorConstants.L2);
+      put(ElevatorPosition.L3, ElevatorConstants.L3);
+      put(ElevatorPosition.L4, ElevatorConstants.L4);
+      put(ElevatorPosition.TEMPPOSITION, ElevatorConstants.TEMPPOSITION);
+    }};
+
+    /** Initialize motors */
+    elevatorMotor = new TalonFX(15);
+    elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
+    slaveMotor = new TalonFX(14);
+    slaveMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    slaveMotor.setControl(new Follower(elevatorMotor.getDeviceID(), false));
+    /** Configure motors */
+    limitConfigs = new CurrentLimitsConfigs();
+    limitConfigs.StatorCurrentLimit = 40;
+    limitConfigs.StatorCurrentLimitEnable = true;
+>>>>>>> 4e29b3b68d3089a8a04913277258c69794ef8abb
     
   
     
@@ -133,10 +178,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     previousElevatorError = 0;
     atPositionCount = 0;
     // enable stator current limit
-
+    motionMagicController = new MotionMagicVoltage(0.0);
+    configureMotionMagic();
+    /*
     elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD);
     elevatorController.setTolerance(0.002); 
     elevatorPIDCalculation = 0; 
+    */
     targetPosition = ElevatorPosition.DEFAULT;
     autoPlaceTargetElevatorPosition = ElevatorPosition.L4;
     once = true;
@@ -190,6 +238,28 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void setElevatorTargetPosition(ElevatorPosition position) {
     targetPosition = position;
   }
+  private void configureMotionMagic() {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.Slot0.kP = ElevatorConstants.kP;
+    config.Slot0.kI = ElevatorConstants.kI;
+    config.Slot0.kD = ElevatorConstants.kD;
+    config.Slot0.kG = ElevatorConstants.kG;
+    config.Slot0.kS = ElevatorConstants.kS;
+    config.Slot0.kV = ElevatorConstants.kV;
+    config.Slot0.kA = ElevatorConstants.kA;
+
+    // Motion Magic velocity/acceleration
+    config.MotionMagic.MotionMagicCruiseVelocity = 100;  // in rotations/second
+    config.MotionMagic.MotionMagicAcceleration = 300;    // in rotations/second^2
+
+    // Apply configuration
+    elevatorMotor.getConfigurator().apply(config);
+}
+public void moveToPositionMM(ElevatorPosition position) {
+  double targetRotations = positionMap.get(position); // Assuming this is in rotations
+  elevatorMotor.setControl(motionMagicController.withPosition(targetRotations));
+}
   public ElevatorPosition PredictedAlgaeElevatorPosition(){
     if(m_swerveSubsystem.getTargetID()%2 == 0){
       return ElevatorPosition.LOWERALGAE;
@@ -219,10 +289,16 @@ public class ElevatorSubsystem extends SubsystemBase {
       slaveMotor.setNeutralMode(NeutralModeValue.Brake);
       once = false;
     }
+    
+    SmartDashboard.putNumber("Elevator Position", elevatorMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator Target", positionMap.get(targetPosition));
     //SmartDashboard.putBoolean("Manual Mode", manualMode);
     //System.out.println("Manual Mode: " + manualMode);
     
-    elevatorPIDCalculation = elevatorController.calculate(getElevatorSensorPosition(), positionMap.get(targetPosition));
+   // elevatorPIDCalculation = elevatorController.calculate(getElevatorSensorPosition(), positionMap.get(targetPosition));
+    
+   moveToPositionMM(targetPosition);
+
     if (isAuto){
       if (elevatorAtTargetPosition()){
         isAuto = false;
@@ -234,6 +310,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDCalculation = -0.6;
       }
     } 
+    /* 
     if (elevatorPIDCalculation > 0.9){
       elevatorPIDCalculation = 0.9;
     }
@@ -246,6 +323,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     else if (Math.abs(elevatorPIDCalculation) < 0.04){
       elevatorPIDCalculation *= 1.4;
     }
+    */
 
     // if (intakeFinishMode){
     //   if (elevatorPIDCalculation>0.7){
