@@ -275,32 +275,32 @@ public class RobotContainer {
     
     m_testServoCommand = new TestServoCommand(m_climbSubsystem);
     m_TestServoIntakeCommand = new TestServoIntakeCommand(m_intakeSubsystem);
-    NamedCommands.registerCommand("m_autoIntakeCommand",m_autoIntakeCommand);
-    NamedCommands.registerCommand("m_ReefAlgaeGrabCommand",m_ReefAlgaeGrabCommand);
-    NamedCommands.registerCommand("m_reefCoralPlacementCommand",m_reefCoralPlacementCommand);
-    NamedCommands.registerCommand("m_SetL4Level", m_setL4Level);
-    NamedCommands.registerCommand("m_autoAReefCommand",m_autoAReefCommand);
-    NamedCommands.registerCommand("m_autoBReefCommand",m_autoBReefCommand);
-    NamedCommands.registerCommand("m_autoCReefCommand",m_autoCReefCommand);
-    NamedCommands.registerCommand("m_autoDReefCommand",m_autoDReefCommand);
-    NamedCommands.registerCommand("m_autoEReefCommand",m_autoEReefCommand);
-    NamedCommands.registerCommand("m_autoFReefCommand",m_autoFReefCommand);
-    NamedCommands.registerCommand("m_autoGReefCommand",m_autoGReefCommand);
-    NamedCommands.registerCommand("m_autoHReefCommand",m_autoHReefCommand);
-    NamedCommands.registerCommand("m_autoIReefCommand",m_autoIReefCommand);
-    NamedCommands.registerCommand("m_autoJReefCommand",m_autoJReefCommand);
-    NamedCommands.registerCommand("m_autoKReefCommand",m_autoKReefCommand);
-    NamedCommands.registerCommand("m_autoLReefCommand",m_autoLReefCommand);
+    // NamedCommands.registerCommand("m_autoIntakeCommand",m_autoIntakeCommand);
+    // NamedCommands.registerCommand("m_ReefAlgaeGrabCommand",m_ReefAlgaeGrabCommand);
+    // NamedCommands.registerCommand("m_reefCoralPlacementCommand",m_reefCoralPlacementCommand);
+    // NamedCommands.registerCommand("m_SetL4Level", m_setL4Level);
+    // NamedCommands.registerCommand("m_autoAReefCommand",m_autoAReefCommand);
+    // NamedCommands.registerCommand("m_autoBReefCommand",m_autoBReefCommand);
+    // NamedCommands.registerCommand("m_autoCReefCommand",m_autoCReefCommand);
+    // NamedCommands.registerCommand("m_autoDReefCommand",m_autoDReefCommand);
+    // NamedCommands.registerCommand("m_autoEReefCommand",m_autoEReefCommand);
+    // NamedCommands.registerCommand("m_autoFReefCommand",m_autoFReefCommand);
+    // NamedCommands.registerCommand("m_autoGReefCommand",m_autoGReefCommand);
+    // NamedCommands.registerCommand("m_autoHReefCommand",m_autoHReefCommand);
+    // NamedCommands.registerCommand("m_autoIReefCommand",m_autoIReefCommand);
+    // NamedCommands.registerCommand("m_autoJReefCommand",m_autoJReefCommand);
+    // NamedCommands.registerCommand("m_autoKReefCommand",m_autoKReefCommand);
+    // NamedCommands.registerCommand("m_autoLReefCommand",m_autoLReefCommand);
     
-    NamedCommands.registerCommand("m_toggleStationIntakeCommand", m_toggleStationIntakeCommand);
-    NamedCommands.registerCommand("m_autoSetStationIntakeCommand", m_autoSetStationIntakeCommand);
-    NamedCommands.registerCommand("m_autoL4Command", m_autoL4Command);
-    NamedCommands.registerCommand("m_autoCoralEjectCommand", m_autoCoralEjectCommand);
-    NamedCommands.registerCommand("m_autoWaitL4Command", m_autoWaitL4Command);
-    NamedCommands.registerCommand("m_autoWaitL4Command2", m_autoWaitL4Command2);
+    // NamedCommands.registerCommand("m_toggleStationIntakeCommand", m_toggleStationIntakeCommand);
+    // NamedCommands.registerCommand("m_autoSetStationIntakeCommand", m_autoSetStationIntakeCommand);
+    // NamedCommands.registerCommand("m_autoL4Command", m_autoL4Command);
+    // NamedCommands.registerCommand("m_autoCoralEjectCommand", m_autoCoralEjectCommand);
+    // NamedCommands.registerCommand("m_autoWaitL4Command", m_autoWaitL4Command);
+    // NamedCommands.registerCommand("m_autoWaitL4Command2", m_autoWaitL4Command2);
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
     m_resetClawCommand = new ResetClawCommand(m_clawSubsystem,A1);
     m_testClimbDriveMotor = new TestClimbDriveMotor(m_climbSubsystem);
     m_TestClimbDriveMotorReverse = new TestClimbDriveMotorReverse(m_climbSubsystem);
@@ -321,8 +321,11 @@ public class RobotContainer {
   }
   public Command testAuto(){
     return Commands.sequence(
-      autoFactory.resetOdometry("TestAuto"),
-      autoFactory.trajectoryCmd("TestAuto")
+      autoFactory.resetOdometry("Start-E"),
+      autoFactory.trajectoryCmd("Start-E"),
+      autoFactory.trajectoryCmd("E-Station"),
+      autoFactory.trajectoryCmd("Station-C")
+      //autoFactory.trajectoryCmd("E-Station")
     );
   }
   /*public Command getAutonomousCommand(){
@@ -466,7 +469,7 @@ public class RobotContainer {
     //return new PathPlannerAuto("New Auto");
     //return autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
     //return autoChooser.getSelected().andThen(new EndAutoCommand(m_swerveSubsystem));
-    return testAuto();
+    return testAuto().andThen(new EndAutoCommand(m_swerveSubsystem));
   }
   public PhotonVisionSubsystem getPhotonSubsystem(){
     return m_PhotonVisionSubsytem;

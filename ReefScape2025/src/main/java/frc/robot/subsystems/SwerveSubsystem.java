@@ -98,6 +98,8 @@ public class SwerveSubsystem extends SubsystemBase {
   double xAtPositionCount;
   double yAtPositionCount;
   double autoTime;
+  boolean disableDrive;
+  ChassisSpeeds fieldRelativeVelocitySpeeds;
   private PIDController xController;
   private PIDController yController;
   private PIDController headingController;
@@ -126,13 +128,22 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveSubsystem() {
     //SWERVE MOTORS INSTANTIATION
-    xController = new PIDController(1.0, 0.0, 0.0);
-    yController = new PIDController(1.0, 0.0, 0.0);
-    headingController = new PIDController(1, 0.0, 0.0);
+    fieldRelativeVelocitySpeeds = new ChassisSpeeds();
+    disableDrive = false;
+    isRedAlliance = false;
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      isRedAlliance = true;
+    }
+    else{
+      isRedAlliance = false;
+    }
+    xController = new PIDController(5, 0.0, 0.0);
+    yController = new PIDController(5, 0.0, 0.0);
+    headingController = new PIDController(4, 0.0, 0.0);
     headingController.enableContinuousInput(-Math.PI, Math.PI);
    
     autoTime = 0;
-    isRedAlliance = false;
+    
     atTargetPosition = false;
     bargeMode = false;
     xAtPositionCount = 0;
@@ -208,24 +219,21 @@ public class SwerveSubsystem extends SubsystemBase {
     m_backRightLocation = new Translation2d(-0.33, -0.27);
 
     m_kinematics = new SwerveDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+    
+    
     autoRobotDegree = new Rotation2d();
     robotGyro.reset();
     m_odometer = new SwerveDrivePoseEstimator(
       m_kinematics,
       autoRobotDegree,
       new SwerveModulePosition[]{
-      frontLeftSwerveModule.getSwerveModulePosition(),
-      frontRightSwerveModule.getSwerveModulePosition(),
-      backLeftSwerveModule.getSwerveModulePosition(),
-      backRightSwerveModule.getSwerveModulePosition()},new Pose2d());
+      frontLeftSwerveModule.getSwerveModulePosition(isRedAlliance),
+      frontRightSwerveModule.getSwerveModulePosition(isRedAlliance),
+      backLeftSwerveModule.getSwerveModulePosition(isRedAlliance),
+      backRightSwerveModule.getSwerveModulePosition(isRedAlliance)},new Pose2d());
     chassisSpeed = new ChassisSpeeds();
     
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-      isRedAlliance = true;
-    }
-    else{
-      isRedAlliance = false;
-    }
+    
     try{
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
@@ -239,33 +247,36 @@ public class SwerveSubsystem extends SubsystemBase {
     previousYError = 0;
     
 
-    AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            this::velocityControlledDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // The robot configuration
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
-    );
+  //   AutoBuilder.configure(
+  //           this::getPose, // Robot pose supplier
+  //           this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+  //           this::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+  //           this::velocityControlledDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+  //           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+  //                   new PIDConstants(5, 0.0, 0.0), // Translation PID constants
+  //                   new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
+  //           ),
+  //           config, // The robot configuration
+  //           () -> {
+  //             // Boolean supplier that controls when the path will be mirrored for the red alliance
+  //             // This will flip the path being followed to the red side of the field.
+  //             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+  //             var alliance = DriverStation.getAlliance();
+  //             if (alliance.isPresent()) {
+  //               return alliance.get() == DriverStation.Alliance.Red;
+  //             }
+  //             return false;
+  //           },
+  //           this // Reference to this subsystem to set requirements
+  //   );
+  }
+  public void setDisableDrive(boolean value){
+    disableDrive = value;
   }
   public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot
         Pose2d pose = getPose();
-
+        //System.out.println(sample.x);
         // Generate the next speeds for the robot
         ChassisSpeeds speeds = new ChassisSpeeds(
             sample.vx + xController.calculate(pose.getX(), sample.x),
@@ -277,16 +288,45 @@ public class SwerveSubsystem extends SubsystemBase {
         driveFieldRelative(speeds);
     }
   public void driveFieldRelative(ChassisSpeeds speed){
-    System.out.println(speed.vxMetersPerSecond);
-    System.out.println(speed.vyMetersPerSecond);
-    xVelocity += xVelocityController.calculate(getSpeeds().vxMetersPerSecond, speed.vxMetersPerSecond);//ACTUTALY IN AUTO ITS FORWARD IS POSITIVE
-    yVelocity += yVelocityController.calculate(getSpeeds().vyMetersPerSecond, speed.vyMetersPerSecond);//ACTUTALLY IN AUTO LEFT IS POSITIVE
-    Vector strafeVector = new Vector(-yVelocity, xVelocity);
+    //System.out.println(speed.vxMetersPerSecond);
+    //speed = ChassisSpeeds.fromFieldRelativeSpeeds(speed,new Rotation2d(Math.toRadians(currentRobotDegree)));
+    //velocityControlledDrive(speed);
+    fieldRelativeVelocitySpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getSpeeds(),new Rotation2d(Math.toRadians(currentRobotDegree)));
+    if (isRedAlliance){
+      currentRobotDegree = ((currentRobotDegree + 180) % 360);
+    }
+    
+    // Vector xvec = new Vector(getSpeeds().vxMetersPerSecond, currentRobotDegree,true);//ACTUALLY Y FOR ROBOT
+    // Vector yvec = new Vector(0,0);
+    // yvec = new Vector(getSpeeds().vyMetersPerSecond,(currentRobotDegree + 90) % 360,true);//ACTUTALY X FOR ROBOT
+    // Vector cVector = xvec.addVector(yvec);
+    // fieldRelativeVelocitySpeeds = new ChassisSpeeds(cVector.getX(),cVector.getY(),speed.omegaRadiansPerSecond);
+    
+    // double autoDegree = 0;
+    // //System.out.println(speed.vyMetersPerSecond);
+    xVelocity += xVelocityController.calculate(fieldRelativeVelocitySpeeds.vxMetersPerSecond, speed.vxMetersPerSecond);//ACTUTALY IN AUTO ITS FORWARD IS POSITIVE
+    yVelocity += yVelocityController.calculate(fieldRelativeVelocitySpeeds.vyMetersPerSecond, speed.vyMetersPerSecond);//ACTUTALLY IN AUTO LEFT IS POSITIVE
+    Vector strafeVector = new Vector(0, 0);
+    strafeVector = new Vector(-yVelocity, xVelocity);
+    
     rotationalVelocityMagnitude += -degreeVelocityController.calculate(getSpeeds().omegaRadiansPerSecond, speed.omegaRadiansPerSecond);
-    drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree, false);
+    // autoDegree = currentRobotDegree;
+    // // if (isRedAlliance){
+    // //   autoDegree = ((currentRobotDegree + 180) % 360);
+    // // }
+    
+    drive(strafeVector, rotationalVelocityMagnitude,currentRobotDegree, false,false);
   }
   public double getCurrentRobotDegree(){
     return currentRobotDegree;
+  }
+  public double getAutoRobotDegree(){
+    if (isRedAlliance){
+      return ((currentRobotDegree + 180) % 360);
+    }
+    else{
+      return currentRobotDegree;
+    }
   }
   public void setBargeMode(boolean bargeMode){
     this.bargeMode = bargeMode;
@@ -316,23 +356,32 @@ public class SwerveSubsystem extends SubsystemBase {
         //rotationalMagnitude = -rotationController.calculate(currentRobotDegree,180);
       }
       //System.out.println("working");
-      drive(strafeVector, rotationalMagnitude, currentRobotDegree, false);
+      drive(strafeVector, rotationalMagnitude, currentRobotDegree, false,false);
     }
   }
 
   public void velocityControlledDrive(ChassisSpeeds targetSpeeds){
     xVelocity += xVelocityController.calculate(getSpeeds().vxMetersPerSecond, targetSpeeds.vxMetersPerSecond);//ACTUTALY IN AUTO ITS FORWARD IS POSITIVE
     yVelocity += yVelocityController.calculate(getSpeeds().vyMetersPerSecond, targetSpeeds.vyMetersPerSecond);//ACTUTALLY IN AUTO LEFT IS POSITIVE
+    Vector strafeVector = new Vector(0,0);
+    if (isRedAlliance){
+      strafeVector = new Vector(yVelocity, -xVelocity);
+    }
+    else{
+      strafeVector = new Vector(-yVelocity, xVelocity);
+    }
     
-    Vector strafeVector = new Vector(-yVelocity, xVelocity);
     rotationalVelocityMagnitude += -degreeVelocityController.calculate(getSpeeds().omegaRadiansPerSecond, targetSpeeds.omegaRadiansPerSecond);
     if (targetSpeeds.vxMetersPerSecond == 0 &&
-        targetSpeeds.vyMetersPerSecond == 0 && 
+        targetSpeeds.vyMetersPerSecond == 0 &&
         targetSpeeds.omegaRadiansPerSecond == 0){
       strafeVector = new Vector(0,0);
       rotationalVelocityMagnitude = 0;
     }
-    drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree, true);
+    if (isRedAlliance){
+      currentRobotDegree = ((currentRobotDegree + 180) % 360);
+    }
+    drive(strafeVector, rotationalVelocityMagnitude, currentRobotDegree, true,false);
   }
 
   public void reefControlledDrive(double xOffset, double yOffset,double angleOffset, double xTarget, double yTarget,boolean enabled){
@@ -369,19 +418,29 @@ public class SwerveSubsystem extends SubsystemBase {
     //System.out.println("trans vec degree: " + tvec.getDegrees());
     
     if (enabled){ 
-      drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false);
+      drive(tvec, rotationalMagnitude, (angleOffset + 360) % 360,false,false);
     }else{
       //setDriveCommandDisabled(false);
-      drive(new Vector(0, 0),0,currentRobotDegree,false);//CHANGE
+      drive(new Vector(0, 0),0,currentRobotDegree,false,false);//CHANGE
     }
   }
 
-  public void drive(Vector strafeVector, double rotationalMagnitude,double currentRobotDegree, boolean relativeVelocityControlled){
+  public void drive(Vector strafeVector, double rotationalMagnitude,double degree, boolean relativeVelocityControlled, boolean disable){
     //System.out.println(strafeVector.getMagnitude());
-    frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
-    frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
-    backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
-    backRightSwerveModule.drive(strafeVector, rotationalMagnitude, currentRobotDegree,relativeVelocityControlled);
+    if (!disableDrive){
+      frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,false);
+      frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,false);
+      backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,false);
+      backRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,false);
+    }
+    else{
+      System.out.println("Drive disabled");
+      frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true);
+      frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true);
+      backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true);
+      backRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true);
+    }
+    
   }
 
   public Pose2d getPose() {
@@ -389,28 +448,46 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void resetPose(Pose2d pose) {
-    m_odometer.resetPosition(autoRobotDegree, getAllSwerveModulePositions(), pose);
+    SmartDashboard.putNumber("resetPose rotation", pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("resetPose x", pose.getX());
+    SmartDashboard.putNumber("resetPose y", pose.getY());
+    // double rotations = pose.getRotation().getDegrees();
+    // rotations -= 180;
+    //robotGyro.setYaw(pose.getRotation().getDegrees());
+    m_odometer.resetPosition(pose.getRotation(), getAllSwerveModulePositions(), pose);
   }
 
   public SwerveModulePosition[] getAllSwerveModulePositions(){
     return new SwerveModulePosition[]{
-      frontLeftSwerveModule.getSwerveModulePosition(),
-      frontRightSwerveModule.getSwerveModulePosition(),
-      backLeftSwerveModule.getSwerveModulePosition(),
-      backRightSwerveModule.getSwerveModulePosition()};
+      frontLeftSwerveModule.getSwerveModulePosition(isRedAlliance),
+      frontRightSwerveModule.getSwerveModulePosition(isRedAlliance),
+      backLeftSwerveModule.getSwerveModulePosition(isRedAlliance),
+      backRightSwerveModule.getSwerveModulePosition(isRedAlliance)};
   }
 
   public SwerveModuleState[] getAllSwerveModuleStates(){
     return new SwerveModuleState[]{
-      frontLeftSwerveModule.getSwerveModuleState(),
-      frontRightSwerveModule.getSwerveModuleState(),
-      backLeftSwerveModule.getSwerveModuleState(),
-      backRightSwerveModule.getSwerveModuleState()
+      frontLeftSwerveModule.getSwerveModuleState(isRedAlliance),
+      frontRightSwerveModule.getSwerveModuleState(isRedAlliance),
+      backLeftSwerveModule.getSwerveModuleState(isRedAlliance),
+      backRightSwerveModule.getSwerveModuleState(isRedAlliance)
     };
   }
 
   public ChassisSpeeds getSpeeds() {
-    return m_kinematics.toChassisSpeeds(getAllSwerveModuleStates());
+    ChassisSpeeds s = m_kinematics.toChassisSpeeds(getAllSwerveModuleStates());
+    if (isRedAlliance){
+      s = new ChassisSpeeds(-s.vxMetersPerSecond,-s.vyMetersPerSecond,s.omegaRadiansPerSecond);
+    }
+    else{
+      s = new ChassisSpeeds(s.vxMetersPerSecond,s.vyMetersPerSecond,s.omegaRadiansPerSecond);
+    }
+    
+    //s = new ChassisSpeeds(s.vxMetersPerSecond,s.vyMetersPerSecond,s.omegaRadiansPerSecond);
+    
+    //return m_kinematics.toChassisSpeeds(getAllSwerveModuleStates());
+    return s;
+
   }
   public void resetCount(){
     xAtPositionCount = 0;
@@ -458,7 +535,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
       previousYError = yTranslationController.getPositionError();
       if (yAtPositionCount > 1){
-        System.out.println();
+        
         yAtTarget = true;
       }
       else{
@@ -488,14 +565,20 @@ public class SwerveSubsystem extends SubsystemBase {
   
   public void updateVisionPoseEstimator(Pose2d pose, double time ){
     //System.out.println("UPDATED");
-    //m_odometer.addVisionMeasurement(pose,time);
-    //m_odometer.updateWithTime(time, autoRobotDegree, getAllSwerveModulePositions());
+    m_odometer.addVisionMeasurement(pose,time);
+    m_odometer.updateWithTime(time, autoRobotDegree, getAllSwerveModulePositions());
   }
   public double getAutoTime(){
     return autoTime;
   }
   @Override
   public void periodic() {
+    if (once){
+      robotGyro.reset();
+      robotDegreeOffset = ((((robotGyro.getYaw().getValueAsDouble()) % 360) + 360) % 360);
+      once = false;
+    }
+    currentRobotDegree = ((((robotGyro.getYaw().getValueAsDouble() - robotDegreeOffset) % 360) + 360) % 360);
     ChassisSpeeds speed = getSpeeds();
     chassisSpeed = speed;
     if (currentRobotDegree > 180){
@@ -504,23 +587,34 @@ public class SwerveSubsystem extends SubsystemBase {
     else{
       autoRobotDegree = new Rotation2d(currentRobotDegree * (Math.PI/180));
     }
-    //Set the current degree of the robot 
-    if (once){
-      robotGyro.reset();
-      robotDegreeOffset = ((((robotGyro.getYaw().getValueAsDouble()) % 360) + 360) % 360);
-      once = false;
+    
+    if (isRedAlliance){
+      autoRobotDegree = new Rotation2d(Math.toRadians(autoRobotDegree.getDegrees() + 180));
+      //System.out.println(autoRobotDegree);
     }
-    currentRobotDegree = ((((robotGyro.getYaw().getValueAsDouble() - robotDegreeOffset) % 360) + 360) % 360);
+    
+    
+    //Set the current degree of the robot 
+    
+    
     autoTime = Timer.getFPGATimestamp();
     m_odometer.update(autoRobotDegree,new SwerveModulePosition[]{
-      frontLeftSwerveModule.getSwerveModulePosition(),
-      frontRightSwerveModule.getSwerveModulePosition(),
-      backLeftSwerveModule.getSwerveModulePosition(),
-      backRightSwerveModule.getSwerveModulePosition()}
+      frontLeftSwerveModule.getSwerveModulePosition(isRedAlliance),
+      frontRightSwerveModule.getSwerveModulePosition(isRedAlliance),
+      backLeftSwerveModule.getSwerveModulePosition(isRedAlliance),
+      backRightSwerveModule.getSwerveModulePosition(isRedAlliance)}
     );
-    
+    SmartDashboard.putBoolean("redAlliance",isRedAlliance);
+    SmartDashboard.putNumber("autoRobotDegree", autoRobotDegree.getDegrees());
+    SmartDashboard.putNumber("odometerDegree", m_odometer.getEstimatedPosition().getRotation().getDegrees());
     SmartDashboard.putNumber("x Trans", m_odometer.getEstimatedPosition().getX());
     SmartDashboard.putNumber("y Trans", m_odometer.getEstimatedPosition().getY());
+    SmartDashboard.putNumber("x velocity", getSpeeds().vxMetersPerSecond);
+    SmartDashboard.putNumber("y velocity", getSpeeds().vyMetersPerSecond);
+    SmartDashboard.putNumber("theta velocity", Math.toDegrees(getSpeeds().omegaRadiansPerSecond));
+    SmartDashboard.putNumber("FR x velocity", fieldRelativeVelocitySpeeds.vxMetersPerSecond);
+    SmartDashboard.putNumber("FR y velocity", fieldRelativeVelocitySpeeds.vyMetersPerSecond);
+    SmartDashboard.putNumber("FR theta velocity", fieldRelativeVelocitySpeeds.omegaRadiansPerSecond);
     //SmartDashboard.putNumber("x Vel", getSpeeds().vxMetersPerSecond);
     //SmartDashboard.putNumber("y Vel", getSpeeds().vyMetersPerSecond);
     //SmartDashboard.putNumber("raw drive sensor", frontLeftSwerveModule.getRawDriveSensorPosition());

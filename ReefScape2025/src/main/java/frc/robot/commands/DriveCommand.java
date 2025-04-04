@@ -39,15 +39,18 @@ public class DriveCommand extends Command {
     rotationVector = new Vector(m_driverJoystick.getRawAxis(4),-m_driverJoystick.getRawAxis(5));
     //rotationVector = new Vector(1,(rotationVector.getDegrees() + 180) % 360,true);
     //chassisSpeed = new ChassisSpeeds(0, 1,0);
-    //chassisSpeed = new ChassisSpeeds(strafeVector.getX() * 2,strafeVector.getY() * 2,-rotationVector.getX() * 3);
+    chassisSpeed = new ChassisSpeeds(strafeVector.getX() * 2,strafeVector.getY() * 2,0/*-rotationVector.getX() * 3*/);
     //m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
     //strafeVector = new Vector(0, 0);
     //rotationVector = new Vector(0, 0);
     //System.out.println("hello");
     //strafeVector = new Vector(0, 0.2);
     //rotationVector = new Vector(0,0);
+    //rotationVector= new Vector(0,1);
     m_swerveSubsystem.driverControlledDrive(strafeVector,rotationVector);
+    //m_swerveSubsystem.driveFieldRelative(chassisSpeed);
     //m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
+
   }
   
   @Override

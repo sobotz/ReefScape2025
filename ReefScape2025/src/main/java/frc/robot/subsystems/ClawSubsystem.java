@@ -329,7 +329,7 @@ public class ClawSubsystem extends SubsystemBase {
       /*else if (Math.abs(clawPIDCalculation)<0.025){
         clawPIDCalculation = clawPIDCalculation * 1.02;
       }*/
-    System.out.println(clawPIDCalculation);
+    //System.out.println(clawPIDCalculation);
     if (!resetClaw){
       //wristMotor.set(clawPIDCalculation);
     }
