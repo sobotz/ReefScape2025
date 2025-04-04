@@ -8,6 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -49,50 +53,82 @@ public class ElevatorSubsystem extends SubsystemBase {
   boolean intakeFinishMode;
   boolean isAuto;
   
-
- 
-
+  /*Motion Magic */
+  TalonFXConfiguration talonFXConfiguration;
+  Slot0Configs slot0Configs;
+  MotionMagicConfigs motionMagicConfigs;
   
-
+  MotionMagicVoltage m_voltageRequest;
   
-
-  public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
-    /** Initialize position mappings */
-    isAuto = false;
-    intakeFinishMode = false;
-    m_swerveSubsystem = swerveSubsystem;
-    positionMap = new HashMap<ElevatorPosition, Double>(){{
-      put(ElevatorPosition.DEFAULT, ElevatorConstants.DEFAULT);
-      put(ElevatorPosition.ALGAETEMP, ElevatorConstants.ALGAETEMP);
-      put(ElevatorPosition.INTAKE, ElevatorConstants.INTAKE);
-      put(ElevatorPosition.CLIMB, ElevatorConstants.CLIMB);
-      put(ElevatorPosition.FLOORALGAE,ElevatorConstants.FLOORALGAE);
-      put(ElevatorPosition.PROCESSOR,ElevatorConstants.PROCESSOR);
-      put(ElevatorPosition.LOWESTALGAE,ElevatorConstants.LOWESTALGAE);
-      put(ElevatorPosition.LOWERALGAE,ElevatorConstants.LOWERALGAE);
-      put(ElevatorPosition.MIDALGAE, ElevatorConstants.MIDALGAE);
-      put(ElevatorPosition.HIGHERALGAE, ElevatorConstants.HIGHERALGAE);
-      put(ElevatorPosition.BARGE, ElevatorConstants.BARGE);
-      put(ElevatorPosition.L1, ElevatorConstants.L1);
-      put(ElevatorPosition.L2, ElevatorConstants.L2);
-      put(ElevatorPosition.L3, ElevatorConstants.L3);
-      put(ElevatorPosition.L4, ElevatorConstants.L4);
-      put(ElevatorPosition.TEMPPOSITION, ElevatorConstants.TEMPPOSITION);
-    }};
-
-    /** Initialize motors */
-    elevatorMotor = new TalonFX(15);
-    elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
-    slaveMotor = new TalonFX(14);
-    slaveMotor.setNeutralMode(NeutralModeValue.Brake);
-
-    /** Configure motors */
-    limitConfigs = new CurrentLimitsConfigs();
-    limitConfigs.StatorCurrentLimit = 40;
-    limitConfigs.StatorCurrentLimitEnable = true;
+   
+  
     
+  
+    
+  
+    public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
+      /** Initialize position mappings */
+      isAuto = false;
+      intakeFinishMode = false;
+      m_swerveSubsystem = swerveSubsystem;
+      positionMap = new HashMap<ElevatorPosition, Double>(){{
+        put(ElevatorPosition.DEFAULT, ElevatorConstants.DEFAULT);
+        put(ElevatorPosition.ALGAETEMP, ElevatorConstants.ALGAETEMP);
+        put(ElevatorPosition.INTAKE, ElevatorConstants.INTAKE);
+        put(ElevatorPosition.CLIMB, ElevatorConstants.CLIMB);
+        put(ElevatorPosition.FLOORALGAE,ElevatorConstants.FLOORALGAE);
+        put(ElevatorPosition.PROCESSOR,ElevatorConstants.PROCESSOR);
+        put(ElevatorPosition.LOWESTALGAE,ElevatorConstants.LOWESTALGAE);
+        put(ElevatorPosition.LOWERALGAE,ElevatorConstants.LOWERALGAE);
+        put(ElevatorPosition.MIDALGAE, ElevatorConstants.MIDALGAE);
+        put(ElevatorPosition.HIGHERALGAE, ElevatorConstants.HIGHERALGAE);
+        put(ElevatorPosition.BARGE, ElevatorConstants.BARGE);
+        put(ElevatorPosition.L1, ElevatorConstants.L1);
+        put(ElevatorPosition.L2, ElevatorConstants.L2);
+        put(ElevatorPosition.L3, ElevatorConstants.L3);
+        put(ElevatorPosition.L4, ElevatorConstants.L4);
+        put(ElevatorPosition.TEMPPOSITION, ElevatorConstants.TEMPPOSITION);
+      }};
+  
+      /** Initialize motors */
+      elevatorMotor = new TalonFX(15);
+      elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
+      slaveMotor = new TalonFX(14);
+      slaveMotor.setNeutralMode(NeutralModeValue.Brake);
+  
+      /** Configure motors */
+      limitConfigs = new CurrentLimitsConfigs();
+      limitConfigs.StatorCurrentLimit = 40;
+      limitConfigs.StatorCurrentLimitEnable = true;
+  
+      /*Motion Magic Configurations */
+      talonFXConfiguration = new TalonFXConfiguration();
+      talonFXConfiguration.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 42.75;
+      talonFXConfiguration.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+      slot0Configs = talonFXConfiguration.Slot0;
+      slot0Configs.kS = 0.25; //CHANGE ALL --->
+      slot0Configs.kV = 0.12;
+      slot0Configs.kA = 0.01;
+      slot0Configs.kP = 4.8;
+      slot0Configs.kI = 0.0;
+      slot0Configs.kD = 0.0;
+      
+      motionMagicConfigs = talonFXConfiguration.MotionMagic;
+      motionMagicConfigs.MotionMagicCruiseVelocity = 100; //CHANGE ALL --->
+      motionMagicConfigs.MotionMagicAcceleration = 160;
+      
+      //motionMagicConfigs.MotionMagicJerk = 1600;
+  
+      /*Apply Configs*/
+      //elevatorMotor.getConfigurator().apply(talonFXConfiguration);
+      //slaveMotor.getConfigurator().apply(talonFXConfiguration);
+  
+      //Voltage Request
+    m_voltageRequest = new MotionMagicVoltage(0);
     elevatorMotor.getConfigurator().apply(limitConfigs);
     slaveMotor.getConfigurator().apply(limitConfigs);
+
+
     
     previousElevatorError = 0;
     atPositionCount = 0;
@@ -232,6 +268,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     //elevatorMotor.set((elevatorPIDCalculation));
     //slaveMotor.set((-elevatorPIDCalculation));
     
+    /*Motion Magic Set Target Position */
+   
+    //elevatorMotor.setControl(m_voltageRequest.withPosition(x));
+    //slaveMotor.setControl(m_voltageRequest.withPosition(x));
     
     //System.out.println(atTargetPosition);
   }
