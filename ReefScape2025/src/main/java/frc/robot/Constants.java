@@ -82,10 +82,15 @@ public final class Constants {
     // public static final double kI = 0.334;//.334
     // public static final double kD = 0.01031;//.01031
     //P type PID Controller
-    public static final double kP = 0.15;
+    public static final double kP = 5;
     public static final double kI = 0;
-    public static final double kD = 0.006;
-    public static final double DEFAULT = 6;
+    public static final double kD = 0.000;//0.006
+    public static final double kG = 0.6;
+    public static final double kS = 0.12;
+    public static final double kV = 0.13;//0.23
+    public static final double kA = 0.003;
+
+    public static final double DEFAULT = 20;//6
     public static final double ALGAETEMP = 12;
     public static final double INTAKE = 16.3;
     public static final double FLOORALGAE = 7.3;

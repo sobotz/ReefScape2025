@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.commands.AutoCoralEjectCommand;
@@ -145,9 +146,6 @@ public class RobotContainer {
   ReefInteractionSequentialHolderCommand m_reefKCommand;
   ReefInteractionSequentialHolderCommand m_reefLCommand;
 
-
-
-
   ReefInteractionSequentialCommand m_autoAReefCommand;
   ReefInteractionSequentialCommand m_autoBReefCommand;
   ReefInteractionSequentialCommand m_autoCReefCommand;
@@ -175,6 +173,7 @@ public class RobotContainer {
   AutoWaitL4Command m_autoWaitL4Command;
   AutoWaitL4Command m_autoWaitL4Command2;
   AutoIntakeCommand m_autoIntakeCommand;
+  Command testAuto;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -275,6 +274,7 @@ public class RobotContainer {
     
     m_testServoCommand = new TestServoCommand(m_climbSubsystem);
     m_TestServoIntakeCommand = new TestServoIntakeCommand(m_intakeSubsystem);
+    
     // NamedCommands.registerCommand("m_autoIntakeCommand",m_autoIntakeCommand);
     // NamedCommands.registerCommand("m_ReefAlgaeGrabCommand",m_ReefAlgaeGrabCommand);
     // NamedCommands.registerCommand("m_reefCoralPlacementCommand",m_reefCoralPlacementCommand);
@@ -313,21 +313,29 @@ public class RobotContainer {
             true, // If alliance flipping should be enabled 
             m_swerveSubsystem // The drive subsystem
         );
-    
+    testAuto = Commands.sequence(
+      m_ReefAlgaeGrabCommand,
+      autoFactory.resetOdometry("Start-E"),
+      autoFactory.trajectoryCmd("Start-E"),
+      m_reefECommand,
+      autoFactory.trajectoryCmd("E-Station"),
+      autoFactory.trajectoryCmd("Station-C")
+      //autoFactory.trajectoryCmd("E-Station")
+    );
     configureBindings();
   }
   public SwerveSubsystem getSwerveSubsystem(){
     return m_swerveSubsystem;
   }
-  public Command testAuto(){
-    return Commands.sequence(
-      autoFactory.resetOdometry("Start-E"),
-      autoFactory.trajectoryCmd("Start-E"),
-      autoFactory.trajectoryCmd("E-Station"),
-      autoFactory.trajectoryCmd("Station-C")
-      //autoFactory.trajectoryCmd("E-Station")
-    );
-  }
+  // public Command testAuto(){
+  //   return Commands.sequence(
+  //     autoFactory.resetOdometry("Start-E"),
+  //     autoFactory.trajectoryCmd("Start-E"),
+  //     autoFactory.trajectoryCmd("E-Station"),
+  //     autoFactory.trajectoryCmd("Station-C")
+  //     //autoFactory.trajectoryCmd("E-Station")
+  //   );
+  // }
   /*public Command getAutonomousCommand(){
     try{
       PathPlannerPath path = PathPlannerPath.fromPathFile("AutoPath1");
@@ -347,6 +355,7 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+  
   private void configureBindings() {
 
     //LEVEL BUTTONS
@@ -469,7 +478,7 @@ public class RobotContainer {
     //return new PathPlannerAuto("New Auto");
     //return autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
     //return autoChooser.getSelected().andThen(new EndAutoCommand(m_swerveSubsystem));
-    return testAuto().andThen(new EndAutoCommand(m_swerveSubsystem));
+    return testAuto.andThen(new EndAutoCommand(m_swerveSubsystem));
   }
   public PhotonVisionSubsystem getPhotonSubsystem(){
     return m_PhotonVisionSubsytem;
