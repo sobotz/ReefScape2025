@@ -315,11 +315,13 @@ public class RobotContainer {
         );
     testAuto = Commands.sequence(
       m_ReefAlgaeGrabCommand,
-      autoFactory.resetOdometry("Start-E"),
-      autoFactory.trajectoryCmd("Start-E"),
+      autoFactory.resetOdometry("Start-Eoffset"),
+      autoFactory.trajectoryCmd("Start-Eoffset"),
       m_reefECommand,
       autoFactory.trajectoryCmd("E-Station"),
-      autoFactory.trajectoryCmd("Station-C")
+      autoFactory.trajectoryCmd("Station-Coffset"),
+      m_reefCCommand,
+      autoFactory.trajectoryCmd("C-Station")
       //autoFactory.trajectoryCmd("E-Station")
     );
     configureBindings();

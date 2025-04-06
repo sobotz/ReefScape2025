@@ -20,6 +20,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -48,7 +49,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** Motion Magic Control */
 
   private double elevatorPIDCalculation;
-  private final MotionMagicVoltage motionMagicController;
+  private MotionMagicVoltage motionMagicController;
 
   private ElevatorPosition targetPosition; 
   ElevatorPosition autoPlaceTargetElevatorPosition;
@@ -101,6 +102,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
       slaveMotor = new TalonFX(14);
       slaveMotor.setNeutralMode(NeutralModeValue.Brake);
+      
+      
   
       /** Configure motors */
       limitConfigs = new CurrentLimitsConfigs();
@@ -189,15 +192,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean elevatorAtTargetPosition() {
-    if (Math.abs(elevatorController.getError())<0.43 && Math.abs(elevatorPIDCalculation)<0.07){
+    if (Math.abs(elevatorController.getError())<0.2 && Math.abs(elevatorMotor.getMotorVoltage().getValueAsDouble())<0.5){
       atTargetPosition = false;
-      if (Math.abs(previousElevatorError - elevatorController.getError()) < 0.07){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(elevatorMotor.getMotorVoltage().getValueAsDouble()) < 0.5){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;
       }
       else{
         atPositionCount = 0;
       }
-      previousElevatorError = elevatorController.getError();
       if (atPositionCount > 1){
         atTargetPosition = true;
         atPositionCount = 0;
@@ -238,24 +240,24 @@ public class ElevatorSubsystem extends SubsystemBase {
     
 
     // Motion Magic velocity/acceleration
-    config.MotionMagic.MotionMagicCruiseVelocity = 100;  // in rotations/second
-    config.MotionMagic.MotionMagicAcceleration = 200;    // in rotations/second^2
-    config.MotionMagic.MotionMagicJerk = 1800;
+    
+    config.MotionMagic.MotionMagicCruiseVelocity = 150;  // in rotations/second
+    config.MotionMagic.MotionMagicAcceleration = 250;    // in rotations/second^2
+    config.MotionMagic.MotionMagicJerk = 1300;
     config.CurrentLimits.SupplyCurrentLimit = 70;
     config.CurrentLimits.StatorCurrentLimit = 80;
     
-    
-    
 
-    
     // Apply configuration
     elevatorMotor.getConfigurator().apply(config);
+    config.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
     slaveMotor.getConfigurator().apply(config);
 }
 public void moveToPositionMM(ElevatorPosition position) {
   double targetRotations = positionMap.get(position); // Assuming this is in rotations\
+  
   elevatorMotor.setControl(motionMagicController.withPosition(targetRotations));
-  slaveMotor.setControl(motionMagicController.withPosition(-targetRotations));
+  slaveMotor.setControl(motionMagicController.withPosition(targetRotations));
   
   
   
@@ -287,14 +289,18 @@ public void moveToPositionMM(ElevatorPosition position) {
     if (once){
       elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
       slaveMotor.setNeutralMode(NeutralModeValue.Brake);
+      elevatorMotor.setPosition(0);
+      slaveMotor.setPosition(0);
       once = false;
     }
     
     SmartDashboard.putNumber("Elevator Position", elevatorMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Elevator Target", positionMap.get(targetPosition));
-    SmartDashboard.putNumber("Elevator Error", elevatorMotor.getPosition().getValueAsDouble() - positionMap.get(targetPosition));
+    SmartDashboard.putNumber("Elevator Error", elevatorMotor.getClosedLoopError().getValueAsDouble());
     SmartDashboard.putNumber("elevator voltage", elevatorMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("elevator current", elevatorMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("slave voltage", slaveMotor.getMotorVoltage().getValueAsDouble());
+    
     
     //SmartDashboard.putBoolean("Manual Mode", manualMode);
     //System.out.println("Manual Mode: " + manualMode);
