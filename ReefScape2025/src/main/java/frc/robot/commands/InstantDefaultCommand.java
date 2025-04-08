@@ -16,10 +16,12 @@ import frc.robot.subsystems.ElevatorSubsystem;
 public class InstantDefaultCommand extends InstantCommand {
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
-  public InstantDefaultCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
+  Boolean isAuto;
+  public InstantDefaultCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, boolean isAuto) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
+    this.isAuto = isAuto;
   }
 
   // Called when the command is initially scheduled.

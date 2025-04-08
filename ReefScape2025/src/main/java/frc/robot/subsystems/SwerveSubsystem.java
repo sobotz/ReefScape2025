@@ -162,8 +162,10 @@ public class SwerveSubsystem extends SubsystemBase {
     backRightTurnMotor = new TalonFX(5,"Drivetrain");
 
     limitConfigs = new CurrentLimitsConfigs();
-    limitConfigs.StatorCurrentLimit = 40;
+    limitConfigs.StatorCurrentLimit = 80;
+    limitConfigs.SupplyCurrentLimit = 60;
     limitConfigs.StatorCurrentLimitEnable = true;
+    limitConfigs.SupplyCurrentLimitEnable = true;
     frontLeftDriveMotor.getConfigurator().apply(limitConfigs);
     frontLeftTurnMotor.getConfigurator().apply(limitConfigs);
     frontRightDriveMotor.getConfigurator().apply(limitConfigs);

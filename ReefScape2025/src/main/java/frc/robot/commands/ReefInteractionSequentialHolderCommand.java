@@ -42,13 +42,13 @@ public class ReefInteractionSequentialHolderCommand extends Command {
   public void initialize() {
     m_clawSubsystem.setFinishReefSequence(false);
     isFinished = false;
-    if (isAuto){
-      if (m_swerveSubsystem.getIsRedAlliance()){
-        id = id - 11;
-        xTarget = -xTarget;
-      }
-    }
-    else if (!m_swerveSubsystem.getIsRedAlliance()){
+    // if (isAuto){
+    //   if (m_swerveSubsystem.getIsRedAlliance()){
+    //     id = id - 11;
+    //     xTarget = -xTarget;
+    //   }
+    // }
+    if (!m_swerveSubsystem.getIsRedAlliance()){
       System.out.println("BLUE ALLIANCE");
       if (id == (int)7){
         id = (int)18;
@@ -69,7 +69,7 @@ public class ReefInteractionSequentialHolderCommand extends Command {
         id = (int)19;
       }
     }
-    m_interactionCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem, xTarget, yTarget, id,false);
+    m_interactionCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem, xTarget, yTarget, id,this.isAuto);
     m_interactionCommand.schedule();
   }
   // Called every time the scheduler runs while the command is scheduled.

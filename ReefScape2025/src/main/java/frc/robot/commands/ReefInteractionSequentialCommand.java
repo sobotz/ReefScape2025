@@ -36,35 +36,34 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     //elevatorSubsystem.setAutoPlaceClawTargetPosition(targetElevatorPosition);
     //clawSubsystem.setAutoPlaceClawTargetPosition(targetClawPosition);
-    if (isAuto){
-      if (swerveSubsystem.getIsRedAlliance()){
-        if (id == (int)18){
-          id = (int)7;
-        }
-        else if (id == (int)17){
-          id = (int)8;
-        }
-        else if (id == (int)22){
-          id = (int)9;
-        }
-        else if (id == (int)21){
-          System.out.println("GOOD");
-          id = (int)10;
-        }
-        else if (id == (int)20){
-          id = (int)11;
-        }
-        else if (id == (int)19){
-          id = (int)6;
-        }
-      }
-      else{
-        id = idd;
-      }
-    }
-    else{
-      id = idd;
-    }
+    // if (isAuto){
+    //   if (swerveSubsystem.getIsRedAlliance()){
+    //     if (id == (int)18){
+    //       id = (int)7;
+    //     }
+    //     else if (id == (int)17){
+    //       id = (int)8;
+    //     }
+    //     else if (id == (int)22){
+    //       id = (int)9;
+    //     }
+    //     else if (id == (int)21){
+    //       System.out.println("GOOD");
+    //       id = (int)10;
+    //     }
+    //     else if (id == (int)20){
+    //       id = (int)11;
+    //     }
+    //     else if (id == (int)19){
+    //       id = (int)6;
+    //     }
+    //   }
+    //   else{
+    //     id = idd;
+    //   }
+    
+    id = idd;
+    
     this.isAuto = isAuto;
     
     m_photonVisionSubsystem = photonVisionSubsystem;
@@ -109,9 +108,9 @@ public class ReefInteractionSequentialCommand extends SequentialCommandGroup {
     addCommands(
       new CoralPlacementCommand(elevatorSubsystem, clawSubsystem, photonVisionSubsystem, true, x, y, id, isAuto),
       new GrabAlgaeCommand(elevatorSubsystem, clawSubsystem,photonVisionSubsystem, algaeElevatorPosition, algaeClawPosition, id),
-      new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, true, 0, 0.462, id,isAuto),
-      new InstantDefaultCommand(elevatorSubsystem, clawSubsystem),
-      new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, false, 0, 0, 0,isAuto));
+      new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, true, 0, 0.462, id,false),
+      new InstantDefaultCommand(elevatorSubsystem, clawSubsystem,isAuto),
+      new AlignCommand(swerveSubsystem,clawSubsystem, photonVisionSubsystem, false, 0, 0, 0,false));
       new FinishReefSequenceCommand(clawSubsystem);
   }
   public boolean getIsRightSide(){

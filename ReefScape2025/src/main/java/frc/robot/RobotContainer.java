@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
+import com.revrobotics.jni.REVLibJNI;
 import com.revrobotics.servohub.ServoHub;
 
 import choreo.auto.AutoFactory;
@@ -24,9 +25,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
+import frc.robot.commands.AutoBargeCommand;
 import frc.robot.commands.AutoCoralEjectCommand;
 import frc.robot.commands.AutoIntakeCommand;
 import frc.robot.commands.AutoL4Command;
+import frc.robot.commands.AutoPrepBargeCommand;
 import frc.robot.commands.AutoSetStationIntakeCommand;
 import frc.robot.commands.AutoWaitL4Command;
 import frc.robot.commands.BargeCommand;
@@ -40,6 +43,7 @@ import frc.robot.commands.ReefCoralPlacementButton;
 import frc.robot.commands.ReefInteractionSequentialCommand;
 import frc.robot.commands.ReefInteractionSequentialHolderCommand;
 import frc.robot.commands.ResetClawCommand;
+import frc.robot.commands.ResetElevatorConfigCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetServoCommand;
 import frc.robot.commands.SetActuatorPositionCommand;
@@ -146,18 +150,18 @@ public class RobotContainer {
   ReefInteractionSequentialHolderCommand m_reefKCommand;
   ReefInteractionSequentialHolderCommand m_reefLCommand;
 
-  ReefInteractionSequentialCommand m_autoAReefCommand;
-  ReefInteractionSequentialCommand m_autoBReefCommand;
-  ReefInteractionSequentialCommand m_autoCReefCommand;
-  ReefInteractionSequentialCommand m_autoDReefCommand;
-  ReefInteractionSequentialCommand m_autoEReefCommand;
-  ReefInteractionSequentialCommand m_autoFReefCommand;
-  ReefInteractionSequentialCommand m_autoGReefCommand;
-  ReefInteractionSequentialCommand m_autoHReefCommand;
-  ReefInteractionSequentialCommand m_autoIReefCommand;
-  ReefInteractionSequentialCommand m_autoJReefCommand;
-  ReefInteractionSequentialCommand m_autoKReefCommand;
-  ReefInteractionSequentialCommand m_autoLReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoAReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoBReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoCReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoDReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoEReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoFReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoGReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoHReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoIReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoJReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoKReefCommand;
+  ReefInteractionSequentialHolderCommand m_autoLReefCommand;
 
   ResetGyroCommand m_resetGyroCommand;
   AutoSetStationIntakeCommand m_autoSetStationIntakeCommand;
@@ -174,6 +178,11 @@ public class RobotContainer {
   AutoWaitL4Command m_autoWaitL4Command2;
   AutoIntakeCommand m_autoIntakeCommand;
   Command testAuto;
+  Command algaeAuto;
+  ResetElevatorConfigCommand resetElevatorCommand;
+  ResetElevatorConfigCommand resetElevatorCommand2;
+  AutoPrepBargeCommand autoPrepBargeCommand;
+  AutoBargeCommand autoBargeCommand;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -252,18 +261,18 @@ public class RobotContainer {
     m_reefLCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem,0.173,0.435, 6,false);
 
     //AUTOPATHS
-    m_autoAReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 18, true);
-    m_autoBReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 18, true);
-    m_autoCReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 17, true);
-    m_autoDReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 17, true);//new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.416, 17, true);
-    m_autoEReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 22, true);
-    m_autoFReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 22, true);
-    m_autoGReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 21, true);
-    m_autoHReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 21, true);
-    m_autoIReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 20, true);
-    m_autoJReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 20, true);
-    m_autoKReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 19, true);
-    m_autoLReefCommand = new ReefInteractionSequentialCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 19, true);
+    m_autoAReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 7, true);
+    m_autoBReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 7, true);
+    m_autoCReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 8, true);
+    m_autoDReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 8, true);//new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.416, 17, true);
+    m_autoEReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 9, true);
+    m_autoFReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 9, true);
+    m_autoGReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 10, true);
+    m_autoHReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 10, true);
+    m_autoIReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 11, true);
+    m_autoJReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 11, true);
+    m_autoKReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, -0.162, 0.435, 6, true);
+    m_autoLReefCommand = new ReefInteractionSequentialHolderCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem, 0.173, 0.435, 6, true);
 
     m_autoSetStationIntakeCommand = new AutoSetStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     m_autoL4Command = new AutoL4Command(m_elevatorSubsystem, m_clawSubsystem);
@@ -274,6 +283,10 @@ public class RobotContainer {
     
     m_testServoCommand = new TestServoCommand(m_climbSubsystem);
     m_TestServoIntakeCommand = new TestServoIntakeCommand(m_intakeSubsystem);
+    resetElevatorCommand = new ResetElevatorConfigCommand(m_elevatorSubsystem);
+    resetElevatorCommand2 = new ResetElevatorConfigCommand(m_elevatorSubsystem);
+    autoPrepBargeCommand = new AutoPrepBargeCommand(m_elevatorSubsystem, m_clawSubsystem);
+    autoBargeCommand = new AutoBargeCommand(m_elevatorSubsystem, m_clawSubsystem);
     
     // NamedCommands.registerCommand("m_autoIntakeCommand",m_autoIntakeCommand);
     // NamedCommands.registerCommand("m_ReefAlgaeGrabCommand",m_ReefAlgaeGrabCommand);
@@ -313,16 +326,34 @@ public class RobotContainer {
             true, // If alliance flipping should be enabled 
             m_swerveSubsystem // The drive subsystem
         );
-    testAuto = Commands.sequence(
-      m_ReefAlgaeGrabCommand,
-      autoFactory.resetOdometry("Start-Eoffset"),
-      autoFactory.trajectoryCmd("Start-Eoffset"),
-      m_reefECommand,
-      autoFactory.trajectoryCmd("E-Station"),
-      autoFactory.trajectoryCmd("Station-Coffset"),
-      m_reefCCommand,
-      autoFactory.trajectoryCmd("C-Station")
-      //autoFactory.trajectoryCmd("E-Station")
+    // testAuto = Commands.sequence(
+    //   m_ReefAlgaeGrabCommand,
+    //   autoFactory.resetOdometry("Start-Eoffset"),
+    //   autoFactory.trajectoryCmd("Start-Eoffset"),
+    //   m_autoEReefCommand,
+    //   autoFactory.trajectoryCmd("E-Station"),
+    //   resetElevatorCommand,
+    //   autoFactory.trajectoryCmd("Station-Coffset"),
+    //   m_autoCReefCommand,
+    //   autoFactory.trajectoryCmd("C-Station"),
+    //   resetElevatorCommand2,
+    //   autoFactory.trajectoryCmd("Station-Doffset"),
+    //   m_autoDReefCommand
+    //   //autoFactory.trajectoryCmd("E-Station")
+    // );
+    algaeAuto = Commands.sequence(
+      autoFactory.resetOdometry("Start-Hoffset"),
+      autoFactory.trajectoryCmd("Start-Hoffset"),
+      m_autoHReefCommand,
+      autoFactory.trajectoryCmd("Algae21-Barge1"),
+      autoPrepBargeCommand,
+      autoBargeCommand,
+      autoFactory.trajectoryCmd("Barge1-Algae20"),
+      resetElevatorCommand,
+      m_reefCoralPlacementCommand,
+      m_autoIReefCommand
+
+
     );
     configureBindings();
   }
@@ -480,7 +511,7 @@ public class RobotContainer {
     //return new PathPlannerAuto("New Auto");
     //return autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
     //return autoChooser.getSelected().andThen(new EndAutoCommand(m_swerveSubsystem));
-    return testAuto.andThen(new EndAutoCommand(m_swerveSubsystem));
+    return algaeAuto.andThen(new EndAutoCommand(m_swerveSubsystem));
   }
   public PhotonVisionSubsystem getPhotonSubsystem(){
     return m_PhotonVisionSubsytem;

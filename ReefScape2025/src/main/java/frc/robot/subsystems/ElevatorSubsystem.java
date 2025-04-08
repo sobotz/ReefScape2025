@@ -163,7 +163,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     atPositionCount = 0;
     // enable stator current limit
     motionMagicController = new MotionMagicVoltage(0.0);
-    configureMotionMagic();
+    configureMotionMagic(false);
     
     elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,ElevatorConstants.kD);
     elevatorController.setTolerance(0.002); 
@@ -227,7 +227,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void setElevatorTargetPosition(ElevatorPosition position) {
     targetPosition = position;
   }
-  private void configureMotionMagic() {
+  public void configureMotionMagic(boolean comingDown) {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.Slot0.kP = ElevatorConstants.kP;
@@ -241,11 +241,22 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // Motion Magic velocity/acceleration
     
-    config.MotionMagic.MotionMagicCruiseVelocity = 150;  // in rotations/second
-    config.MotionMagic.MotionMagicAcceleration = 250;    // in rotations/second^2
-    config.MotionMagic.MotionMagicJerk = 1300;
+    
+    if (comingDown){
+      config.MotionMagic.MotionMagicJerk = 800;
+      config.MotionMagic.MotionMagicCruiseVelocity = 70;  // in rotations/second
+      config.MotionMagic.MotionMagicAcceleration = 200;    // in rotations/second^2
+    }
+    else{
+      config.MotionMagic.MotionMagicJerk = 1300;
+      config.MotionMagic.MotionMagicCruiseVelocity = 150;  // in rotations/second
+      config.MotionMagic.MotionMagicAcceleration = 250;    // in rotations/second^2
+    }
+    
     config.CurrentLimits.SupplyCurrentLimit = 70;
     config.CurrentLimits.StatorCurrentLimit = 80;
+    config.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+
     
 
     // Apply configuration
@@ -312,12 +323,10 @@ public void moveToPositionMM(ElevatorPosition position) {
     if (isAuto){
       if (elevatorAtTargetPosition()){
         isAuto = false;
+        configureMotionMagic(false);
       }
-      if (elevatorPIDCalculation>0.6){
-        elevatorPIDCalculation = 0.6;
-      }
-      else if (elevatorPIDCalculation<-0.6){
-        elevatorPIDCalculation = -0.6;
+      else{
+        configureMotionMagic(true);
       }
     } 
     

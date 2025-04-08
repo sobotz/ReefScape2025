@@ -26,6 +26,7 @@ public class CoralPlacementCommand extends Command {
   Timer timer;
   Timer timer2;
   boolean isAuto;
+  boolean once;
   public CoralPlacementCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem, boolean align, double x, double y, int id, boolean auto) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
@@ -39,6 +40,7 @@ public class CoralPlacementCommand extends Command {
     timer = new Timer();
     timer2 = new Timer();
     isAuto = auto;
+    once = true;
   }
 
   // Called when the command is initially scheduled.
@@ -46,7 +48,8 @@ public class CoralPlacementCommand extends Command {
   public void initialize() {
     isFinished = false;
     //System.out.println("placecoral button: " + m_clawSubsystem.getReefCoralPlacementButton());
-    if (m_clawSubsystem.getReefCoralPlacementButton() || isAuto){
+    
+    if (m_clawSubsystem.getReefCoralPlacementButton()){
       m_photonVisionSubsystem.resetCount();
       // if (xTarget < 0 && m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L3){
       //   xTarget += 0.02;
@@ -55,10 +58,10 @@ public class CoralPlacementCommand extends Command {
       //   xTarget -= 0.02;
       // }
       m_photonVisionSubsystem.enableAlign(true, xTarget, yTarget, id);
-      if (isAuto){
-        m_elevatorSubsystem.setAutoPlaceClawTargetPosition(ElevatorPosition.L4);
-        m_clawSubsystem.setAutoPlaceClawTargetPosition(ClawPosition.L4);
-      }
+      // if (isAuto){
+      //   m_elevatorSubsystem.setAutoPlaceClawTargetPosition(ElevatorPosition.L4);
+      //   m_clawSubsystem.setAutoPlaceClawTargetPosition(ClawPosition.L4);
+      // }
       m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
       if (!(m_clawSubsystem.getAutoPlacePosition()== ClawPosition.L4)){
         System.out.println("WRONG");
@@ -70,6 +73,10 @@ public class CoralPlacementCommand extends Command {
     else{
       isFinished = true;
     }
+    // if (isAuto){
+    //   m_elevatorSubsystem.configureMotionMagic(false);
+    // }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -91,6 +98,11 @@ public class CoralPlacementCommand extends Command {
       }
       else{
         m_clawSubsystem.setDriveMotor(-0.6);
+      }
+      if (isAuto){
+        if (once){
+          m_elevatorSubsystem.configureMotionMagic(true);
+        }
       }
       timer2.start();
     }
