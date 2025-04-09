@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
+import frc.robot.commands.Algae3Auto;
+import frc.robot.commands.AlgaeAuto;
 import frc.robot.commands.AutoBargeCommand;
 import frc.robot.commands.AutoCoralEjectCommand;
 import frc.robot.commands.AutoIntakeCommand;
@@ -178,11 +180,13 @@ public class RobotContainer {
   AutoWaitL4Command m_autoWaitL4Command2;
   AutoIntakeCommand m_autoIntakeCommand;
   Command testAuto;
-  Command algaeAuto;
+  //Command algaeAuto;
   ResetElevatorConfigCommand resetElevatorCommand;
   ResetElevatorConfigCommand resetElevatorCommand2;
   AutoPrepBargeCommand autoPrepBargeCommand;
   AutoBargeCommand autoBargeCommand;
+  AlgaeAuto algaeAuto;
+  Algae3Auto algae3Auto;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -202,6 +206,14 @@ public class RobotContainer {
     m_clawSubsystem = new ClawSubsystem();
     m_intakeSubsystem = new IntakeSubsystem(servoHub);
     m_climbSubsystem = new ClimbSubsystem(m_swerveSubsystem, servoHub);
+
+    autoFactory = new AutoFactory(
+            m_swerveSubsystem::getPose, // A function that returns the current robot pose
+            m_swerveSubsystem::resetPose, // A function that resets the current robot pose to the provided Pose2d
+            m_swerveSubsystem::followTrajectory, // The drive subsystem trajectory follower 
+            true, // If alliance flipping should be enabled 
+            m_swerveSubsystem // The drive subsystem
+        );
 
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
     m_clawDriveReverseCommand = new TestClawDriveReverseCommand(m_clawSubsystem);
@@ -285,9 +297,10 @@ public class RobotContainer {
     m_TestServoIntakeCommand = new TestServoIntakeCommand(m_intakeSubsystem);
     resetElevatorCommand = new ResetElevatorConfigCommand(m_elevatorSubsystem);
     resetElevatorCommand2 = new ResetElevatorConfigCommand(m_elevatorSubsystem);
-    autoPrepBargeCommand = new AutoPrepBargeCommand(m_elevatorSubsystem, m_clawSubsystem);
-    autoBargeCommand = new AutoBargeCommand(m_elevatorSubsystem, m_clawSubsystem);
-    
+    autoPrepBargeCommand = new AutoPrepBargeCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem);
+    autoBargeCommand = new AutoBargeCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem);
+    algaeAuto = new AlgaeAuto(autoFactory,m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_autoHReefCommand, m_autoIReefCommand, m_autoFReefCommand);
+    //algae3Auto = new Algae3Auto(autoFactory, m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_autoHReefCommand, m_autoIReefCommand, m_autoFReefCommand);
     // NamedCommands.registerCommand("m_autoIntakeCommand",m_autoIntakeCommand);
     // NamedCommands.registerCommand("m_ReefAlgaeGrabCommand",m_ReefAlgaeGrabCommand);
     // NamedCommands.registerCommand("m_reefCoralPlacementCommand",m_reefCoralPlacementCommand);
@@ -319,13 +332,7 @@ public class RobotContainer {
     m_TestClimbDriveMotorReverse = new TestClimbDriveMotorReverse(m_climbSubsystem);
     //test;
     //autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
-    autoFactory = new AutoFactory(
-            m_swerveSubsystem::getPose, // A function that returns the current robot pose
-            m_swerveSubsystem::resetPose, // A function that resets the current robot pose to the provided Pose2d
-            m_swerveSubsystem::followTrajectory, // The drive subsystem trajectory follower 
-            true, // If alliance flipping should be enabled 
-            m_swerveSubsystem // The drive subsystem
-        );
+    
     // testAuto = Commands.sequence(
     //   m_ReefAlgaeGrabCommand,
     //   autoFactory.resetOdometry("Start-Eoffset"),
@@ -341,20 +348,22 @@ public class RobotContainer {
     //   m_autoDReefCommand
     //   //autoFactory.trajectoryCmd("E-Station")
     // );
-    algaeAuto = Commands.sequence(
-      autoFactory.resetOdometry("Start-Hoffset"),
-      autoFactory.trajectoryCmd("Start-Hoffset"),
-      m_autoHReefCommand,
-      autoFactory.trajectoryCmd("Algae21-Barge1"),
-      autoPrepBargeCommand,
-      autoBargeCommand,
-      autoFactory.trajectoryCmd("Barge1-Algae20"),
-      resetElevatorCommand,
-      m_reefCoralPlacementCommand,
-      m_autoIReefCommand
-
-
-    );
+    // algaeAuto = Commands.sequence(
+    //   autoFactory.resetOdometry("Start-Hoffset"),
+    //   autoFactory.trajectoryCmd("Start-Hoffset"),
+    //   m_autoHReefCommand,
+    //   autoFactory.trajectoryCmd("Algae21-Barge1"),
+    //   autoPrepBargeCommand,
+    //   autoBargeCommand,
+    //   autoFactory.trajectoryCmd("Barge1-Algae20"),
+    //   resetElevatorCommand,
+    //   m_reefCoralPlacementCommand,
+    //   m_autoIReefCommand,
+    //   autoFactory.trajectoryCmd("Algae20-Barge1"),
+    //   autoPrepBargeCommand,
+    //   autoBargeCommand,
+    //   autoFactory.trajectoryCmd("Barge1-Algae22")
+    // );
     configureBindings();
   }
   public SwerveSubsystem getSwerveSubsystem(){

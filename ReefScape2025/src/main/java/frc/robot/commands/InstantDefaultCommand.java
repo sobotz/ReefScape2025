@@ -27,7 +27,10 @@ public class InstantDefaultCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    if (!(m_clawSubsystem.getReefAlgaeGrabButton() && isAuto)){
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
+      m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    }
+    
   }
 }

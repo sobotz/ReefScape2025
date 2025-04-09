@@ -43,7 +43,7 @@ public class IntakeSubsystem extends SubsystemBase {
     driveMotor.getConfigurator().apply(toConfigure);
   }
   public void setDriveMotor(double value){
-    System.out.println("drive");
+    
     driveMotor.set(value);
   }
   public void resetIntakeServo(){

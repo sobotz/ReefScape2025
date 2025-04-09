@@ -34,7 +34,7 @@ public class FinishReefSequenceCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("FINISH REEF");
+    
   }
 
   // Returns true when the command should end.

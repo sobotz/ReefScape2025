@@ -151,9 +151,9 @@ public class ClawSubsystem extends SubsystemBase {
     return clawTargetPosition;
   }
   public boolean clawAtTargetPosition(){
-    if ((Math.abs(clawController.getError())<0.19) && (Math.abs(clawPIDCalculation)<0.065)){
+    if ((Math.abs(clawController.getError())<0.27) && (Math.abs(clawPIDCalculation)<0.09)){
       //System.out.println("inrange");
-      if (Math.abs(previousClawError - clawController.getError()) <0.065){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousClawError - clawController.getError()) <0.09){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;
       }  
       else{
@@ -163,7 +163,7 @@ public class ClawSubsystem extends SubsystemBase {
       if (atPositionCount > 1){
         //System.out.println("atPositionCLaw");
         atTarget = true;
-        atPositionCount = 0;
+        
         return true;
       }
       else{
@@ -172,6 +172,7 @@ public class ClawSubsystem extends SubsystemBase {
       }
     }
     else{
+      atPositionCount = 0;
       previousClawError = clawController.getError();
       atTarget = false;
       return false;
@@ -205,7 +206,7 @@ public class ClawSubsystem extends SubsystemBase {
     if (value == 0){
       driveMotorIsControlled = false;
       if (hasCoral && !hasAlgae){
-        System.out.println("working");
+        
         intakeTimer.start();
         clawDriveMotor.set(0.25);
       }
@@ -281,7 +282,7 @@ public class ClawSubsystem extends SubsystemBase {
       once = false;
     }
     if (intakeTimer.get()>0.7){
-      System.out.println("working");
+      
       intakeTimer.reset();
       intakeTimer.stop();
       clawDriveMotor.set(0);
@@ -302,6 +303,7 @@ public class ClawSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("clawDrive Current",driveMotorCurrent);
     SmartDashboard.putBoolean("CORAL", reefCoralPlacementButton);
     SmartDashboard.putBoolean("ALGAE", reefAlgaeGrabButton);
+    SmartDashboard.putBoolean("ClawAtPosition",clawAtTargetPosition());
     //System.out.println(clawController.getError());
     //System.out.println(clawPIDCalculation);
     //System.out.println((-1 * clawSensor.getAbsolutePosition().getValueAsDouble()* 360) % 360);

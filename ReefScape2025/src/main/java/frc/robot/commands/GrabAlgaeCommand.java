@@ -11,11 +11,13 @@ import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GrabAlgaeCommand extends Command {
   /** Creates a new GrabHigherAlgaeCommand. */
+  
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
   PhotonVisionSubsystem m_photonVisionSubsystem;
@@ -25,10 +27,12 @@ public class GrabAlgaeCommand extends Command {
   Timer timer2;
   boolean isFinished;
   int id;
+  boolean isAuto;
   
   
-  public GrabAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem, ElevatorPosition elevatorPosition, ClawPosition clawPosition, int id) {
+  public GrabAlgaeCommand( ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem, ElevatorPosition elevatorPosition, ClawPosition clawPosition, int id, boolean isAuto) {
     // Use addRequirements() here to declare subsystem dependencies.
+    
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
     m_photonVisionSubsystem = photonVisionSubsystem;
@@ -38,6 +42,7 @@ public class GrabAlgaeCommand extends Command {
     timer2 = new Timer();
     isFinished = false;
     this.id = id;
+    this.isAuto = isAuto;
   }
 
   // Called when the command is initially scheduled.
@@ -128,8 +133,11 @@ public class GrabAlgaeCommand extends Command {
     m_clawSubsystem.setAlgaeRetainPosition();
     timer.reset();
     timer.stop();
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    if (!isAuto){
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
+      m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    }
+    
     
     
   }

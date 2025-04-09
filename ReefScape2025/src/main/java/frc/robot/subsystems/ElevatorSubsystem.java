@@ -62,6 +62,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   double atPositionCount;
   boolean intakeFinishMode;
   boolean isAuto;
+  double previousError;
   
   /*Motion Magic */
   TalonFXConfiguration talonFXConfiguration;
@@ -70,10 +71,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   
   MotionMagicVoltage m_voltageRequest;
   SysIdRoutine m_sysIdRoutine;
+  boolean slowDown;
+
   
   
     public ElevatorSubsystem(SwerveSubsystem swerveSubsystem) {
       /** Initialize position mappings */
+      slowDown = false;
+      previousError = 0;
       m_voltReq = new VoltageOut(0);
       isAuto = false;
       intakeFinishMode = false;
@@ -178,6 +183,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   public double getElevatorSensorPosition() {
     return elevatorMotor.getPosition().getValueAsDouble();
   }
+  public double getElevatorError(){
+    return Math.abs(positionMap.get(targetPosition) - getElevatorSensorPosition());
+  }
   public void intakeFinish(){
     intakeFinishMode = true;
   }
@@ -192,17 +200,18 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean elevatorAtTargetPosition() {
-    if (Math.abs(elevatorController.getError())<0.2 && Math.abs(elevatorMotor.getMotorVoltage().getValueAsDouble())<0.5){
-      atTargetPosition = false;
-      if (Math.abs(elevatorMotor.getMotorVoltage().getValueAsDouble()) < 0.5){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+    if (getElevatorError()<0.26 && Math.abs(getElevatorSensorPosition() - previousError)<0.1){
+      
+      if (Math.abs(getElevatorSensorPosition() - previousError) < 0.1){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;
       }
       else{
         atPositionCount = 0;
       }
+      previousError = elevatorMotor.getPosition().getValueAsDouble();
       if (atPositionCount > 1){
         atTargetPosition = true;
-        atPositionCount = 0;
+        
         //System.out.println("elevatorAtPosition");
         return true;
       }
@@ -212,7 +221,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       }
     }
     else{
-      previousElevatorError = elevatorController.getError();
+      atPositionCount = 0;
+      previousError = elevatorMotor.getPosition().getValueAsDouble();
       atTargetPosition = false;
       return false;
     }
@@ -243,11 +253,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     
     if (comingDown){
+      slowDown = true;
       config.MotionMagic.MotionMagicJerk = 800;
       config.MotionMagic.MotionMagicCruiseVelocity = 70;  // in rotations/second
       config.MotionMagic.MotionMagicAcceleration = 200;    // in rotations/second^2
     }
     else{
+      slowDown = false;
       config.MotionMagic.MotionMagicJerk = 1300;
       config.MotionMagic.MotionMagicCruiseVelocity = 150;  // in rotations/second
       config.MotionMagic.MotionMagicAcceleration = 250;    // in rotations/second^2
@@ -263,6 +275,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor.getConfigurator().apply(config);
     config.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
     slaveMotor.getConfigurator().apply(config);
+}
+public boolean getSlowDown(){
+  return slowDown;
 }
 public void moveToPositionMM(ElevatorPosition position) {
   double targetRotations = positionMap.get(position); // Assuming this is in rotations\
@@ -311,6 +326,7 @@ public void moveToPositionMM(ElevatorPosition position) {
     SmartDashboard.putNumber("elevator voltage", elevatorMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("elevator current", elevatorMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("slave voltage", slaveMotor.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putBoolean("ElevatorAtPosition", elevatorAtTargetPosition());
     
     
     //SmartDashboard.putBoolean("Manual Mode", manualMode);

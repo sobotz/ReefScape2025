@@ -398,7 +398,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       }
     }
     if (alignActive){
-      System.out.println("align active");
+      
       align(xTarget,yTarget , id, true);
     }
     

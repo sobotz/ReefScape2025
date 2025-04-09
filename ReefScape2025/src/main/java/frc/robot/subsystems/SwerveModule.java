@@ -107,15 +107,16 @@ public class SwerveModule {
         if((Math.abs(driveVector.getMagnitude()) < 0.001)&&(Math.abs(rotationalMagnitude)<0.001)){
             turnMotor.set(0);
             driveMotor.set(0);
-            System.out.println("disbaled");
+            
 
         }
         else if (disable) {
-            System.out.println("disabled");
+            System.out.println("DISABLEDDDDD");
             turnMotor.set(0);
             driveMotor.set(0);
             
         }else{
+            
             turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
             driveMotor.set(targetModuleMagnitude);
         }

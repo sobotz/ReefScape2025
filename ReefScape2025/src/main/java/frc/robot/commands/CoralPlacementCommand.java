@@ -46,10 +46,14 @@ public class CoralPlacementCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    once = true;
     isFinished = false;
     //System.out.println("placecoral button: " + m_clawSubsystem.getReefCoralPlacementButton());
     
     if (m_clawSubsystem.getReefCoralPlacementButton()){
+      if (!isAuto && m_elevatorSubsystem.getSlowDown()){
+        m_elevatorSubsystem.configureMotionMagic(false);
+      }
       m_photonVisionSubsystem.resetCount();
       // if (xTarget < 0 && m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L3){
       //   xTarget += 0.02;
@@ -64,7 +68,7 @@ public class CoralPlacementCommand extends Command {
       // }
       m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
       if (!(m_clawSubsystem.getAutoPlacePosition()== ClawPosition.L4)){
-        System.out.println("WRONG");
+        
         m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
       }
       //m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
@@ -99,7 +103,7 @@ public class CoralPlacementCommand extends Command {
       else{
         m_clawSubsystem.setDriveMotor(-0.6);
       }
-      if (isAuto){
+      if (isAuto && !m_clawSubsystem.getReefAlgaeGrabButton()){
         if (once){
           m_elevatorSubsystem.configureMotionMagic(true);
         }

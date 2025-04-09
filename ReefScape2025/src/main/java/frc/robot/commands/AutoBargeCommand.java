@@ -10,16 +10,19 @@ import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoBargeCommand extends Command {
   /** Creates a new AutoBargeCommand. */
+  SwerveSubsystem m_swerveSubsystem;
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
   boolean isFinished;
   Timer timer;
-  public AutoBargeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
+  public AutoBargeCommand(SwerveSubsystem swerveSubsystem, ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_swerveSubsystem = swerveSubsystem;
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
     isFinished = false;
@@ -30,7 +33,7 @@ public class AutoBargeCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
-    m_clawSubsystem.setDriveMotor(-0.76);
+    m_clawSubsystem.setDriveMotor(-1);
     m_elevatorSubsystem.configureMotionMagic(true);
     timer.start();
   }
@@ -39,6 +42,7 @@ public class AutoBargeCommand extends Command {
   @Override
   public void execute() {
     if (timer.get()>0.4){
+      m_swerveSubsystem.setDisableDrive(false);
       m_clawSubsystem.setDriveMotor(0);
       isFinished = true;
     }
@@ -47,6 +51,7 @@ public class AutoBargeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    
     m_clawSubsystem.setHasAlgae(false);
     timer.reset();
     timer.stop();
