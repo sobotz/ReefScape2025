@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -428,6 +430,18 @@ public class SwerveSubsystem extends SubsystemBase {
       drive(new Vector(0, 0),0,currentRobotDegree,false,false);//CHANGE
     }
   }
+  public void algaeGrabDrive(double angleOffset, boolean enabled){
+    angleOffset = (angleOffset + 360) % 360;
+    Vector tv = new Vector(0.2,0,true);
+    double rotationalMagnitude = -rotationController.calculate(angleOffset,0);
+    drive(tv,rotationalMagnitude,angleOffset,false,false);
+    if (enabled){
+      drive(tv,rotationalMagnitude,angleOffset,false,false);
+    }
+    else{
+      drive(new Vector(0, 0),0,currentRobotDegree,false,false);
+    }
+  }
 
   public void drive(Vector strafeVector, double rotationalMagnitude,double degree, boolean relativeVelocityControlled, boolean disable){
     //System.out.println(strafeVector.getMagnitude());
@@ -496,6 +510,14 @@ public class SwerveSubsystem extends SubsystemBase {
   public void resetCount(){
     xAtPositionCount = 0;
     yAtPositionCount = 0;
+  }
+  public boolean getAlgaeGrabAtTargetPosition(){
+    if ((Math.abs(xTranslationController.getPositionError())< 0.06) && Math.abs(yTranslationController.getPositionError())<0.06){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
   public boolean getAtTargetPosition(boolean hasTarget){
     boolean xAtTarget = false;

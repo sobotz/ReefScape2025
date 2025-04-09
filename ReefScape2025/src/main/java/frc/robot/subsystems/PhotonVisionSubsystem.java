@@ -32,6 +32,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   //Cameras
    PhotonCamera m3Camera;
    PhotonCamera m4Camera;
+   PhotonCamera algaeCamera;
    
 
    PhotonPoseEstimator m3Pose;
@@ -46,6 +47,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    //Camera Data
    PhotonPipelineResult m3CameraResult;
    PhotonPipelineResult m4CameraResult;
+   PhotonPipelineResult algaeCameraResult;
    
 
    Transform3d m3CameraTargetInfo;
@@ -92,6 +94,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
    boolean atTargetPosition;
    boolean alignActive;
+   boolean algaeAlignActive;
 
 
    boolean aReef;
@@ -114,6 +117,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 
   public PhotonVisionSubsystem(SwerveSubsystem subsystem) {
+    algaeAlignActive = false;
     targets = new ArrayList<>();
     estimates = new ArrayList<>();
     aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
@@ -142,6 +146,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     alignActive = false;
     m3Camera = new PhotonCamera(Constants.PhotonVisionConstants.m3CameraName);
     m4Camera = new PhotonCamera(Constants.PhotonVisionConstants.m4CameraName);
+    algaeCamera = new PhotonCamera("Algae_Camera");
   
     id = 20;
     cameraXOffset = 0;
@@ -167,6 +172,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     
     m3CameraResult = m3Camera.getLatestResult();
     m4CameraResult = m4Camera.getLatestResult();
+    algaeCameraResult = algaeCamera.getLatestResult();
     m3TargetData = getData(m3CameraResult);
     m4TargetData = getData(m4CameraResult);
     
@@ -185,6 +191,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   }
   public boolean getEmergencyReset(){
     return emergencyReset;
+  }
+  public PhotonPipelineResult getAlgaeResult(){
+    return algaeCameraResult;
   }
   
   public void enableAlign(boolean enableAlign,double x, double y, int id){
@@ -338,8 +347,14 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public boolean getHasTarget(){
     return hasTarget;
   }
+  public void setAlgaeAlign(boolean value){
+    algaeAlignActive = value;
+  }
   public boolean getAtTargetPosition(){
     return m_swerveSubsystem.getAtTargetPosition(hasTarget);
+  }
+  public boolean getAlgaeGrabAtTargetPosition(){
+    return m_swerveSubsystem.getAlgaeGrabAtTargetPosition();
   }
   public boolean hasRightID(int id){
     if (hasID(m3CameraResult,id) || hasID(m3CameraResult,id)){
@@ -372,6 +387,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     m4Pose.addHeadingData(m_swerveSubsystem.getAutoTime(), m_swerveSubsystem.getAutoRotation());
     m3CameraResult = m3Camera.getLatestResult();
     m4CameraResult = m4Camera.getLatestResult();
+    algaeCameraResult = algaeCamera.getLatestResult();
     m3TargetData = getData(m3CameraResult);
     m4TargetData = getData(m4CameraResult);
     
@@ -398,8 +414,17 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       }
     }
     if (alignActive){
-      
       align(xTarget,yTarget , id, true);
+    }
+    if (algaeAlignActive){
+      if (algaeCameraResult.hasTargets()){
+        m_swerveSubsystem.setDriveCommandDisabled(true);
+        double yaw = algaeCameraResult.getBestTarget().getYaw();
+        m_swerveSubsystem.algaeGrabDrive(yaw, true);
+      }
+      else{
+        m_swerveSubsystem.setDriveCommandDisabled(false);
+      }
     }
     
 
@@ -412,6 +437,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     //align(0, 0, id, false);
     //align(0,1,20,true);
     //System.out.println(m3Camera.getLatestResult().getTargets().get(0).getYaw());
+    
     
     double z = Math.sqrt(Math.pow(cameraXOffset,2) + Math.pow(cameraYOffset,2));
     //System.out.println(usingM3Camera);
