@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ClawPosition;
+import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
@@ -49,7 +51,6 @@ public class ReefInteractionSequentialHolderCommand extends Command {
     //   }
     // }
     if (!m_swerveSubsystem.getIsRedAlliance()){
-      
       if (id == (int)7){
         id = (int)18;
       }
@@ -95,8 +96,8 @@ public class ReefInteractionSequentialHolderCommand extends Command {
     
     m_interactionCommand.cancel();
     
-    //m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
-    //m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
+    m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_photonVisionSubsystem.disableEmergencyReset();
     m_photonVisionSubsystem.setDriveCommandDisabled(false);
     m_photonVisionSubsystem.enableAlign(false,0,0,id);

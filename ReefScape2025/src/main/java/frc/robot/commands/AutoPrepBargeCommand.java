@@ -30,7 +30,6 @@ public class AutoPrepBargeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_swerveSubsystem.setDisableDrive(true);
     m_swerveSubsystem.drive(new Vector(0, 0), 0, 0, false, true);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.BARGE);
     if (m_clawSubsystem.getPositionMap().get(ClawPosition.DEFAULT) == 0){
@@ -45,7 +44,7 @@ public class AutoPrepBargeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveSubsystem.setDisableDrive(true);
+    //m_swerveSubsystem.setDisableDrive(true);
     if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_clawSubsystem.clawAtTargetPosition()){
       isFinished = true;
     }

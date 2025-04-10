@@ -114,9 +114,13 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    boolean emergencyReset;
    EstimatedRobotPose m3RobotPose;
    EstimatedRobotPose m4RobotPose;
+   boolean algaeCapturedTarget;
+   double tempCurrentDegree;
 
 
   public PhotonVisionSubsystem(SwerveSubsystem subsystem) {
+    algaeCapturedTarget = false;
+    tempCurrentDegree = 0;
     algaeAlignActive = false;
     targets = new ArrayList<>();
     estimates = new ArrayList<>();
@@ -205,6 +209,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     if (!enableAlign){
       setDriveCommandDisabled(false);
     }
+  }
+  public boolean getAlgaeHasTarget(){
+    return algaeCameraResult.hasTargets();
+  }
+  public void setAlgaeCapturedTarget(boolean value){
+    algaeCapturedTarget = value;
   }
 
   
@@ -390,17 +400,22 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     algaeCameraResult = algaeCamera.getLatestResult();
     m3TargetData = getData(m3CameraResult);
     m4TargetData = getData(m4CameraResult);
+    // if (algaeCameraResult.hasTargets()){
+    //   SmartDashboard.putNumber("yaw number", (algaeCameraResult.getBestTarget().getYaw() + 360) % 360);
+    // }
+    
     
     if (m3CameraResult.hasTargets()){
-    try{
-      m3RobotPose  = m3Pose.update(m3CameraResult).get();
-      //System.out.println("M3");
-      m_swerveSubsystem.updateVisionPoseEstimator(m3RobotPose.estimatedPose.toPose2d(),m3RobotPose.timestampSeconds);
-      SmartDashboard.putNumber("M3Pose2dx", m3RobotPose.estimatedPose.toPose2d().getX());
-      SmartDashboard.putNumber("M3Pose2dy", m3RobotPose.estimatedPose.toPose2d().getY());
-    }catch (Exception e) {
+      try{
+        m3RobotPose  = m3Pose.update(m3CameraResult).get();
+        //System.out.println("M3");
+        m_swerveSubsystem.updateVisionPoseEstimator(m3RobotPose.estimatedPose.toPose2d(),m3RobotPose.timestampSeconds);
+        SmartDashboard.putNumber("M3Pose2dx", m3RobotPose.estimatedPose.toPose2d().getX());
+        SmartDashboard.putNumber("M3Pose2dy", m3RobotPose.estimatedPose.toPose2d().getY());
+      }
+      catch (Exception e) {
       //System.out.println("PoseEstimator(M3 HAS NO TARGET) "+e);
-    }
+      }
     }
     if (m4CameraResult.hasTargets()){
       try{
@@ -416,11 +431,19 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     if (alignActive){
       align(xTarget,yTarget , id, true);
     }
+
+
     if (algaeAlignActive){
-      if (algaeCameraResult.hasTargets()){
+      if (algaeCapturedTarget){
         m_swerveSubsystem.setDriveCommandDisabled(true);
-        double yaw = algaeCameraResult.getBestTarget().getYaw();
-        m_swerveSubsystem.algaeGrabDrive(yaw, true);
+        double yaw = 0;
+        if (algaeCameraResult.hasTargets()){
+          yaw = (algaeCameraResult.getBestTarget().getYaw() + 360) % 360;
+        }
+        else{
+          yaw = 0;
+        }
+        m_swerveSubsystem.algaeGrabDrive(yaw, true, algaeCameraResult.hasTargets());
       }
       else{
         m_swerveSubsystem.setDriveCommandDisabled(false);

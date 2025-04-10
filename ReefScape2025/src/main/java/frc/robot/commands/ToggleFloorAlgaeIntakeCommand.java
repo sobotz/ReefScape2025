@@ -10,20 +10,25 @@ import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ToggleFloorAlgaeIntakeCommand extends Command {
   /** Creates a new ToggleFloorAlgaeIntakeCommand. */
   ElevatorSubsystem m_elevatorSubsystem;
+  PhotonVisionSubsystem m_photonVisionSubsystem;
   ClawSubsystem m_clawSubsystem;
   boolean isFinished;
   Timer timer;
-  public ToggleFloorAlgaeIntakeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
+  Timer timer2;
+  public ToggleFloorAlgaeIntakeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
+    m_photonVisionSubsystem = photonVisionSubsystem;
     isFinished = false;
     timer = new Timer();
+    timer2 = new Timer();
   }
 
   // Called when the command is initially scheduled.
@@ -31,9 +36,9 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
   public void initialize() {
     //System.out.println("on");
     isFinished = false;
-    
     m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
+    m_photonVisionSubsystem.setAlgaeAlign(true);
     m_clawSubsystem.setDriveMotor(1);
   }
 
@@ -43,21 +48,27 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
     // if (m_clawSubsystem.clawAtTargetPosition()){
     //   m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
     // }
+    if (m_photonVisionSubsystem.getAlgaeHasTarget()){
+      m_photonVisionSubsystem.setAlgaeCapturedTarget(true);
+    }
     if(m_clawSubsystem.getDriveMotorCurrent()>60){
       timer.start();
     }
-    if (timer.get()>0.3 && m_clawSubsystem.getDriveMotorCurrent()>59){
+    if (timer.get()>0.3 && m_clawSubsystem.getDriveMotorCurrent()>53){
+      m_photonVisionSubsystem.setDriveCommandDisabled(false);
+      m_photonVisionSubsystem.setAlgaeAlign(false);
       m_clawSubsystem.setHasAlgae(true);
       m_clawSubsystem.setHasCoral(false);
       m_clawSubsystem.setAlgaeRetainPosition();
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.ALGAETEMP);
-      if (m_elevatorSubsystem.elevatorAtTargetPosition() && timer.get()>0.4){
-        isFinished = true;
-      }
+      timer2.start();
     }
-    else if (timer.get()>0.6){
+    else if (timer.get()>0.5){
       timer.reset();
       timer.stop();
+    }
+    if (timer2.get()>0.3){
+      isFinished = true;
     }
     
   }
@@ -66,8 +77,12 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
   
   public void end(boolean interrupted) {
     //m_clawSubsystem.setHasAlgae(true)
+    m_photonVisionSubsystem.setAlgaeAlign(false);
+    m_photonVisionSubsystem.setDriveCommandDisabled(false);
     timer.reset();
     timer.stop();
+    timer2.reset();
+    timer2.stop();
     m_clawSubsystem.setDriveMotor(0);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);

@@ -105,6 +105,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private PIDController xController;
   private PIDController yController;
   private PIDController headingController;
+  PIDController algaeRotationController;
  
   
   /*Update requirements
@@ -200,6 +201,9 @@ public class SwerveSubsystem extends SubsystemBase {
     rotationController = new PIDController(0.006,0,0);
     rotationController.enableContinuousInput(0,360); 
     rotationController.setTolerance(0);
+    algaeRotationController = new PIDController(0.020,0,0);
+    algaeRotationController.enableContinuousInput(0,360); 
+    algaeRotationController.setTolerance(0);
 
     xTranslationController = new PIDController(0.7, 0, 0.0015);//, new TrapezoidProfile.Constraints(1,0.3));
     xTranslationController.setTolerance(0.0);
@@ -430,13 +434,26 @@ public class SwerveSubsystem extends SubsystemBase {
       drive(new Vector(0, 0),0,currentRobotDegree,false,false);//CHANGE
     }
   }
-  public void algaeGrabDrive(double angleOffset, boolean enabled){
+  public void algaeGrabDrive(double angleOffset, boolean enabled, boolean hasTarget){
     angleOffset = (angleOffset + 360) % 360;
-    Vector tv = new Vector(0.2,0,true);
-    double rotationalMagnitude = -rotationController.calculate(angleOffset,0);
-    drive(tv,rotationalMagnitude,angleOffset,false,false);
+    Vector tv = new Vector(0.15,180,true);
+    double setpoint = 0;
+    // if (angleOffset>0 && angleOffset < 180){
+    //   setpoint = 2;
+    // }
+    // else if (angleOffset > 180 && angleOffset < 359){
+    //   setpoint = 258;
+    // }
+    if (!hasTarget){
+      angleOffset = 0;
+      setpoint = 0;
+    }
+    double rotationalMagnitude =   -algaeRotationController.calculate(angleOffset,setpoint);
+    
+    
+    
     if (enabled){
-      drive(tv,rotationalMagnitude,angleOffset,false,false);
+      drive(tv, rotationalMagnitude, angleOffset,false,false);
     }
     else{
       drive(new Vector(0, 0),0,currentRobotDegree,false,false);
@@ -446,10 +463,10 @@ public class SwerveSubsystem extends SubsystemBase {
   public void drive(Vector strafeVector, double rotationalMagnitude,double degree, boolean relativeVelocityControlled, boolean disable){
     //System.out.println(strafeVector.getMagnitude());
     if (!disableDrive){
-      frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,false);
-      frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,false);
-      backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,false);
-      backRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,false);
+      frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable);
+      frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable);
+      backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable);
+      backRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable);
     }
     else{
       System.out.println("Drive disabled");
@@ -512,7 +529,7 @@ public class SwerveSubsystem extends SubsystemBase {
     yAtPositionCount = 0;
   }
   public boolean getAlgaeGrabAtTargetPosition(){
-    if ((Math.abs(xTranslationController.getPositionError())< 0.06) && Math.abs(yTranslationController.getPositionError())<0.06){
+    if ((Math.abs(xTranslationController.getPositionError()) < 0.155)){
       return true;
     }
     else{
@@ -599,6 +616,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
+    
     if (once){
       robotGyro.reset();
       robotDegreeOffset = ((((robotGyro.getYaw().getValueAsDouble()) % 360) + 360) % 360);

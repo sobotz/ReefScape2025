@@ -44,7 +44,7 @@ public class ProcessorCommand extends Command {
         isFinished = true;
       }
       else{
-        m_clawSubsystem.setDriveMotor(-0.5);
+        m_clawSubsystem.setDriveMotor(-0.3);
         timer.start();
       }
     }
@@ -56,7 +56,7 @@ public class ProcessorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.get()>0.6){
+    if (timer.get()>0.7){
       m_clawSubsystem.setHasAlgae(false);
       isFinished = true;
     }

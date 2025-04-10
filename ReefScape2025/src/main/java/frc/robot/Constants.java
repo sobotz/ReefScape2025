@@ -27,7 +27,7 @@ public final class Constants {
     public static final double HASALGAEDEFAULT = -360;
     public static final double HASALGAEDEFAULT2 = 0;
     public static final double INTAKE = -87;
-    public static final double FLOORALGAE = -220.0137;
+    public static final double FLOORALGAE = -218.0137;
     public static final double PROCESSOR = -270;
     public static final double PROCESSOR2 = 90;
     public static final double FACINGDOWNREEFALGAE = -240;
@@ -93,7 +93,7 @@ public final class Constants {
     public static final double DEFAULT = 6;//6
     public static final double ALGAETEMP = 12;
     public static final double INTAKE = 16.3;
-    public static final double FLOORALGAE = 7.3;
+    public static final double FLOORALGAE = 6.4;
     public static final double PROCESSOR = 6;
     public static final double CLIMB = 0.5;
     public static final double LOWESTALGAE = 21.6;

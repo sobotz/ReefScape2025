@@ -30,7 +30,7 @@ public class GrabAlgaeCommand extends Command {
   boolean isAuto;
   
   
-  public GrabAlgaeCommand( ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,PhotonVisionSubsystem photonVisionSubsystem, ElevatorPosition elevatorPosition, ClawPosition clawPosition, int id, boolean isAuto) {
+  public GrabAlgaeCommand( ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, ElevatorPosition elevatorPosition, ClawPosition clawPosition, int id, boolean isAuto) {
     // Use addRequirements() here to declare subsystem dependencies.
     
     m_elevatorSubsystem = elevatorSubsystem;
@@ -62,11 +62,14 @@ public class GrabAlgaeCommand extends Command {
       if (m_clawSubsystem.getReefCoralPlacementButton()){
         if (m_elevatorSubsystem.getPositionMap().get(m_elevatorSubsystem.getAutoPlacePosition()) > m_elevatorSubsystem.getPositionMap().get(elevatorPosition)){
           clawPosition = ClawPosition.FACINGDOWNREEFALGAE;
-       }
+        }
         else{
           clawPosition = ClawPosition.FACINGUPREEFALGAE;
           if (elevatorPosition == ElevatorPosition.HIGHERALGAE){
             elevatorPosition = ElevatorPosition.MIDALGAE;
+          }
+          else if (elevatorPosition == ElevatorPosition.LOWERALGAE){
+            elevatorPosition = ElevatorPosition.LOWESTALGAE;
           }
         }
       }
@@ -79,12 +82,12 @@ public class GrabAlgaeCommand extends Command {
         }
         clawPosition = ClawPosition.REVERSEFACINGUPALGAE;
       }
-        
-        
-        
       m_clawSubsystem.setClawTargetPosition(clawPosition);
       m_clawSubsystem.setDriveMotor(1);
       timer.start();
+    }
+    else if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L1){
+      m_photonVisionSubsystem.enableAlign(true, 0, 0.38, id);
     }
     else{
       isFinished = true;
@@ -99,26 +102,32 @@ public class GrabAlgaeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_photonVisionSubsystem.getAtTargetPosition()){
-      m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
-    }
-    if (m_clawSubsystem.getDriveMotorCurrent()>59){
-      timer2.start();
-    }
-    if (timer.get()>3){
-      isFinished = true;
-    }
-    if (timer2.get()>0.35 && m_clawSubsystem.getDriveMotorCurrent()>59){
-      m_clawSubsystem.setHasAlgae(true);
-      if (!m_clawSubsystem.getReefCoralPlacementButton()){
-        m_clawSubsystem.singularReefAlgaeDefault();
+    if (m_clawSubsystem.getReefAlgaeGrabButton()){
+      if (m_photonVisionSubsystem.getAlgaeGrabAtTargetPosition()){
+        m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
       }
-      
-      isFinished = true;
+      if (m_clawSubsystem.getDriveMotorCurrent()>59){
+        timer2.start();
+      }
+      if (timer.get()>3){
+        isFinished = true;
+      }
+      if (timer2.get()>0.35 && m_clawSubsystem.getDriveMotorCurrent()>59){
+        m_clawSubsystem.setHasAlgae(true);
+        if (!m_clawSubsystem.getReefCoralPlacementButton()){
+          m_clawSubsystem.singularReefAlgaeDefault();
+        }
+        isFinished = true;
+      }
+      else if (timer2.get()>0.5){
+        timer2.reset();
+        timer2.stop();
+      }
     }
-    else if (timer2.get()>0.5){
-      timer2.reset();
-      timer2.stop();
+    else if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L1){
+      if (m_photonVisionSubsystem.getAtTargetPosition()){
+        isFinished = true;
+      }
     }
   }
 
@@ -128,7 +137,6 @@ public class GrabAlgaeCommand extends Command {
     if (!m_clawSubsystem.getReefCoralPlacementButton()){
       m_clawSubsystem.singularReefAlgaeDefault();
     }
-    
     m_clawSubsystem.setDriveMotor(0);
     m_clawSubsystem.setAlgaeRetainPosition();
     timer.reset();
@@ -137,9 +145,6 @@ public class GrabAlgaeCommand extends Command {
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     }
-    
-    
-    
   }
 
   // Returns true when the command should end.
