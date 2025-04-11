@@ -86,7 +86,7 @@ public class ReefInteractionSequentialHolderCommand extends Command {
     // if (m_photonVisionSubsystem.getEmergencyReset()){
     //   isFinished = true;
     // }
-    
+    // (print: cassidy likes feet)
   }
 
   // Called once the command ends or is interrupted.
@@ -95,16 +95,18 @@ public class ReefInteractionSequentialHolderCommand extends Command {
     m_clawSubsystem.setFinishReefSequence(false);
     
     m_interactionCommand.cancel();
+    if (!isAuto){
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
+      m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    }
     
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_photonVisionSubsystem.disableEmergencyReset();
     m_photonVisionSubsystem.setDriveCommandDisabled(false);
     m_photonVisionSubsystem.enableAlign(false,0,0,id);
     //m_photonVisionSubsystem.align(0,0,0,false);
   }
 
-  // Returns true when the command should end.
+  // Returns true when the command should end. whats a Freakburger?
   @Override
   public boolean isFinished() {
     return isFinished;

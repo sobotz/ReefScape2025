@@ -351,6 +351,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   //     m_swerveSubsystem.reefControlledDrive(0, 0, 0, 0, 0, false);
   //   }
   // }
+  public boolean getStealAlgaeAtTargetPosition(){
+    return m_swerveSubsystem.getStealAlgaeAtTargetPosition();
+  }
   public void resetCount(){
     m_swerveSubsystem.resetCount();
   }

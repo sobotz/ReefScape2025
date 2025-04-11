@@ -34,6 +34,7 @@ public class StealReefAlgaeCommand extends Command {
     timer = new Timer();
     timer2 = new Timer();
     isFinished = false;
+    this.id = id;
     if (id % 2 == 1){
       elevatorPosition = ElevatorPosition.LOWESTALGAE;
     }
@@ -48,6 +49,7 @@ public class StealReefAlgaeCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
+    grabbedAlgae = false;
     if (!m_photonVisionSubsystem.getIsRedAlliance()){
       if (id == 21){
         id = 10;
@@ -68,8 +70,9 @@ public class StealReefAlgaeCommand extends Command {
         id = 9;
       }
     }
+    
     m_photonVisionSubsystem.resetCount();
-    m_photonVisionSubsystem.enableAlign(true, 0, 0.38, id);  
+    m_photonVisionSubsystem.enableAlign(true, 0, 0.35, id);  
     m_clawSubsystem.setClawTargetPosition(ClawPosition.REVERSEFACINGUPALGAE);
     m_clawSubsystem.setDriveMotor(1);
   }
@@ -77,7 +80,8 @@ public class StealReefAlgaeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_photonVisionSubsystem.getAlgaeGrabAtTargetPosition()){
+    
+    if (m_photonVisionSubsystem.getStealAlgaeAtTargetPosition()){
       m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
     }
     if (m_clawSubsystem.getDriveMotorCurrent()>59){
@@ -85,12 +89,12 @@ public class StealReefAlgaeCommand extends Command {
     }
     if (timer.get()>0.3 && m_clawSubsystem.getDriveMotorCurrent()>59){
       grabbedAlgae = true;
-      m_photonVisionSubsystem.enableAlign(true, 0, 0.42, id);
       m_clawSubsystem.setHasAlgae(true);
       m_clawSubsystem.singularReefAlgaeDefault();
+      m_photonVisionSubsystem.enableAlign(true, 0, 0.42, id);
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
-      m_clawSubsystem.setAlgaeRetainPosition();
+      
     }
     else if (timer.get()>0.4){
       timer.reset();
@@ -99,13 +103,24 @@ public class StealReefAlgaeCommand extends Command {
     if (grabbedAlgae && m_photonVisionSubsystem.getAtTargetPosition()){
       isFinished = true;
     }
+    if (m_photonVisionSubsystem.getAtTargetPosition()){
+      timer2.start();
+    }
+    if (timer2.get()>3){
+      isFinished = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    timer.reset();
+    timer.stop();
+    timer2.reset();
+    timer2.stop();
     m_clawSubsystem.singularReefAlgaeDefault();
     m_clawSubsystem.setDriveMotor(0);
+    m_clawSubsystem.setAlgaeRetainPosition();
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_photonVisionSubsystem.enableAlign(false,0,0,0);

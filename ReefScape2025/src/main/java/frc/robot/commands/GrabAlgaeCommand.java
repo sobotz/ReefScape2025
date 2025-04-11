@@ -86,9 +86,9 @@ public class GrabAlgaeCommand extends Command {
       m_clawSubsystem.setDriveMotor(1);
       timer.start();
     }
-    else if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L1){
-      m_photonVisionSubsystem.enableAlign(true, 0, 0.38, id);
-    }
+    // else if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L1){
+    //   m_photonVisionSubsystem.enableAlign(true, 0, 0.38, id);
+    // }
     else{
       isFinished = true;
     }

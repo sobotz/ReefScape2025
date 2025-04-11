@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if (once){
-      new IntakeStartUpCommand(m_robotContainer.getClawSubsystem()).schedule();
+      new IntakeStartUpCommand(m_robotContainer.m_elevatorSubsystem, m_robotContainer.getClawSubsystem()).schedule();
       once = false;
     }
     m_teleopCommand = m_robotContainer.getTeleopCommand();

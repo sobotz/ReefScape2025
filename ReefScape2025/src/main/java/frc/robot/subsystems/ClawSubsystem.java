@@ -109,7 +109,7 @@ public class ClawSubsystem extends SubsystemBase {
     autoPlaceClawTargetPosition = ClawPosition.L4;
     clawPIDCalculation = 0;
     atTarget = false;
-    hasCoral = false;
+    hasCoral = true;
     hasAlgae = false;
     driveMotorIsControlled = false;
     algaeRetainPosition = 0;
@@ -206,10 +206,10 @@ public class ClawSubsystem extends SubsystemBase {
     if (value == 0){
       driveMotorIsControlled = false;
       if (hasCoral && !hasAlgae){
-        
         intakeTimer.start();
         clawDriveMotor.set(0.25);
       }
+
     }
     else{
       driveMotorIsControlled = true;
@@ -304,6 +304,7 @@ public class ClawSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("CORAL", reefCoralPlacementButton);
     SmartDashboard.putBoolean("ALGAE", reefAlgaeGrabButton);
     SmartDashboard.putBoolean("ClawAtPosition",clawAtTargetPosition());
+    SmartDashboard.putBoolean("HasCoral", hasCoral);
     //System.out.println(clawController.getError());
     //System.out.println(clawPIDCalculation);
     //System.out.println((-1 * clawSensor.getAbsolutePosition().getValueAsDouble()* 360) % 360);
@@ -332,11 +333,12 @@ public class ClawSubsystem extends SubsystemBase {
         clawPIDCalculation = clawPIDCalculation * 1.02;
       }*/
     //System.out.println(clawPIDCalculation);
+
     if (!resetClaw){
       wristMotor.set(clawPIDCalculation);
     }
     if ((hasAlgae && !driveMotorIsControlled) && !hasCoral){
-      //System.out.println("claw setpoint activated");+
+      System.out.println("claw setpoint activated");
       clawDriveMotor.set(retainAlgaeController.calculate(getClawDriveMotorPosition(),algaeRetainPosition));
     }
   }

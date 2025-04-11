@@ -529,7 +529,15 @@ public class SwerveSubsystem extends SubsystemBase {
     yAtPositionCount = 0;
   }
   public boolean getAlgaeGrabAtTargetPosition(){
-    if ((Math.abs(xTranslationController.getPositionError()) < 0.155)){
+    if ((Math.abs(xTranslationController.getError()) < 0.155)){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  public boolean getStealAlgaeAtTargetPosition(){
+    if (Math.abs(xTranslationController.getError())<0.05){
       return true;
     }
     else{
