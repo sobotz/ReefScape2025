@@ -27,8 +27,12 @@ public class IntakeStartUpCommand extends InstantCommand {
   public void initialize() {
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+    m_clawSubsystem.enableStartUp();
     if (!m_clawSubsystem.getHasAlgae() && m_clawSubsystem.getProximityTripped()){
       m_clawSubsystem.setHasCoral(true);
+    }
+    else{
+      m_clawSubsystem.setHasCoral(false);
     }
     m_clawSubsystem.setDriveMotor(0);
     

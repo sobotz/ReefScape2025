@@ -309,7 +309,7 @@ public class RobotContainer {
     m_autoSetStationIntakeCommand = new AutoSetStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     m_autoL4Command = new AutoL4Command(m_elevatorSubsystem, m_clawSubsystem);
     m_autoCoralEjectCommand = new AutoCoralEjectCommand(m_elevatorSubsystem, m_clawSubsystem);
-    m_autoWaitL4Command = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1.2);
+    m_autoWaitL4Command = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1.42);
     m_autoWaitL4Command2 = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1);
     m_autoIntakeCommand = new AutoIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     
@@ -319,7 +319,7 @@ public class RobotContainer {
     resetElevatorCommand2 = new ResetElevatorConfigCommand(m_elevatorSubsystem);
     autoPrepBargeCommand = new AutoPrepBargeCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem);
     autoBargeCommand = new AutoBargeCommand(m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem);
-    //algaeAuto = new AlgaeAuto(autoFactory,m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_autoHReefCommand, m_autoIReefCommand, m_autoFReefCommand);
+    algaeAuto = new AlgaeAuto(autoFactory,m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_autoHReefCommand, m_autoIReefCommand, m_autoFReefCommand);
     testAlgaeAlign = new TestAlgaeAlignCommand(m_elevatorSubsystem, m_clawSubsystem, m_PhotonVisionSubsytem);
     //algae3Auto = new Algae3Auto(autoFactory, m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_autoHReefCommand, m_autoIReefCommand, m_autoFReefCommand);
     // NamedCommands.registerCommand("m_autoIntakeCommand",m_autoIntakeCommand);
@@ -580,7 +580,7 @@ public class RobotContainer {
     //return new PathPlannerAuto("New Auto");
     //return autoPath.andThen(new EndAutoCommand(m_swerveSubsystem));
     //return autoChooser.getSelected().andThen(new EndAutoCommand(m_swerveSubsystem));
-    return testAuto.andThen(new EndAutoCommand(m_swerveSubsystem));
+    return algaeAuto.andThen(new EndAutoCommand(m_swerveSubsystem));
   }
   public PhotonVisionSubsystem getPhotonSubsystem(){
     return m_PhotonVisionSubsytem;

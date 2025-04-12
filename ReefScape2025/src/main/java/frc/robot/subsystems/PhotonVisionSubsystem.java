@@ -354,6 +354,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public boolean getStealAlgaeAtTargetPosition(){
     return m_swerveSubsystem.getStealAlgaeAtTargetPosition();
   }
+  public boolean getSingularStealAlgaeAtTargetPosition(){
+    return m_swerveSubsystem.getSingularStealAlgaeAtTargetPosition();
+  }
   public void resetCount(){
     m_swerveSubsystem.resetCount();
   }

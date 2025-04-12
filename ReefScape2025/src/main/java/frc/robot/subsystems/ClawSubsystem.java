@@ -56,9 +56,13 @@ public class ClawSubsystem extends SubsystemBase {
   boolean finishReefSequence;
   boolean intakeFinishMode;
   boolean resetClaw;
+  boolean startUp;
+  Timer startUpTimer;
 
 
   public ClawSubsystem() {
+    startUp = false;
+    startUpTimer = new Timer();
     resetClaw = false;
     finishReefSequence = false;
     intakeTimer = new Timer();
@@ -201,19 +205,29 @@ public class ClawSubsystem extends SubsystemBase {
   public void setAutoPlaceClawTargetPosition(ClawPosition position){
     autoPlaceClawTargetPosition = position;
   }
+  public void enableStartUp(){
+    startUp = true;
+    startUpTimer.start();
+  }
   public void setDriveMotor(double value){
-    clawDriveMotor.set(value);
-    if (value == 0){
-      driveMotorIsControlled = false;
-      if (hasCoral && !hasAlgae){
-        intakeTimer.start();
-        clawDriveMotor.set(0.25);
-      }
+    if (!startUp){
+      clawDriveMotor.set(value);
+      if (value == 0){
+        driveMotorIsControlled = false;
+        if (hasCoral && !hasAlgae){
+          intakeTimer.start();
+          clawDriveMotor.set(0.25);
+        }
 
+      }
+      else{
+        driveMotorIsControlled = true;
+      }
     }
     else{
-      driveMotorIsControlled = true;
+      clawDriveMotor.set(1);
     }
+    
   }
   public double getClawDriveMotorPosition(){
     return  clawDriveMotor.getPosition().getValueAsDouble();
@@ -254,6 +268,7 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public boolean getProximityTripped(){
+    proxTripped = !proxSensor.get();
     return proxTripped;
   }
   public double getDriveMotorCurrent(){
@@ -275,6 +290,14 @@ public class ClawSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (startUp){
+      if (startUpTimer.get()>1){
+        startUp = false;
+        startUpTimer.reset();
+        startUpTimer.stop();
+        setDriveMotor(0);
+      }
+    }
     driveMotorCurrent = clawDriveMotor.getTorqueCurrent().getValueAsDouble();
     proxTripped = !proxSensor.get();
     if (once){
@@ -286,6 +309,9 @@ public class ClawSubsystem extends SubsystemBase {
       intakeTimer.reset();
       intakeTimer.stop();
       clawDriveMotor.set(0);
+    }
+    if (startUp){
+
     }
     
     //SmartDashboard.putBoolean("clawProx", proxTripped);

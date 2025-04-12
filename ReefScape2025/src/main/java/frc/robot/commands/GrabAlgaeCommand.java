@@ -103,8 +103,15 @@ public class GrabAlgaeCommand extends Command {
   @Override
   public void execute() {
     if (m_clawSubsystem.getReefAlgaeGrabButton()){
-      if (m_photonVisionSubsystem.getAlgaeGrabAtTargetPosition()){
-        m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
+      if (m_clawSubsystem.getReefCoralPlacementButton()){
+        if (m_photonVisionSubsystem.getAlgaeGrabAtTargetPosition()){
+          m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
+        }
+      }
+      else{
+        if (m_photonVisionSubsystem.getSingularStealAlgaeAtTargetPosition()){
+          m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
+        }
       }
       if (m_clawSubsystem.getDriveMotorCurrent()>59){
         timer2.start();

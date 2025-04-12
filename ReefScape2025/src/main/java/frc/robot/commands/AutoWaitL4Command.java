@@ -19,6 +19,7 @@ public class AutoWaitL4Command extends Command {
   Timer timer;
   boolean isFinished;
   double time;
+  double timeStop;
   public AutoWaitL4Command(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,double time) {
     // Use addRequirements() here to declare subsystem dependencies.
     isFinished = false;
@@ -26,11 +27,13 @@ public class AutoWaitL4Command extends Command {
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
     this.time = time;
+    timeStop = 0;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timeStop = Timer.getFPGATimestamp();
     isFinished = false;
     timer.start();
   }
@@ -38,12 +41,10 @@ public class AutoWaitL4Command extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.get()>time){
+    if (Timer.getFPGATimestamp()> (timeStop + time)){
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.L4);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.L4);
-      if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_clawSubsystem.clawAtTargetPosition()){
-        isFinished = true;
-      }
+      isFinished = true;
     }
   }
 

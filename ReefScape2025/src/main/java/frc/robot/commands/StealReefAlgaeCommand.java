@@ -81,7 +81,7 @@ public class StealReefAlgaeCommand extends Command {
   @Override
   public void execute() {
     
-    if (m_photonVisionSubsystem.getStealAlgaeAtTargetPosition()){
+    if (m_photonVisionSubsystem.getSingularStealAlgaeAtTargetPosition()){
       m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
     }
     if (m_clawSubsystem.getDriveMotorCurrent()>59){
@@ -91,7 +91,7 @@ public class StealReefAlgaeCommand extends Command {
       grabbedAlgae = true;
       m_clawSubsystem.setHasAlgae(true);
       m_clawSubsystem.singularReefAlgaeDefault();
-      m_photonVisionSubsystem.enableAlign(true, 0, 0.42, id);
+      m_photonVisionSubsystem.enableAlign(true, 0, 0.45, id);
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
       
