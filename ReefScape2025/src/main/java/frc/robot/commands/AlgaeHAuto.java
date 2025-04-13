@@ -8,29 +8,28 @@ import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AlgaeAuto extends SequentialCommandGroup {
+public class AlgaeHAuto extends SequentialCommandGroup {
   /** Creates a new AlgaeAuto. */
   
-  public AlgaeAuto(
+  public AlgaeHAuto(
     AutoFactory autoFactory,
     SwerveSubsystem swerveSubsystem,
     ElevatorSubsystem elevatorSubsystem,
     ClawSubsystem clawSubsystem,
-    ReefInteractionSequentialHolderCommand reefH, 
-    ReefInteractionSequentialHolderCommand reefI, 
-    ReefInteractionSequentialHolderCommand reefF
+    PhotonVisionSubsystem photonVisionSubsystem
     ) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       autoFactory.resetOdometry("Start-Hoffset"),
       autoFactory.trajectoryCmd("Start-Hoffset"),
-      reefH,
+      new ReefInteractionSequentialHolderCommand(swerveSubsystem, elevatorSubsystem, clawSubsystem, photonVisionSubsystem, 0.173, 0.435, 10, true),
       autoFactory.trajectoryCmd("Algae21-Barge1"),
       new ResetElevatorConfigCommand(elevatorSubsystem),
       new AutoPrepBargeCommand(swerveSubsystem, elevatorSubsystem, clawSubsystem),
@@ -38,7 +37,7 @@ public class AlgaeAuto extends SequentialCommandGroup {
       autoFactory.trajectoryCmd("Barge1-Algae20"),
       new ResetElevatorConfigCommand(elevatorSubsystem),
       new ReefCoralPlacementButton(clawSubsystem),
-      reefI,
+      new ReefInteractionSequentialHolderCommand(swerveSubsystem, elevatorSubsystem, clawSubsystem, photonVisionSubsystem, -0.162, 0.435, 11, true),
       autoFactory.trajectoryCmd("Algae20-Barge1"),
       new ResetElevatorConfigCommand(elevatorSubsystem),
       new AutoPrepBargeCommand(swerveSubsystem, elevatorSubsystem, clawSubsystem),
