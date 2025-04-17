@@ -31,11 +31,13 @@ public class ClimbSubsystem extends SubsystemBase {
   boolean bufferPrep;
   SwerveSubsystem m_swerveSubsystem;
   CurrentLimitsConfigs limitConfigs;
+  Timer timer2;
   
   public ClimbSubsystem(SwerveSubsystem swerveSubsystem, ServoHub servoHub) {
+    timer2 = new Timer();
     limitConfigs = new CurrentLimitsConfigs();
-    limitConfigs.StatorCurrentLimit = 70;
-    limitConfigs.StatorCurrentLimitEnable = true;
+    limitConfigs.StatorCurrentLimit = 120;
+    limitConfigs.StatorCurrentLimitEnable = false;
     m_swerveSubsystem = swerveSubsystem;
     bufferPrep = false;
     timer = new Timer();
@@ -45,7 +47,7 @@ public class ClimbSubsystem extends SubsystemBase {
     driveMotor.getConfigurator().apply(limitConfigs);
     m_servoHub = servoHub;
     climbServo = servoHub.getServoChannel(ChannelId.kChannelId1);
-    climbController = new PIDController(0.01, 0, 0);
+    climbController = new PIDController(0.03, 0, 0);
     climbController.setTolerance(.001);
     toggleClimb = false;
     targetPosition = 0;
@@ -77,10 +79,12 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public void climb(){
     //m_swerveSubsystem.setDriveCommandDisabled(true);
+    timer2.reset();
+    timer2.start();
     bufferPrep = false;
     testServo = true;
     //System.out.println("working");
-    targetPosition = 20;
+    targetPosition = 0;
   }
   public void setDriveMotor(double value){
     driveMotor.set(value);
@@ -88,24 +92,39 @@ public class ClimbSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     if (timer.get()>1){
-      targetPosition = -83;
+      targetPosition = -100;
       bufferPrep = true;
     }
     if (toggleClimb && bufferPrep){
-      if (driveMotor.getPosition().getValueAsDouble()>targetPosition + 1){
-        driveMotor.set(-1);
+      double calc = climbController.calculate(driveMotor.getPosition().getValueAsDouble(),targetPosition);
+      if (calc<-0.25){
+        calc = -0.25;
       }
-      else if (driveMotor.getPosition().getValueAsDouble()<targetPosition-2){
-        driveMotor.set(0.5);
+      else if (calc>0.25){
+        calc = 0.25;
       }
-      else{
-        driveMotor.set(0);
-      }
+      driveMotor.set(calc);
+      // if (driveMotor.getPosition().getValueAsDouble()>targetPosition + 1){
+      //   driveMotor.set(-1);
+      // }
+      // else if (driveMotor.getPosition().getValueAsDouble()<targetPosition-2){
+      //   driveMotor.set(0.5);
+      // }
+      // else{
+      //   driveMotor.set(0);
+      // }
     
     }
     else if (!toggleClimb){
+      //double calc = climbController.calculate(driveMotor.getPosition().getValueAsDouble(),targetPosition);
+      //driveMotor.set(calc);
       if (driveMotor.getPosition().getValueAsDouble()<targetPosition - 0.3){
-        driveMotor.set(1);
+        if (timer2.get()<1.5){
+          driveMotor.set(0.2);
+        }
+        else{
+          driveMotor.set(0.2);
+        }    
       }
       else{
         driveMotor.set(0);

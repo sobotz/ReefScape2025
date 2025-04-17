@@ -67,8 +67,7 @@ public class CoralPlacementCommand extends Command {
       //   m_clawSubsystem.setAutoPlaceClawTargetPosition(ClawPosition.L4);
       // }
       m_elevatorSubsystem.setElevatorTargetPosition(m_elevatorSubsystem.getAutoPlacePosition());
-      if (!(m_clawSubsystem.getAutoPlacePosition()== ClawPosition.L4)){
-        
+      if (!(m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L4)){
         m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());
       }
       //m_clawSubsystem.setClawTargetPosition(m_clawSubsystem.getAutoPlacePosition());

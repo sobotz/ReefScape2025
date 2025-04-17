@@ -6,20 +6,21 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TestServoCommand extends Command {
   /** Creates a new TestServoCommand. */
-  ClimbSubsystem m_climbSubsystem;
-  public TestServoCommand(ClimbSubsystem climbSubsystem) {
+  IntakeSubsystem intakeSubsystem;
+  public TestServoCommand(IntakeSubsystem intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_climbSubsystem = climbSubsystem;
+    this.intakeSubsystem = intakeSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_climbSubsystem.testServo(true);
+    intakeSubsystem.setIntakeServo(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -29,7 +30,7 @@ public class TestServoCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climbSubsystem.testServo(false);
+    intakeSubsystem.setIntakeServo(false);
   }
 
   // Returns true when the command should end.

@@ -155,9 +155,9 @@ public class ClawSubsystem extends SubsystemBase {
     return clawTargetPosition;
   }
   public boolean clawAtTargetPosition(){
-    if ((Math.abs(clawController.getError())<0.27) && (Math.abs(clawPIDCalculation)<0.09)){
+    if ((Math.abs(clawController.getError())<0.27) && (Math.abs(clawPIDCalculation)<0.08)){
       //System.out.println("inrange");
-      if (Math.abs(previousClawError - clawController.getError()) <0.09){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+      if (Math.abs(previousClawError - clawController.getError()) <0.08){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
         atPositionCount += 1;
       }  
       else{

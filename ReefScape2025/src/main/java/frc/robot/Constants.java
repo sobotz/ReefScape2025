@@ -16,8 +16,8 @@ public final class Constants {
   public static class SwerveConstants{
     public static final double frontLeftDegreeOffset = 128.1875;
     public static final double frontRightDegreeOffset = 275.8828125;
-    public static final double backLeftDegreeOffset = 118.619140625;
-    public static final double backRightDegreeOffset = 52.759765625;
+    public static final double backLeftDegreeOffset = 117.619140625;
+    public static final double backRightDegreeOffset = 51.759765625;
     public static final double wheelRadius = 0.0508;//in meters;
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
@@ -92,7 +92,7 @@ public final class Constants {
 
     public static final double DEFAULT = 6;//6
     public static final double ALGAETEMP = 12;
-    public static final double INTAKE = 16.5;
+    public static final double INTAKE = 16.7;
     public static final double FLOORALGAE = 6.4;
     public static final double PROCESSOR = 6;
     public static final double CLIMB = 0.5;

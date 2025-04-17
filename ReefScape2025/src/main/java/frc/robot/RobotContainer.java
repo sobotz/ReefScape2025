@@ -320,7 +320,7 @@ public class RobotContainer {
     m_autoWaitL4Command2 = new AutoWaitL4Command(m_elevatorSubsystem, m_clawSubsystem, 1);
     m_autoIntakeCommand = new AutoIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
     
-    m_testServoCommand = new TestServoCommand(m_climbSubsystem);
+    m_testServoCommand = new TestServoCommand(m_intakeSubsystem);
     m_TestServoIntakeCommand = new TestServoIntakeCommand(m_intakeSubsystem);
     resetElevatorCommand = new ResetElevatorConfigCommand(m_elevatorSubsystem);
     resetElevatorCommand2 = new ResetElevatorConfigCommand(m_elevatorSubsystem);
@@ -524,7 +524,6 @@ public class RobotContainer {
     JoystickButton stealAlgae22RightButton = new JoystickButton(A2,28);
     stealAlgae22RightButton.toggleOnTrue(m_id22StealAlgaeCommand);
 
-    
     //ACTION BUTTONS
     JoystickButton toggleIntakeButton = new JoystickButton(A1, 7);
     toggleIntakeButton.toggleOnTrue(m_toggleStationIntakeCommand);
@@ -548,10 +547,12 @@ public class RobotContainer {
     driveButton.whileTrue(m_clawDriveReverseCommand);
     JoystickButton defaultButton = new JoystickButton(testOperator,8);
     defaultButton.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT));
-    // JoystickButton testL1Button = new JoystickButton(testOperator, 1);
-    // testL1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1));
-    JoystickButton testAlgaeAlignButton = new JoystickButton(testOperator,1);
-    testAlgaeAlignButton.toggleOnTrue(testAlgaeAlign);
+    JoystickButton testL1Button = new JoystickButton(testOperator, 1);
+    testL1Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L1, ClawPosition.L1));
+    // JoystickButton testAlgaeAlignButton = new JoystickButton(testOperator,1);
+    // testAlgaeAlignButton.toggleOnTrue(testAlgaeAlign);
+    // JoystickButton testIntakeServo = new JoystickButton(testOperator, 1);
+    // testIntakeServo.toggleOnTrue(m_testServoCommand);
 
     JoystickButton testL2Button = new JoystickButton(testOperator,2);
     testL2Button.onTrue(new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.L2, ClawPosition.L2));

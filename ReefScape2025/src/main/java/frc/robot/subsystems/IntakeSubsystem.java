@@ -22,8 +22,10 @@ public class IntakeSubsystem extends SubsystemBase {
   ServoHub m_servoHub;
   ServoChannel intakeServo;
   boolean enableServo;
+  Timer timer;
 
   public IntakeSubsystem(ServoHub servoHub) {
+    timer = new Timer();
     enableServo = false;
     m_servoHub = servoHub;
     intakeServo = servoHub.getServoChannel(ChannelId.kChannelId0);
@@ -64,12 +66,15 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     if (enableServo){
-      intakeServo.setEnabled(true);
-      intakeServo.setPowered(true);
-      intakeServo.setPulseWidth(1900);
+      timer.start();
+      if (timer.get()>3.5){
+        intakeServo.setEnabled(true);
+        intakeServo.setPowered(true);
+        intakeServo.setPulseWidth(1900);
+      }
+      
     }
     else{
-      
       intakeServo.setEnabled(true);
       intakeServo.setPowered(true);
       intakeServo.setPulseWidth(1300);
