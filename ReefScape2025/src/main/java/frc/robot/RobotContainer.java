@@ -63,7 +63,7 @@ import frc.robot.commands.TestClimbDriveMotorReverse;
 import frc.robot.commands.TestServoCommand;
 import frc.robot.commands.TestServoIntakeCommand;
 import frc.robot.commands.ToggleClimbCommand;
-import frc.robot.commands.ToggleFloorAlgaeIntakeCommand;
+import frc.robot.commands.ToggleAutoFloorAlgaeIntakeCommand;
 import frc.robot.commands.ToggleStationIntakeCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -103,7 +103,7 @@ public class RobotContainer {
 
 
   ToggleStationIntakeCommand m_toggleStationIntakeCommand;
-  ToggleFloorAlgaeIntakeCommand m_toggleFloorAlgaeIntakeCommand;
+  ToggleAutoFloorAlgaeIntakeCommand m_toggleFloorAlgaeIntakeCommand;
 
   GrabAlgaeCommand m_grabHigherAlgaeCommand;
 
@@ -241,7 +241,7 @@ public class RobotContainer {
     m_ResetServoCommand = new ResetServoCommand(m_intakeSubsystem);
 
     m_toggleStationIntakeCommand = new ToggleStationIntakeCommand(m_elevatorSubsystem, m_clawSubsystem, m_intakeSubsystem);
-    m_toggleFloorAlgaeIntakeCommand = new ToggleFloorAlgaeIntakeCommand(m_elevatorSubsystem, m_clawSubsystem,m_photonVisionSubsystem);
+    m_toggleFloorAlgaeIntakeCommand = new ToggleAutoFloorAlgaeIntakeCommand(m_elevatorSubsystem, m_clawSubsystem,m_photonVisionSubsystem);
     m_toggleClimbCommand = new ToggleClimbCommand(m_elevatorSubsystem, m_intakeSubsystem, m_climbSubsystem);
 
     m_setActuatorDefaultCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.DEFAULT, ClawPosition.DEFAULT);

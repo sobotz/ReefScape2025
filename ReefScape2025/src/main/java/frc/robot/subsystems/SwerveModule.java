@@ -56,7 +56,7 @@ public class SwerveModule {
         //CANcoder offset to have 0 degrees align with the robot
         this.degreeOffset = degreeOffset;
     }
-    public void drive(Vector strafeVector, double rotationalMagnitude, double currentRobotDegree, boolean relativeVelocityControl,boolean disable){
+    public void drive(Vector strafeVector, double rotationalMagnitude, double currentRobotDegree, boolean relativeVelocityControl,boolean disable,boolean climbMode){
         this.currentRobotDegree = currentRobotDegree;
         //setting and creating the strafe vector and rotational vector
         //System.out.println(relativeVelocityControl);
@@ -104,19 +104,22 @@ public class SwerveModule {
             inverted = !inverted;
         }
         //PID controller
-        if((Math.abs(driveVector.getMagnitude()) < 0.001)&&(Math.abs(rotationalMagnitude)<0.001)){
+        
+        if (disable) {
             turnMotor.set(0);
             driveMotor.set(0);
             
-
         }
-        else if (disable) {
-            System.out.println("DISABLEDDDDD");
+        else if (climbMode){
+            System.out.println("WORKING");
+            turnMotor.set(-degreeController.calculate(currentModuleDegree,0));
+            driveMotor.set(0);
+        }
+        else if((Math.abs(driveVector.getMagnitude()) < 0.001)&&(Math.abs(rotationalMagnitude)<0.001)){
             turnMotor.set(0);
             driveMotor.set(0);
-            
-        }else{
-            
+        }
+        else{
             turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
             driveMotor.set(targetModuleMagnitude);
         }

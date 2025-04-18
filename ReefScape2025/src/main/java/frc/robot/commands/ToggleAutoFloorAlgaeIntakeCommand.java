@@ -13,7 +13,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ToggleFloorAlgaeIntakeCommand extends Command {
+public class ToggleAutoFloorAlgaeIntakeCommand extends Command {
   /** Creates a new ToggleFloorAlgaeIntakeCommand. */
   ElevatorSubsystem m_elevatorSubsystem;
   PhotonVisionSubsystem m_photonVisionSubsystem;
@@ -21,7 +21,7 @@ public class ToggleFloorAlgaeIntakeCommand extends Command {
   boolean isFinished;
   Timer timer;
   Timer timer2;
-  public ToggleFloorAlgaeIntakeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem) {
+  public ToggleAutoFloorAlgaeIntakeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;

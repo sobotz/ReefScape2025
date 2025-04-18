@@ -106,6 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private PIDController yController;
   private PIDController headingController;
   PIDController algaeRotationController;
+  boolean climbMode;
  
   
   /*Update requirements
@@ -132,7 +133,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveSubsystem() {
     //SWERVE MOTORS INSTANTIATION
-    
+    climbMode = false;
     fieldRelativeVelocitySpeeds = new ChassisSpeeds();
     disableDrive = false;
     isRedAlliance = false;
@@ -354,6 +355,22 @@ public class SwerveSubsystem extends SubsystemBase {
   public boolean getIsRedAlliance(){
     return isRedAlliance;
   }
+  public void setClimbMode(boolean value){
+    climbMode = value;
+    if (climbMode){
+      frontLeftDriveMotor.setNeutralMode(NeutralModeValue.Coast);
+      frontRightDriveMotor.setNeutralMode(NeutralModeValue.Coast);
+      backLeftDriveMotor.setNeutralMode(NeutralModeValue.Coast);
+      backRightDriveMotor.setNeutralMode(NeutralModeValue.Coast);
+    }
+    else{
+      frontLeftDriveMotor.setNeutralMode(NeutralModeValue.Brake);
+      frontRightDriveMotor.setNeutralMode(NeutralModeValue.Brake);
+      backLeftDriveMotor.setNeutralMode(NeutralModeValue.Brake);
+      backRightDriveMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    }
+  }
 
   public void driverControlledDrive(Vector strafeVector, Vector rotationVector){
     if (!driveCommandDisabled){
@@ -463,17 +480,17 @@ public class SwerveSubsystem extends SubsystemBase {
   public void drive(Vector strafeVector, double rotationalMagnitude,double degree, boolean relativeVelocityControlled, boolean disable){
     //System.out.println(strafeVector.getMagnitude());
     if (!disableDrive){
-      frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable);
-      frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable);
-      backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable);
-      backRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable);
+      frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable,climbMode);
+      frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable,climbMode);
+      backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable,climbMode);
+      backRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,disable,climbMode);
     }
     else{
       System.out.println("Drive disabled");
-      frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true);
-      frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true);
-      backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true);
-      backRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true);
+      frontLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true,climbMode);
+      frontRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true,climbMode);
+      backLeftSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true,climbMode);
+      backRightSwerveModule.drive(strafeVector, rotationalMagnitude, degree,relativeVelocityControlled,true,climbMode);
     }
     
   }

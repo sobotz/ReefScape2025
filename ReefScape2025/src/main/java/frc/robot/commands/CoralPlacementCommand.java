@@ -61,7 +61,13 @@ public class CoralPlacementCommand extends Command {
       // if (xTarget > 0 && m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L3){
       //   xTarget -= 0.02;
       // }
-      m_photonVisionSubsystem.enableAlign(true, xTarget, yTarget, id);
+      if (m_elevatorSubsystem.getAutoPlacePosition() == ElevatorPosition.L1){
+        m_photonVisionSubsystem.enableAlign(true, 0, yTarget, id);
+      }
+      else{
+        m_photonVisionSubsystem.enableAlign(true, xTarget, yTarget, id);
+      }
+      
       // if (isAuto){
       //   m_elevatorSubsystem.setAutoPlaceClawTargetPosition(ElevatorPosition.L4);
       //   m_clawSubsystem.setAutoPlaceClawTargetPosition(ClawPosition.L4);

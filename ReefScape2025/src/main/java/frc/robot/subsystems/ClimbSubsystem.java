@@ -47,7 +47,7 @@ public class ClimbSubsystem extends SubsystemBase {
     driveMotor.getConfigurator().apply(limitConfigs);
     m_servoHub = servoHub;
     climbServo = servoHub.getServoChannel(ChannelId.kChannelId1);
-    climbController = new PIDController(0.03, 0, 0);
+    climbController = new PIDController(0.032, 0, 0);
     climbController.setTolerance(.001);
     toggleClimb = false;
     targetPosition = 0;
@@ -58,6 +58,7 @@ public class ClimbSubsystem extends SubsystemBase {
   }
   public void prepClimb(){
     //m_swerveSubsystem.setDriveCommandDisabled(false);
+    m_swerveSubsystem.setClimbMode(false);
     timer.start();
     testServo = false;//CHANGEEEEEEEEEEEEEEEE
     //climbServo.setEnabled(true);
@@ -79,12 +80,14 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public void climb(){
     //m_swerveSubsystem.setDriveCommandDisabled(true);
+    m_swerveSubsystem.setClimbMode(true);
     timer2.reset();
     timer2.start();
     bufferPrep = false;
     testServo = true;
+
     //System.out.println("working");
-    targetPosition = 0;
+    targetPosition = 27;
   }
   public void setDriveMotor(double value){
     driveMotor.set(value);
@@ -97,12 +100,12 @@ public class ClimbSubsystem extends SubsystemBase {
     }
     if (toggleClimb && bufferPrep){
       double calc = climbController.calculate(driveMotor.getPosition().getValueAsDouble(),targetPosition);
-      if (calc<-0.25){
-        calc = -0.25;
-      }
-      else if (calc>0.25){
-        calc = 0.25;
-      }
+      // if (calc<-0.25){
+      //   calc = -0.25;
+      // }
+      // else if (calc>0.25){
+      //   calc = 0.25;
+      // }
       driveMotor.set(calc);
       // if (driveMotor.getPosition().getValueAsDouble()>targetPosition + 1){
       //   driveMotor.set(-1);
@@ -120,10 +123,10 @@ public class ClimbSubsystem extends SubsystemBase {
       //driveMotor.set(calc);
       if (driveMotor.getPosition().getValueAsDouble()<targetPosition - 0.3){
         if (timer2.get()<1.5){
-          driveMotor.set(0.2);
+          driveMotor.set(0.22);
         }
         else{
-          driveMotor.set(0.2);
+          driveMotor.set(0.22);
         }    
       }
       else{
