@@ -87,7 +87,7 @@ public class ClimbSubsystem extends SubsystemBase {
     testServo = true;
 
     //System.out.println("working");
-    targetPosition = 27;
+    targetPosition = 30;
   }
   public void setDriveMotor(double value){
     driveMotor.set(value);
@@ -122,11 +122,11 @@ public class ClimbSubsystem extends SubsystemBase {
       //double calc = climbController.calculate(driveMotor.getPosition().getValueAsDouble(),targetPosition);
       //driveMotor.set(calc);
       if (driveMotor.getPosition().getValueAsDouble()<targetPosition - 0.3){
-        if (timer2.get()<1.5){
-          driveMotor.set(0.22);
+        if (timer2.get()<0.9){
+          driveMotor.set(0.55);
         }
         else{
-          driveMotor.set(0.22);
+          driveMotor.set(0.65);
         }    
       }
       else{

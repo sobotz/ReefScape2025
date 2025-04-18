@@ -67,7 +67,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     if (enableServo){
       timer.start();
-      if (timer.get()>3.5){
+      if (timer.get()>2){
         intakeServo.setEnabled(true);
         intakeServo.setPowered(true);
         intakeServo.setPulseWidth(1900);
