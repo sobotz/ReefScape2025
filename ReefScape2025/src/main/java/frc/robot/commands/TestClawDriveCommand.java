@@ -24,7 +24,7 @@ public class TestClawDriveCommand extends Command {
   @Override
   public void execute() {
     m_clawSubsystem.setDriveMotor(1);
-    System.out.println("Forward");
+    
   }
 
   // Called once the command ends or is interrupted.

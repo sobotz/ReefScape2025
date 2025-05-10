@@ -33,38 +33,50 @@ public class ToggleStationIntakeCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
-    timer.start();
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.INTAKE);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
-    m_clawSubsystem.setDriveMotor(1);///??????CHANGE
+    if (!m_clawSubsystem.getHasAlgae()){
+      timer.start();
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.INTAKE);
+      m_clawSubsystem.setClawTargetPosition(ClawPosition.INTAKE);
+      m_clawSubsystem.setDriveMotor(0.8);///??????CHANGE
+      //m_intakeSubsystem.setDriveMotor(-1);
+    }
+    else{
+      isFinished = true;
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_clawSubsystem.setDriveMotor(0.8);
     if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_clawSubsystem.clawAtTargetPosition()){
-      m_intakeSubsystem.setDriveMotor(1.0);
+
+      m_intakeSubsystem.setDriveMotor(0.6);
     }
     else if (timer.get()>1){
-      m_intakeSubsystem.setDriveMotor(1.0);
+      m_intakeSubsystem.setDriveMotor(0.6);
+    }
+    if (m_clawSubsystem.getProximityTripped()){
+      m_clawSubsystem.setHasCoral(true);
+      m_clawSubsystem.setHasAlgae(false);
+      isFinished = true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    timer.reset();
-    timer.stop();
-    m_clawSubsystem.setHasAlgae(false);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     m_clawSubsystem.setDriveMotor(0);
     m_intakeSubsystem.setDriveMotor(0);
+    //m_elevatorSubsystem.intakeFinish();
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished(){
     return isFinished;
   }
 }

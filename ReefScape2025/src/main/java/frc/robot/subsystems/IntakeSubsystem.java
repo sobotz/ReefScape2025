@@ -8,14 +8,29 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
+import com.revrobotics.servohub.ServoChannel;
+import com.revrobotics.servohub.ServoChannel.ChannelId;
+import com.revrobotics.servohub.ServoHub;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   TalonFXS driveMotor;
+  ServoHub m_servoHub;
+  ServoChannel intakeServo;
+  boolean enableServo;
+  Timer timer;
 
-  public IntakeSubsystem() {
+  public IntakeSubsystem(ServoHub servoHub) {
+    timer = new Timer();
+    enableServo = false;
+    m_servoHub = servoHub;
+    intakeServo = servoHub.getServoChannel(ChannelId.kChannelId0);
+    
+
     driveMotor = new TalonFXS(13);
     TalonFXSConfiguration toConfigure = new TalonFXSConfiguration();
     toConfigure.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
@@ -30,13 +45,41 @@ public class IntakeSubsystem extends SubsystemBase {
     driveMotor.getConfigurator().apply(toConfigure);
   }
   public void setDriveMotor(double value){
-    System.out.println("drive");
-    driveMotor.set(value);
     
+    driveMotor.set(value);
+  }
+  public void resetIntakeServo(){
+    //intakeServo.setPulseWidth(1500);
+  }
+  public void openServo(){
+    //intakeServo.setEnabled(true);
+    //intakeServo.setPowered(true);
+  
+    
+    
+    //intakeServo.setPulseWidth(2000);
+  }
+  public void setIntakeServo(boolean value){
+    enableServo = value;
   }
 
   @Override
   public void periodic() {
+    if (enableServo){
+      timer.start();
+      if (timer.get()>2){
+        intakeServo.setEnabled(true);
+        intakeServo.setPowered(true);
+        intakeServo.setPulseWidth(1900);
+      }
+      
+    }
+    else{
+      intakeServo.setEnabled(true);
+      intakeServo.setPowered(true);
+      intakeServo.setPulseWidth(1300);
+    }
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("intakeServo", intakeServo.getPulseWidth());
   }
 }

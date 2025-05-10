@@ -13,6 +13,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
@@ -22,6 +24,7 @@ public class ClawSubsystem extends SubsystemBase {
   /** Creates a new ClawSubsystem. */
   TalonFX wristMotor;
   TalonFX clawDriveMotor;
+  DigitalInput proxSensor;
   CurrentLimitsConfigs limitConfigs;
   CANcoder clawSensor;
   PIDController clawController;
@@ -29,66 +32,169 @@ public class ClawSubsystem extends SubsystemBase {
   Map<ClawPosition, Double> clawPositionMap;
   ClawPosition clawTargetPosition;
   ClawPosition autoPlaceClawTargetPosition;
+  Timer timer;
 
   double clawPIDCalculation;
   double algaeRetainPosition;
+  double originalCanCoderPosition;
   boolean atTarget;
   boolean hasCoral;
   boolean hasAlgae;
   boolean driveMotorIsControlled;
+  boolean once;
+  double originalWristSensorPosition;
+  double previousClawError;
+  double atPositionCount;
+  boolean proxTripped;
+  boolean reefCoralPlacementButton;
+  boolean reefAlgaeGrabButton;
+  boolean toggleProcessor;
+  boolean toggleBarge;
+  double driveMotorCurrent;
+  Timer intakeTimer;
+
+  boolean finishReefSequence;
+  boolean intakeFinishMode;
+  boolean resetClaw;
+  boolean startUp;
+  Timer startUpTimer;
+
+
   public ClawSubsystem() {
-    wristMotor = new TalonFX(18);//CHANGE
-    wristMotor.setNeutralMode(NeutralModeValue.Brake);
+    startUp = false;
+    startUpTimer = new Timer();
+    resetClaw = false;
+    finishReefSequence = false;
+    intakeTimer = new Timer();
+    driveMotorCurrent = 0;
+    toggleProcessor = false;
+    toggleBarge = false;
+    reefCoralPlacementButton = true;
+    reefAlgaeGrabButton = true;
+    timer = new Timer();
+    proxSensor = new DigitalInput(9);//CHANGE
+    proxTripped = false;
+    wristMotor = new TalonFX(18);
+    wristMotor.setNeutralMode(NeutralModeValue.Coast);
     limitConfigs = new CurrentLimitsConfigs();
-    limitConfigs.StatorCurrentLimit = 60;
+    limitConfigs.StatorCurrentLimit = 40;
     limitConfigs.StatorCurrentLimitEnable = true;
     wristMotor.getConfigurator().apply(limitConfigs);
     clawDriveMotor = new TalonFX(16);
     clawDriveMotor.setNeutralMode(NeutralModeValue.Brake);
     clawDriveMotor.getConfigurator().apply(limitConfigs);
     
-    clawSensor = new CANcoder(17);//CHANGE
-
-    clawController = new PIDController(0.01, 0.0000, 0.000);//P0.0155 d 0.00017
+    
+    clawSensor = new CANcoder(17);
+    
+    clawController = new PIDController(0.012, 0.0000, 0.000);
     //clawController.enableContinuousInput(0,360);
-    clawController.setTolerance(0.0);
+    clawController.setTolerance(0.01);
 
-    retainAlgaeController = new PIDController(0.42,0, 0);
+    retainAlgaeController = new PIDController(0.012,0, 0);
 
     clawPositionMap = new HashMap<ClawPosition, Double>(){{
       put(ClawPosition.DEFAULT, ClawConstants.DEFAULT);
       put(ClawPosition.FLOORALGAE,ClawConstants.FLOORALGAE);
-      put(ClawPosition.FACINGDOWNREEFALGAE, ClawConstants.FACINGUPREEFALGAE);
+      put(ClawPosition.PROCESSOR,ClawConstants.PROCESSOR);
+      put(ClawPosition.PROCESSOR2,ClawConstants.PROCESSOR2);
+      put(ClawPosition.FACINGDOWNREEFALGAE, ClawConstants.FACINGDOWNREEFALGAE);
       put(ClawPosition.FACINGUPREEFALGAE,ClawConstants.FACINGUPREEFALGAE);
+      put(ClawPosition.REVERSEFACINGUPALGAE,ClawConstants.REVERSEFACINGUPREEFALGAE);
       put(ClawPosition.BARGE,ClawConstants.BARGE);
+      put(ClawPosition.BARGE2, ClawConstants.BARGE2);
       put(ClawPosition.INTAKE, ClawConstants.INTAKE);
       put(ClawPosition.L1, ClawConstants.L1);
       put(ClawPosition.L2, ClawConstants.L2);
       put(ClawPosition.L3, ClawConstants.L3);
       put(ClawPosition.L4, ClawConstants.L4);
+      put(ClawPosition.TEMPPOSITION, ClawConstants.TEMPPOSITION);
     }};
     clawTargetPosition = ClawPosition.DEFAULT;
-    autoPlaceClawTargetPosition = ClawPosition.DEFAULT;
+    autoPlaceClawTargetPosition = ClawPosition.L4;
     clawPIDCalculation = 0;
     atTarget = false;
-    hasCoral = false;
+    hasCoral = true;
     hasAlgae = false;
     driveMotorIsControlled = false;
     algaeRetainPosition = 0;
+    once = true;
+    originalCanCoderPosition = 0;
+    originalWristSensorPosition = 0;
+    previousClawError = 0;
+    atPositionCount = 0;
   }
+  
+
   public double getClawSensorPosition(){
-    return (-1 * ((clawSensor.getPosition().getValueAsDouble()*360)-63.02148438));
+    return ((((((-1 * wristMotor.getPosition().getValueAsDouble()) - originalWristSensorPosition)*360)/67.4074)-90));
+  }
+  public void setFinishReefSequence(boolean value){
+    finishReefSequence = value;
+  }
+  public boolean getFinishReefSequence(){
+    return finishReefSequence;
   }
 
+
+  public Map<ClawPosition, Double> getPositionMap(){
+    return clawPositionMap;
+  }
+  public void toggleProcessor(){
+    toggleProcessor = !toggleProcessor;
+  }
+  public boolean getToggleProcessor(){
+    return toggleProcessor;
+  }
+  public void toggleBarge(){
+    toggleBarge = !toggleBarge;
+  }
+  public boolean getToggleBarge(){
+    return toggleBarge;
+  }
+  public ClawPosition getTargetPosition(){
+    return clawTargetPosition;
+  }
   public boolean clawAtTargetPosition(){
-    if ((Math.abs(clawController.getError())<0.2) && clawPIDCalculation<0.008){
-      atTarget = true;
-      return true;
+    if ((Math.abs(clawController.getError())<0.27) && (Math.abs(clawPIDCalculation)<0.08)){
+      //System.out.println("inrange");
+      if (Math.abs(previousClawError - clawController.getError()) <0.08){//(Math.abs(clawController.getError())<0.13) && Math.abs(clawPIDCalculation)<0.0023){
+        atPositionCount += 1;
+      }  
+      else{
+        atPositionCount = 0;
+      }
+      previousClawError = clawController.getError();
+      if (atPositionCount > 1){
+        //System.out.println("atPositionCLaw");
+        atTarget = true;
+        
+        return true;
+      }
+      else{
+        atTarget = false;
+        return false;
+      }
     }
     else{
+      atPositionCount = 0;
+      previousClawError = clawController.getError();
       atTarget = false;
       return false;
     }
+    
+  }
+  public boolean getReefCoralPlacementButton(){
+    return reefCoralPlacementButton;
+  }
+  public boolean getReefAlgaeGrabButton(){
+    return reefAlgaeGrabButton;
+  }
+  public void toggleReefCoralPlacementButton(){
+    reefCoralPlacementButton = !reefCoralPlacementButton;
+  }
+  public void toggleReefAlgaeGrabButton(){
+    reefAlgaeGrabButton = !reefAlgaeGrabButton;
   }
   
   public void setClawTargetPosition(ClawPosition position){
@@ -100,18 +206,30 @@ public class ClawSubsystem extends SubsystemBase {
   public void setAutoPlaceClawTargetPosition(ClawPosition position){
     autoPlaceClawTargetPosition = position;
   }
+  public void enableStartUp(){
+    startUp = true;
+    startUpTimer.start();
+  }
   public void setDriveMotor(double value){
-    
-    clawDriveMotor.set(value);
-    if (value == 0){
-      driveMotorIsControlled = false;
+    if (!startUp){
+      clawDriveMotor.set(value);
+      if (value == 0){
+        driveMotorIsControlled = false;
+        if (hasCoral && !hasAlgae){
+          clawDriveMotor.set(0.20);
+        }
+      }
+      else{
+        driveMotorIsControlled = true;
+      }
     }
     else{
-      driveMotorIsControlled = true;
+      clawDriveMotor.set(1);
     }
+    
   }
   public double getClawDriveMotorPosition(){
-    return clawDriveMotor.getPosition().getValueAsDouble();
+    return  clawDriveMotor.getPosition().getValueAsDouble();
   }
   
   public double getClawPIDCalcuate(){
@@ -126,41 +244,111 @@ public class ClawSubsystem extends SubsystemBase {
       clawPositionMap.put(ClawPosition.DEFAULT,ClawConstants.DEFAULT);
     }
   }
+  public void singularReefAlgaeDefault(){
+    clawPositionMap.put(ClawPosition.DEFAULT, ClawConstants.HASALGAEDEFAULT2);
+  }
+  public boolean hasItem(){
+    return (hasAlgae || hasCoral);
+  }
+  public boolean getHasAlgae(){
+    return hasAlgae;
+  }
+  public void setHasCoral(boolean hasCoral){
+    this.hasCoral = hasCoral;
+  }
+  public boolean getHasCoral(){
+    return hasCoral;
+  }
   public void setAlgaeRetainPosition(){
-    algaeRetainPosition = getClawDriveMotorPosition()-0.5;
+    algaeRetainPosition = getClawDriveMotorPosition()+1.2;
+  }
+  public void processorPosition(){
+    algaeRetainPosition += 10;
+  }
+
+  public boolean getProximityTripped(){
+    proxTripped = !proxSensor.get();
+    return proxTripped;
+  }
+  public double getDriveMotorCurrent(){
+    return driveMotorCurrent;
+  }
+  public void setResetClaw(boolean value){
+    resetClaw = value;
+    if (resetClaw == false){
+      once = true;
+    }
+  }
+  public void setWristMotor(double value){
+    wristMotor.set(value);
+  }
+  public void resetOriginalPosition(){
+    once = true;
   }
 
 
   @Override
   public void periodic() {
+    if (startUp){
+      if (startUpTimer.get()>1){
+        startUp = false;
+        startUpTimer.reset();
+        startUpTimer.stop();
+        setDriveMotor(0);
+      }
+    }
+    driveMotorCurrent = clawDriveMotor.getTorqueCurrent().getValueAsDouble();
+    proxTripped = !proxSensor.get();
+    if (once){
+      originalWristSensorPosition =  -1 * wristMotor.getPosition().getValueAsDouble();
+      once = false;
+    }
+    if (intakeTimer.get()>0.7){
+      
+      intakeTimer.reset();
+      intakeTimer.stop();
+      clawDriveMotor.set(0);
+    }
+    if (startUp){
+
+    }
     
+    //SmartDashboard.putBoolean("clawProx", proxTripped);
+    //System.out.println(wristMotor.getPosition().getValueAsDouble() * 360);
+    //System.out.println(wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition);
     //System.out.println(getClawSensorPosition());
-    SmartDashboard.putNumber("clawSensorPosition",getClawSensorPosition());
+    //SmartDashboard.putNumber("clawSensorPosition",getClawSensorPosition());
     //System.out.println(getClawSensorPosition());
     // This method will be called once per scheduler run
-    clawPIDCalculation = 1.5*clawController.calculate(getClawSensorPosition(), clawPositionMap.get(clawTargetPosition));
+    clawPIDCalculation = -1.5 * clawController.calculate(getClawSensorPosition(), clawPositionMap.get(clawTargetPosition));
     //System.out.println(clawPositionMap.get(clawTargetPosition));
     //SmartDashboard.putNumber("getTargetPosition",clawPositionMap.get(clawTargetPosition));
-    SmartDashboard.putNumber("Claw Error",clawController.getError());
-    SmartDashboard.putNumber("Claw Calculation",clawPIDCalculation);
+    //SmartDashboard.putNumber("Claw Error",clawController.getError());
+    //SmartDashboard.putNumber("Claw Calculation",clawPIDCalculation);
+    //SmartDashboard.putNumber("clawDrive Current",driveMotorCurrent);
+    SmartDashboard.putBoolean("CORAL", reefCoralPlacementButton);
+    SmartDashboard.putBoolean("ALGAE", reefAlgaeGrabButton);
+    SmartDashboard.putBoolean("ClawAtPosition",clawAtTargetPosition());
+    SmartDashboard.putBoolean("HasCoral", hasCoral);
     //System.out.println(clawController.getError());
     //System.out.println(clawPIDCalculation);
-    if (!clawController.atSetpoint()){
-      if (clawPIDCalculation > 0.75){
-        clawPIDCalculation = 0.75;
+    //System.out.println((-1 * clawSensor.getAbsolutePosition().getValueAsDouble()* 360) % 360);
+    //System.out.println(wristMotor.getPosition().getValueAsDouble() - originalWristSensorPosition);
+      if (clawPIDCalculation > 0.90){
+        clawPIDCalculation = 0.90;
       }
-      else if (clawPIDCalculation < -0.75){
-        clawPIDCalculation = -0.75;
+      else if (clawPIDCalculation < -0.90){
+        clawPIDCalculation = -0.90;
       }
       // if (Math.abs(clawPIDCalculation)<0.1){
       //   clawPIDCalculation = clawPIDCalculation * 1.032;
       // }
 
       /*if (Math.abs(clawPIDCalculation)<0.1){
-        clawPIDCalculation = clawPIDCalculation * .95;
+        clawPIDCalculation = clawPIDCalc    ulation * .95;
       }*/
       if (Math.abs(clawPIDCalculation)<0.01){
-        clawPIDCalculation = clawPIDCalculation * 7;
+        clawPIDCalculation = clawPIDCalculation * 4.2;
         //System.out.println("activated");
       }
       else if (Math.abs(clawPIDCalculation)<0.02){
@@ -170,20 +358,13 @@ public class ClawSubsystem extends SubsystemBase {
       /*else if (Math.abs(clawPIDCalculation)<0.025){
         clawPIDCalculation = clawPIDCalculation * 1.02;
       }*/
-      
-      // if (clawPIDCalculation < 0.05 && clawPIDCalculation > 0){
-      //   clawPIDCalculation ;
-      // }
-      // else if (clawPIDCalculation > -0.05 && clawPIDCalculation < 0){
-      //   clawPIDCalculation *= 1.1;
-      // }
+    //System.out.println(clawPIDCalculation);
+
+    if (!resetClaw){
       wristMotor.set(clawPIDCalculation);
     }
-    else{
-      wristMotor.set(0);      
-    }
-    if (hasAlgae && driveMotorIsControlled == false){
-      System.out.println("algae enabled");
+    if ((hasAlgae && !driveMotorIsControlled) && !hasCoral){
+      System.out.println("claw setpoint activated");
       clawDriveMotor.set(retainAlgaeController.calculate(getClawDriveMotorPosition(),algaeRetainPosition));
     }
   }

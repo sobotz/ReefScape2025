@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid-H"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "H-LeftCS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCS-J"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "J-LeftCS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCS-K"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

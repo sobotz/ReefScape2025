@@ -1,0 +1,62 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid-H"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "m_autoWaitL4Command"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_autoCoralEjectCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "H-DAlgae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DAlg-Barge"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge-EAlgae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "EAlgae-Barge"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

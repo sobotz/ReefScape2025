@@ -22,6 +22,7 @@ public class SwerveModule {
     Vector driveVector;
     //Current module values
     double currentModuleDegree;
+    double currentRobotDegree;
     //Target module values
     double targetModuleDegree;
     double targetModuleMagnitude;
@@ -55,7 +56,8 @@ public class SwerveModule {
         //CANcoder offset to have 0 degrees align with the robot
         this.degreeOffset = degreeOffset;
     }
-    public void drive(Vector strafeVector, double rotationalMagnitude, double currentRobotDegree, boolean relativeVelocityControl){
+    public void drive(Vector strafeVector, double rotationalMagnitude, double currentRobotDegree, boolean relativeVelocityControl,boolean disable,boolean climbMode){
+        this.currentRobotDegree = currentRobotDegree;
         //setting and creating the strafe vector and rotational vector
         //System.out.println(relativeVelocityControl);
         this.strafeVector = strafeVector;
@@ -102,11 +104,22 @@ public class SwerveModule {
             inverted = !inverted;
         }
         //PID controller
-        if((driveVector.getMagnitude() == 0)&&(rotationalMagnitude == 0)){
+        
+        if (disable) {
             turnMotor.set(0);
             driveMotor.set(0);
-
-        }else{
+            
+        }
+        else if (climbMode){
+            System.out.println("WORKING");
+            turnMotor.set(-degreeController.calculate(currentModuleDegree,0));
+            driveMotor.set(0);
+        }
+        else if((Math.abs(driveVector.getMagnitude()) < 0.001)&&(Math.abs(rotationalMagnitude)<0.001)){
+            turnMotor.set(0);
+            driveMotor.set(0);
+        }
+        else{
             turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
             driveMotor.set(targetModuleMagnitude);
         }
@@ -118,26 +131,51 @@ public class SwerveModule {
     public double getTarget(){
         return targetModuleDegree;
     }
-    public double getDriveSensorPosition(){
-        return driveMotor.getPosition().getValueAsDouble()/25.97290039;//* Constants.SwerveConstants.wheelRotationPerMotorRotation*(2 * Math.PI* Constants.SwerveConstants.wheelRadius);//CHANGE
+    public double getDriveSensorPosition(boolean isRedAlliance){
+        // if (isRedAlliance){
+        //     return -driveMotor.getPosition().getValueAsDouble()/19.607;
+        // }
+        // else{
+        //     return driveMotor.getPosition().getValueAsDouble()/19.607;
+        // }
+        return driveMotor.getPosition().getValueAsDouble()/19.607;
+        //25.97290039;//* Constants.SwerveConstants.wheelRotationPerMotorRotation*(2 * Math.PI* Constants.SwerveConstants.wheelRadius);//CHANGE
     }
     public double getRawDriveSensorPosition(){
         return driveMotor.getPosition().getValueAsDouble();
     }
-    public double getDriveSensorVelocity(){
-        return (driveMotor.getVelocity().getValueAsDouble()/25.97290039);// * Constants.SwerveConstants.wheelRotationPerMotorRotation)/60) * 2 * Math.PI * Constants.SwerveConstants.wheelRadius);//CHANGE
+    public double getDriveSensorVelocity(boolean isRedAlliance){
+        // if (isRedAlliance){
+        //     System.out.println(-driveMotor.getVelocity().getValueAsDouble()/19.607);
+        //     return -driveMotor.getVelocity().getValueAsDouble()/19.607;
+        // }
+        // else{
+        //     return driveMotor.getVelocity().getValueAsDouble()/19.607;
+        // }
+        return driveMotor.getVelocity().getValueAsDouble()/19.607;
+        //25.97290039);// * Constants.SwerveConstants.wheelRotationPerMotorRotation)/60) * 2 * Math.PI * Constants.SwerveConstants.wheelRadius);//CHANGE
     }
     public double getCurrentModuleDegree(){
         return currentModuleDegree;
     }
-    public Rotation2d get2dCurrentModuleDegree(){
-        Rotation2d x = new Rotation2d((currentModuleDegree * Math.PI)/180);
+    public Rotation2d get2dCurrentModuleDegree(boolean velocityCheck){
+        Rotation2d x = new Rotation2d(0);
+        //if (velocityCheck){
+        //    x = new Rotation2d((((currentModuleDegree + currentRobotDegree) % 360) * Math.PI)/180);
+        //}
+        //else{
+        x = new Rotation2d((((currentModuleDegree) % 360) * Math.PI)/180);
+        //}
+        
+        // if (isRedAlliance){
+        //     x = new Rotation2d(Math.toRadians((x.getDegrees() + 180) % 360));
+        // }
         return x;
     }
-    public SwerveModulePosition getSwerveModulePosition(){
-        return new SwerveModulePosition((getDriveSensorPosition()),get2dCurrentModuleDegree());
+    public SwerveModulePosition getSwerveModulePosition(boolean isRedAlliance){
+        return new SwerveModulePosition((getDriveSensorPosition(isRedAlliance)),get2dCurrentModuleDegree(false));
     }
-    public SwerveModuleState getSwerveModuleState(){
-        return new SwerveModuleState(getDriveSensorVelocity(), get2dCurrentModuleDegree());// speed meters per second , rotation 2d angle
+    public SwerveModuleState getSwerveModuleState(boolean isRedAlliance){
+        return new SwerveModuleState(getDriveSensorVelocity(isRedAlliance), get2dCurrentModuleDegree(true));// speed meters per second , rotation 2d angle
     }
 }

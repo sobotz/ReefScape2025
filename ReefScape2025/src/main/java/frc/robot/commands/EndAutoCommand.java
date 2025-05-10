@@ -27,13 +27,17 @@ public class EndAutoCommand extends Command {
   public void initialize() {
     isFinished = false;
     timer.start();
+    m_swerveSubsystem.setDisableDrive(true);
+    m_swerveSubsystem.drive(new Vector(0,0), 0, m_swerveSubsystem.getAutoRobotDegree(), false, true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (timer.get()<1){
-      m_swerveSubsystem.drive(new Vector(0, 0),0,m_swerveSubsystem.getCurrentRobotDegree(), false);
+      m_swerveSubsystem.setDisableDrive(true);
+      m_swerveSubsystem.drive(new Vector(0,0), 0, m_swerveSubsystem.getAutoRobotDegree(), false, true);
+      
     }
     else{
       isFinished = true;
@@ -42,7 +46,11 @@ public class EndAutoCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_swerveSubsystem.setDisableDrive(false);
+    timer.reset();
+    timer.stop();
+  }
 
   // Returns true when the command should end.
   @Override

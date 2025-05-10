@@ -14,50 +14,69 @@ package frc.robot;
  */
 public final class Constants {
   public static class SwerveConstants{
-    public static final double frontLeftDegreeOffset = 132.1875;
-    public static final double frontRightDegreeOffset = 164.8828125;
-    public static final double backLeftDegreeOffset = 119.619140625;
-    public static final double backRightDegreeOffset = 83.759765625;
+    public static final double frontLeftDegreeOffset = 128.1875;
+    public static final double frontRightDegreeOffset = 275.8828125;
+    public static final double backLeftDegreeOffset = 117.619140625;
+    public static final double backRightDegreeOffset = 51.759765625;
     public static final double wheelRadius = 0.0508;//in meters;
     public static final double wheelRotationPerMotorRotation = 1/8.14;
   }
 
   public static class ClawConstants{
-    public static final double DEFAULT = -97;
-    public static final double HASALGAEDEFAULT = -320;
-    public static final double INTAKE = -97;
-    public static final double FLOORALGAE = -208;
-    public static final double FACINGDOWNREEFALGAE = -250;
-    public static final double FACINGUPREEFALGAE = -250;
-    public static final double BARGE = -290;
-    public static final double L1 = 50;
-    public static final double L2 = -216;
-    public static final double L3= -216;
-    public static final double L4 = -195;
+
+    public static final double DEFAULT = -87;
+    public static final double HASALGAEDEFAULT = -360;
+    public static final double HASALGAEDEFAULT2 = 0;
+    public static final double INTAKE = -87;
+    public static final double FLOORALGAE = -218.0137;
+    public static final double PROCESSOR = -270;
+    public static final double PROCESSOR2 = 90;
+    public static final double FACINGDOWNREEFALGAE = -240;
+    public static final double FACINGUPREEFALGAE = -300;
+    public static final double REVERSEFACINGUPREEFALGAE = 63.5;
+    public static final double BARGE = -326;
+    public static final double BARGE2 = 34;
+    public static final double L1 = 60;
+    public static final double L2 = -239;
+    public static final double L3= -239;
+    public static final double L4 = -228.7;
+    public static final double TEMPPOSITION = -180;
+
   }
   public static enum ClawPosition{
     DEFAULT,
     INTAKE,
     FLOORALGAE,
+    PROCESSOR,
+    PROCESSOR2,
     FACINGUPREEFALGAE,
     FACINGDOWNREEFALGAE,
+    REVERSEFACINGUPALGAE,
     BARGE,
+    BARGE2,
     L1,
     L2,
     L3,
-    L4
+    L4,
+    TEMPPOSITION
   }
   public static enum ElevatorPosition{
     DEFAULT,
+    ALGAETEMP,
     INTAKE,
+    CLIMB,
     FLOORALGAE,
+    PROCESSOR,
+    LOWESTALGAE,
     LOWERALGAE,
+    MIDALGAE,
     HIGHERALGAE,
     BARGE,
     L1,
     L2,
     L3,
-    L4
+    L4,
+    TEMPPOSITION
   }
   public static final class ElevatorConstants {
     //I type PID CONTROLLER
@@ -65,26 +84,39 @@ public final class Constants {
     // public static final double kI = 0.334;//.334
     // public static final double kD = 0.01031;//.01031
     //P type PID Controller
-    public static final double kP = 0.15;
+    public static final double kP = 1.3;//5
     public static final double kI = 0;
-    public static final double kD = 0.006;
-    public static final double DEFAULT = 10;
-    public static final double INTAKE = 20.3;
-    public static final double FLOORALGAE = 4;
-    public static final double LOWERALGAE = 26;
-    public static final double HIGHERALGAE = 39;
-    public static final double BARGE = 75;
-    public static final double L1 = 15;
-    public static final double L2 = 29;
-    public static final double L3 = 40;
-    public static final double L4 = 70;
+
+    public static final double kD = 0.000;//0.006
+    public static final double kG = 0.427;//0.6
+    public static final double kS = 0.12;//0.12
+    public static final double kV = 0.156;//0.13
+    public static final double kA = 0.0022;//0.0023
+
+    public static final double DEFAULT = 6;//6
+    public static final double ALGAETEMP = 12;
+    public static final double INTAKE = 16.7;
+    public static final double FLOORALGAE = 6.4;
+    public static final double PROCESSOR = 6;
+    public static final double CLIMB = 0.5;
+    public static final double LOWESTALGAE = 21.6;
+    public static final double LOWERALGAE = 30;
+    public static final double MIDALGAE = 36;
+    public static final double HIGHERALGAE = 46;
+    public static final double BARGE = 70;
+    public static final double L1 = 5;
+    public static final double L2 = 28.4;
+    public static final double L3 = 44;
+    public static final double L4 = 71.5;
+    public static final double TEMPPOSITION = 30;
   }
 
   public static class PhotonVisionConstants{
-    public static double rightCameraCenterOffset = 50.0;
-    public static double leftCameraCenterOffset = -50.0;
-    public static String leftCameraName = "Module_4_Arducam_OV2311";
-    public static String rightCameraName = "Module_3_Arducam_OV2311";
+    public static double m4CameraCenterOffset = 50.0;
+    public static double m3CameraCenterOffset = -50.0;
+    public static String m3CameraName = "Module_3_Arducam_OV2311";
+    public static String m4CameraName = "Module_4_Arducam_OV2311";
+
   
   }
 

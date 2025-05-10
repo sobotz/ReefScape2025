@@ -32,7 +32,7 @@ public class ClawDriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.get()>0.15){
+    if (timer.get()>0.3){
       m_clawSubsystem.setDriveMotor(-0.8);
     }
     if (timer.get()>0.8){

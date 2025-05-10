@@ -10,36 +10,58 @@ import frc.robot.Constants.ClawPosition;
 import frc.robot.Constants.ElevatorPosition;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class BargeCommand extends Command {
   /** Creates a new BargeCommand. */
+  SwerveSubsystem m_swerveSubsystem;
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
   Timer timer;
-  Timer timer2;
   boolean isFinished;
-  public BargeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
+  public BargeCommand(SwerveSubsystem swerveSubsystem, ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_swerveSubsystem = swerveSubsystem;
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
     timer = new Timer();
-    timer2 = new Timer();
     isFinished = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.BARGE);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.BARGE);
-    timer.start();
     isFinished = false;
+    if (m_clawSubsystem.getHasAlgae()){
+      m_clawSubsystem.toggleBarge();
+      if (m_clawSubsystem.getToggleBarge() == true){
+        m_swerveSubsystem.setBargeMode(true);
+        m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.BARGE);
+        if (m_clawSubsystem.getPositionMap().get(ClawPosition.DEFAULT) == 0){
+          m_clawSubsystem.setClawTargetPosition(ClawPosition.BARGE2);
+        }
+        else{
+          m_clawSubsystem.setClawTargetPosition(ClawPosition.BARGE);
+        }
+        
+        isFinished = true;
+      }
+      else{
+        m_clawSubsystem.setDriveMotor(-0.8);//76
+        timer.start();
+      }
+    }
+    else{
+      isFinished = true;
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     /*if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_clawSubsystem.clawAtTargetPosition()){
       m_clawSubsystem.setDriveMotor(0.5);
       timer2.start();
@@ -52,19 +74,24 @@ public class BargeCommand extends Command {
       isFinished = true;
     }*/
     
-  }
+
+    if (timer.get()>0.4){
+      isFinished = true;
+    }
+
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     timer.reset();
     timer.stop();
-    timer2.reset();
-    timer2.stop();
-    m_clawSubsystem.setHasAlgae(false);
-    m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
-    m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
-    m_clawSubsystem.setDriveMotor(0);
+    if (m_clawSubsystem.getToggleBarge() == false){
+      m_clawSubsystem.setHasAlgae(false);
+      m_swerveSubsystem.setBargeMode(false);
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
+      m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
+      m_clawSubsystem.setDriveMotor(0);
+    }
   }
 
   // Returns true when the command should end.
