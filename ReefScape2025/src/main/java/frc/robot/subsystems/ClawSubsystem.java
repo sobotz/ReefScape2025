@@ -215,7 +215,7 @@ public class ClawSubsystem extends SubsystemBase {
       if (value == 0){
         driveMotorIsControlled = false;
         if (hasCoral && !hasAlgae){
-          clawDriveMotor.set(0.20);
+          clawDriveMotor.set(0.05);
         }
       }
       else{
