@@ -535,10 +535,10 @@ public class RobotContainer {
     bargeButton.onTrue(m_bargeCommand);
     JoystickButton processorButton = new JoystickButton(A1, 11);
     processorButton.onTrue(m_processorCommand);
-    JoystickButton climbButton = new JoystickButton(A1, 10);
-    climbButton.onTrue(m_toggleClimbCommand);
-    //JoystickButton wristResetButton = new JoystickButton(A1,11);
-    //wristResetButton.whileTrue(m_resetClawCommand);
+    // JoystickButton climbButton = new JoystickButton(A1, 10);
+    // climbButton.onTrue(m_toggleClimbCommand);
+    JoystickButton wristResetButton = new JoystickButton(A1,10);
+    wristResetButton.whileTrue(m_resetClawCommand);
     //DRIVER BUTTONS-
     JoystickButton resetGyroButton = new JoystickButton(stick, 7);
     resetGyroButton.onTrue(m_resetGyroCommand);

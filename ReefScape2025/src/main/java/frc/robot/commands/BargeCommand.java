@@ -79,6 +79,8 @@ public class BargeCommand extends Command {
       isFinished = true;
     }
 
+  }
+
 
   // Called once the command ends or is interrupted.
   @Override

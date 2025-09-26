@@ -18,7 +18,7 @@ public class AutoCoralEjectCommand extends Command {
   ClawSubsystem m_clawSubsystem;
   Timer timer;
   boolean isFinished;
-  public ToggleFloorAlgaeIntakeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
+  public AutoCoralEjectCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;

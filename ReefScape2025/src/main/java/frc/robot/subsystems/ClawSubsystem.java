@@ -367,5 +367,7 @@ public class ClawSubsystem extends SubsystemBase {
       System.out.println("claw setpoint activated");
       clawDriveMotor.set(retainAlgaeController.calculate(getClawDriveMotorPosition(),algaeRetainPosition));
     }
+    System.out.println(clawTargetPosition);
+    //System.out.println();
   }
 }
