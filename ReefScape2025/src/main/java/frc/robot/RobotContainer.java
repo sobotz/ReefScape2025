@@ -6,6 +6,7 @@ package frc.robot;
 
 
 
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -103,9 +104,11 @@ public class RobotContainer {
 
 
   ToggleStationIntakeCommand m_toggleStationIntakeCommand;
+
   ToggleAutoFloorAlgaeIntakeCommand m_toggleFloorAlgaeIntakeCommand;
 
   GrabAlgaeCommand m_grabHigherAlgaeCommand;
+
 
 
   SetClawPositionCommand testClaw1Command;
@@ -254,7 +257,6 @@ public class RobotContainer {
     m_setActuatorFloorAlgaeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.FLOORALGAE, ClawPosition.FLOORALGAE);
 
     m_setActuatorBargeCommand = new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.BARGE, ClawPosition.BARGE);
-
 
     testClaw1Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.DEFAULT);
     testClaw2Command = new SetClawPositionCommand(m_clawSubsystem, ClawPosition.L2);
@@ -533,10 +535,10 @@ public class RobotContainer {
     bargeButton.onTrue(m_bargeCommand);
     JoystickButton processorButton = new JoystickButton(A1, 11);
     processorButton.onTrue(m_processorCommand);
-    JoystickButton climbButton = new JoystickButton(A1, 10);
-    climbButton.onTrue(m_toggleClimbCommand);
-    //JoystickButton wristResetButton = new JoystickButton(A1,11);
-    //wristResetButton.whileTrue(m_resetClawCommand);
+    // JoystickButton climbButton = new JoystickButton(A1, 10);
+    // climbButton.onTrue(m_toggleClimbCommand);
+    JoystickButton wristResetButton = new JoystickButton(A1,10);
+    wristResetButton.whileTrue(m_resetClawCommand);
     //DRIVER BUTTONS-
     JoystickButton resetGyroButton = new JoystickButton(stick, 7);
     resetGyroButton.onTrue(m_resetGyroCommand);

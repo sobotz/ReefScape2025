@@ -23,6 +23,7 @@ public final class Constants {
   }
 
   public static class ClawConstants{
+
     public static final double DEFAULT = -87;
     public static final double HASALGAEDEFAULT = -360;
     public static final double HASALGAEDEFAULT2 = 0;
@@ -40,6 +41,7 @@ public final class Constants {
     public static final double L3= -239;
     public static final double L4 = -228.7;
     public static final double TEMPPOSITION = -180;
+
   }
   public static enum ClawPosition{
     DEFAULT,
@@ -84,6 +86,7 @@ public final class Constants {
     //P type PID Controller
     public static final double kP = 1.3;//5
     public static final double kI = 0;
+
     public static final double kD = 0.000;//0.006
     public static final double kG = 0.427;//0.6
     public static final double kS = 0.12;//0.12
@@ -113,6 +116,7 @@ public final class Constants {
     public static double m3CameraCenterOffset = -50.0;
     public static String m3CameraName = "Module_3_Arducam_OV2311";
     public static String m4CameraName = "Module_4_Arducam_OV2311";
+
   
   }
 

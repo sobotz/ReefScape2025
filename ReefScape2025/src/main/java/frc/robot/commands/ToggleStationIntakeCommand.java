@@ -51,6 +51,7 @@ public class ToggleStationIntakeCommand extends Command {
   public void execute() {
     m_clawSubsystem.setDriveMotor(0.8);
     if (m_elevatorSubsystem.elevatorAtTargetPosition() && m_clawSubsystem.clawAtTargetPosition()){
+
       m_intakeSubsystem.setDriveMotor(0.6);
     }
     else if (timer.get()>1){

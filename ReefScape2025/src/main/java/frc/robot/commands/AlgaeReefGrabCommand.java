@@ -27,7 +27,7 @@ public class AlgaeReefGrabCommand extends Command {
     isFinished = false;
     timer.start();
     m_clawSubsystem.setDriveMotor(1);
-  }
+  } 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

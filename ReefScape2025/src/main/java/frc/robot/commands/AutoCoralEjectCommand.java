@@ -24,21 +24,27 @@ public class AutoCoralEjectCommand extends Command {
     m_clawSubsystem = clawSubsystem;
     timer = new Timer();
     isFinished = false;
+    timer = new Timer();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
+    m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
+    m_clawSubsystem.setDriveMotor(1);
     isFinished = false;
-    m_clawSubsystem.setDriveMotor(-1);
     timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.get()>0.4){
-      isFinished = true;
+
+    /*(if (m_clawSubsystem.clawAtTargetPosition()){
+    }*/
+    if (timer.get()>3){
+      m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
     }
   }
 
@@ -47,10 +53,12 @@ public class AutoCoralEjectCommand extends Command {
   public void end(boolean interrupted) {
     timer.reset();
     timer.stop();
-    m_clawSubsystem.setDriveMotor(0);
+    m_clawSubsystem.setAlgaeRetainPosition();
+    m_clawSubsystem.setHasAlgae(true);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
-    m_elevatorSubsystem.setIsAuto(true);
+    m_clawSubsystem.setDriveMotor(0);
+
   }
 
   // Returns true when the command should end.

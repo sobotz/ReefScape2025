@@ -82,6 +82,7 @@ public class ClawSubsystem extends SubsystemBase {
     wristMotor.getConfigurator().apply(limitConfigs);
     clawDriveMotor = new TalonFX(16);
     clawDriveMotor.setNeutralMode(NeutralModeValue.Brake);
+    clawDriveMotor.getConfigurator().apply(limitConfigs);
     
     
     clawSensor = new CANcoder(17);
@@ -342,6 +343,7 @@ public class ClawSubsystem extends SubsystemBase {
       // if (Math.abs(clawPIDCalculation)<0.1){
       //   clawPIDCalculation = clawPIDCalculation * 1.032;
       // }
+
       /*if (Math.abs(clawPIDCalculation)<0.1){
         clawPIDCalculation = clawPIDCalc    ulation * .95;
       }*/
@@ -350,7 +352,7 @@ public class ClawSubsystem extends SubsystemBase {
         //System.out.println("activated");
       }
       else if (Math.abs(clawPIDCalculation)<0.02){
-        clawPIDCalculation = clawPIDCalculation * 1.7;
+        clawPIDCalculation = clawPIDCalculation * 2.3;
         //System.out.println("first Activation");
       }
       /*else if (Math.abs(clawPIDCalculation)<0.025){
@@ -365,5 +367,7 @@ public class ClawSubsystem extends SubsystemBase {
       System.out.println("claw setpoint activated");
       clawDriveMotor.set(retainAlgaeController.calculate(getClawDriveMotorPosition(),algaeRetainPosition));
     }
+    System.out.println(clawTargetPosition);
+    //System.out.println();
   }
 }
