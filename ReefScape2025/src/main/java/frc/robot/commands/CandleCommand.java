@@ -4,22 +4,36 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix6.hardware.CANdle;
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CandleCommand extends Command {
+  CANdle candle;
+  Timer timer;
+  
   /** Creates a new CandleCommand. */
   public CandleCommand() {
+    candle = new CANdle(15);
+    timer = new Timer();
+    timer.reset();
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    
+  }
 
   // Called once the command ends or is interrupted.
   @Override

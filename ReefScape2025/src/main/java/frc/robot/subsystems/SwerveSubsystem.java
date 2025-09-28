@@ -7,7 +7,10 @@ package frc.robot.subsystems;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.controls.RgbFadeAnimation;
+import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -107,6 +110,8 @@ public class SwerveSubsystem extends SubsystemBase {
   private PIDController headingController;
   PIDController algaeRotationController;
   boolean climbMode;
+
+  CANdle m_candle;
  
   
   /*Update requirements
@@ -219,6 +224,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     degreeVelocityController = new PIDController(0.009,0.000,0.000);//d0.07
     //degreeVelocityController.setTolerance(0.01);
+
+    m_candle = new CANdle(15,"rio");
+
     targetID = 0;
     once = true;
     robotDegreeOffset = 0;
@@ -286,6 +294,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public void setDisableDrive(boolean value){
     disableDrive = value;
   }
+  
   public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot
         Pose2d pose = getPose();
