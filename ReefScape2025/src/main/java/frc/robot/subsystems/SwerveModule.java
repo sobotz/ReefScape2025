@@ -112,7 +112,7 @@ public class SwerveModule {
         }
         else if (climbMode){
             System.out.println("WORKING");
-            turnMotor.set(-degreeController.calculate(currentModuleDegree,0));
+            turnMotor.set(degreeController.calculate(currentModuleDegree,0));
             driveMotor.set(0);
         }
         else if((Math.abs(driveVector.getMagnitude()) < 0.001)&&(Math.abs(rotationalMagnitude)<0.001)){
@@ -120,7 +120,7 @@ public class SwerveModule {
             driveMotor.set(0);
         }
         else{
-            turnMotor.set(-degreeController.calculate(currentModuleDegree,targetModuleDegree));
+            turnMotor.set(degreeController.calculate(currentModuleDegree,targetModuleDegree));
             driveMotor.set(targetModuleMagnitude);
         }
 

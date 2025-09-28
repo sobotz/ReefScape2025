@@ -695,6 +695,15 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("FR x velocity", fieldRelativeVelocitySpeeds.vxMetersPerSecond);
     SmartDashboard.putNumber("FR y velocity", fieldRelativeVelocitySpeeds.vyMetersPerSecond);
     SmartDashboard.putNumber("FR theta velocity", fieldRelativeVelocitySpeeds.omegaRadiansPerSecond);
+
+    SmartDashboard.putNumber("front left cd", frontLeftSwerveModule.getRawValue());
+
+    SmartDashboard.putNumber("front right cd", frontRightSwerveModule.getRawValue());
+
+    SmartDashboard.putNumber("back left cd", backLeftSwerveModule.getRawValue());
+
+    SmartDashboard.putNumber("back right cd", backRightSwerveModule.getRawValue());
+
     //SmartDashboard.putNumber("x Vel", getSpeeds().vxMetersPerSecond);
     //SmartDashboard.putNumber("y Vel", getSpeeds().vyMetersPerSecond);
     //SmartDashboard.putNumber("raw drive sensor", frontLeftSwerveModule.getRawDriveSensorPosition());

@@ -56,6 +56,8 @@ import frc.robot.commands.RightCoralAuto;
 import frc.robot.commands.SetActuatorPositionCommand;
 import frc.robot.commands.SetClawPositionCommand;
 import frc.robot.commands.StealReefAlgaeCommand;
+import frc.robot.commands.TaxiAuto;
+import frc.robot.commands.TaxiCommand;
 import frc.robot.commands.TestAlgaeAlignCommand;
 import frc.robot.commands.TestClawDriveCommand;
 import frc.robot.commands.TestClawDriveReverseCommand;
@@ -101,6 +103,7 @@ public class RobotContainer {
   DriveCommand m_driveCommand;
   TestClawDriveCommand m_clawDriveCommand;
   TestClawDriveReverseCommand m_clawDriveReverseCommand;
+  TaxiCommand m_TaxiCommand;
 
 
   ToggleStationIntakeCommand m_toggleStationIntakeCommand;
@@ -205,6 +208,7 @@ public class RobotContainer {
   AlgaeHAuto algaeHAuto;
   AlgaeGAuto algaeGAuto;
   Algae3Auto algae3Auto;
+  TaxiAuto taxiAuto;
   LeftCoralAuto leftCoralAuto;
   RightCoralAuto rightCoralAuto;
   TestAlgaeAlignCommand testAlgaeAlign;
@@ -237,7 +241,7 @@ public class RobotContainer {
             true, // If alliance flipping should be enabled 
             m_swerveSubsystem // The drive subsystem
         );
-
+    m_TaxiCommand = new TaxiCommand(m_swerveSubsystem);
     m_driveCommand = new DriveCommand(m_swerveSubsystem, stick);
     m_clawDriveReverseCommand = new TestClawDriveReverseCommand(m_clawSubsystem);
     m_clawDriveCommand = new TestClawDriveCommand(m_clawSubsystem);
@@ -334,6 +338,7 @@ public class RobotContainer {
     algaeGAuto = new AlgaeGAuto(autoFactory, m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem);
     leftCoralAuto = new LeftCoralAuto(autoFactory, m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem, m_intakeSubsystem);
     rightCoralAuto = new RightCoralAuto(autoFactory, m_swerveSubsystem, m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem, m_intakeSubsystem);
+    taxiAuto = new TaxiAuto(autoFactory);
 
 
     testAlgaeAlign = new TestAlgaeAlignCommand(m_elevatorSubsystem, m_clawSubsystem, m_photonVisionSubsystem);
@@ -400,6 +405,7 @@ public class RobotContainer {
     m_chooser.addOption("Mid G Algae Auto", algaeGAuto);
     m_chooser.addOption("Left Coral Auto", leftCoralAuto);
     m_chooser.addOption("Right Coral Auto", rightCoralAuto);
+    m_chooser.addOption("tttt", taxiAuto);
     
     // algaeAuto = Commands.sequence(
     //   autoFactory.resetOdometry("Start-Hoffset"),
@@ -535,8 +541,8 @@ public class RobotContainer {
     bargeButton.onTrue(m_bargeCommand);
     JoystickButton processorButton = new JoystickButton(A1, 11);
     processorButton.onTrue(m_processorCommand);
-    // JoystickButton climbButton = new JoystickButton(A1, 10);
-    // climbButton.onTrue(m_toggleClimbCommand);
+     JoystickButton climbButton = new JoystickButton(A1, 10);
+     climbButton.onTrue(m_toggleClimbCommand);
     JoystickButton wristResetButton = new JoystickButton(A1,10);
     wristResetButton.whileTrue(m_resetClawCommand);
     //DRIVER BUTTONS-
@@ -566,7 +572,7 @@ public class RobotContainer {
     intakeButton.toggleOnTrue(m_toggleStationIntakeCommand);//new SetActuatorPositionCommand(m_elevatorSubsystem, m_clawSubsystem, ElevatorPosition.INTAKE, ClawPosition.INTAKE));
     JoystickButton groundIntakeButton = new JoystickButton(testOperator, 9);
     groundIntakeButton.toggleOnTrue(m_toggleFloorAlgaeIntakeCommand);
-    JoystickButton bargeButtonTest = new JoystickButton(testOperator, 10);
+    JoystickButton bargeButtonTest =new JoystickButton(testOperator, 10);
     bargeButtonTest.onTrue(m_bargeCommand);
     //JoystickButton testClimbForwardButton = new JoystickButton(testOperator, 11);
     // testClimbForwardButton.whileTrue(testClimbDriveMotor);
@@ -614,5 +620,8 @@ public class RobotContainer {
   }
   public ResetClawCommand getResetClawCommand(){
     return m_resetClawCommand;
+  }
+  public Command getTaxiThing(){
+    return m_TaxiCommand;
   }
 }

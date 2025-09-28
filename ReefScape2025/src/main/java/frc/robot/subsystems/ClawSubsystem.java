@@ -330,6 +330,9 @@ public class ClawSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("ALGAE", reefAlgaeGrabButton);
     SmartDashboard.putBoolean("ClawAtPosition",clawAtTargetPosition());
     SmartDashboard.putBoolean("HasCoral", hasCoral);
+    SmartDashboard.putNumber("Claw Position",getClawSensorPosition());
+    SmartDashboard.putNumber("Claw Target Psosition", clawPositionMap.get(clawTargetPosition));
+    SmartDashboard.putString("Claw Pos Name",clawTargetPosition.toString());
     //System.out.println(clawController.getError());
     //System.out.println(clawPIDCalculation);
     //System.out.println((-1 * clawSensor.getAbsolutePosition().getValueAsDouble()* 360) % 360);
@@ -367,7 +370,6 @@ public class ClawSubsystem extends SubsystemBase {
       System.out.println("claw setpoint activated");
       clawDriveMotor.set(retainAlgaeController.calculate(getClawDriveMotorPosition(),algaeRetainPosition));
     }
-    System.out.println(clawTargetPosition);
-    //System.out.println();
+   //System.out.println();
   }
 }

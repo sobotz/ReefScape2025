@@ -18,6 +18,7 @@ import frc.robot.commands.IntakeStartUpCommand;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private Command m_teleopCommand;
+
   boolean once;
 
   private final RobotContainer m_robotContainer;
@@ -62,16 +63,19 @@ public class Robot extends TimedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.schedule();
+    // }
     
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    CommandScheduler.getInstance().run();
+    //CommandScheduler.getInstance().run();
+
+    m_robotContainer.getTaxiThing().schedule();
     // System.out.println(m_autonomousCommand.isFinished());
     // if (m_autonomousCommand.isFinished()){
     //   System.out.println("finished");
