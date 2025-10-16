@@ -41,7 +41,7 @@ public class ToggleAutoFloorAlgaeIntakeCommand extends Command {
     m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
     m_photonVisionSubsystem.setAlgaeAlign(true);
-    m_clawSubsystem.setDriveMotor(1);
+    m_clawSubsystem.setDriveMotor(1.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -56,7 +56,7 @@ public class ToggleAutoFloorAlgaeIntakeCommand extends Command {
     if (m_clawSubsystem.getDriveMotorCurrent() > 55) { // 60
       timer.start();
     }
-    if (timer.get() > 0.3 && m_clawSubsystem.getDriveMotorCurrent() > 33) {// 53
+    if (timer.get() > 0.3 && m_clawSubsystem.getDriveMotorCurrent() > 44) {// 53
       m_photonVisionSubsystem.setDriveCommandDisabled(false);
       m_photonVisionSubsystem.setAlgaeAlign(false);
       m_clawSubsystem.setHasAlgae(true);

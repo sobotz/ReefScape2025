@@ -55,7 +55,7 @@ public class GrabAlgaeCommand extends Command {
     if (m_clawSubsystem.getReefAlgaeGrabButton()) {
       m_photonVisionSubsystem.resetCount();
       if (m_clawSubsystem.getReefCoralPlacementButton()) {
-        m_photonVisionSubsystem.enableAlign(true, 0, 0.35, id);
+        m_photonVisionSubsystem.enableAlign(true, 0, 0.33, id);
       } else {
         m_photonVisionSubsystem.enableAlign(true, 0, 0.38, id);
       }
@@ -81,7 +81,7 @@ public class GrabAlgaeCommand extends Command {
         clawPosition = ClawPosition.REVERSEFACINGUPALGAE;
       }
       m_clawSubsystem.setClawTargetPosition(clawPosition);
-      m_clawSubsystem.setDriveMotor(1);
+      m_clawSubsystem.setDriveMotor(1.2);
       timer.start();
     }
     // else if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L1){
@@ -109,13 +109,13 @@ public class GrabAlgaeCommand extends Command {
           m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
         }
       }
-      if (m_clawSubsystem.getDriveMotorCurrent() > 54) {
+      if (m_clawSubsystem.getDriveMotorCurrent() > 45) {
         timer2.start();
       }
       if (timer.get() > 3) {
         isFinished = true;
       }
-      if (timer2.get() > 0.35 && m_clawSubsystem.getDriveMotorCurrent() > 54) {
+      if (timer2.get() > 0.45 && m_clawSubsystem.getDriveMotorCurrent() > 42) {
         m_clawSubsystem.setHasAlgae(true);
         if (!m_clawSubsystem.getReefCoralPlacementButton()) {
           m_clawSubsystem.singularReefAlgaeDefault();

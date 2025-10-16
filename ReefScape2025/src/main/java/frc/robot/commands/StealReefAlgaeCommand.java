@@ -26,7 +26,9 @@ public class StealReefAlgaeCommand extends Command {
   boolean isFinished;
   boolean grabbedAlgae;
   int id;
-  public StealReefAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, int id) {
+
+  public StealReefAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,
+      PhotonVisionSubsystem photonVisionSubsystem, int id) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
@@ -35,10 +37,9 @@ public class StealReefAlgaeCommand extends Command {
     timer2 = new Timer();
     isFinished = false;
     this.id = id;
-    if (id % 2 == 1){
+    if (id % 2 == 1) {
       elevatorPosition = ElevatorPosition.LOWESTALGAE;
-    }
-    else if (id % 2 == 0){
+    } else if (id % 2 == 0) {
       elevatorPosition = ElevatorPosition.MIDALGAE;
     }
     isFinished = false;
@@ -50,29 +51,24 @@ public class StealReefAlgaeCommand extends Command {
   public void initialize() {
     isFinished = false;
     grabbedAlgae = false;
-    if (!m_photonVisionSubsystem.getIsRedAlliance()){
-      if (id == 21){
+    if (!m_photonVisionSubsystem.getIsRedAlliance()) {
+      if (id == 21) {
         id = 10;
-      }
-      else if (id == 20){
+      } else if (id == 20) {
         id = 11;
-      }
-      else if (id == 19){
+      } else if (id == 19) {
         id = 6;
-      }
-      else if (id == 18){
+      } else if (id == 18) {
         id = 7;
-      }
-      else if (id == 17){
+      } else if (id == 17) {
         id = 8;
-      }
-      else if (id == 22){
+      } else if (id == 22) {
         id = 9;
       }
     }
-    
+
     m_photonVisionSubsystem.resetCount();
-    m_photonVisionSubsystem.enableAlign(true, 0, 0.35, id);  
+    m_photonVisionSubsystem.enableAlign(true, 0, 0.35, id);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.REVERSEFACINGUPALGAE);
     m_clawSubsystem.setDriveMotor(1);
   }
@@ -80,33 +76,32 @@ public class StealReefAlgaeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    if (m_photonVisionSubsystem.getSingularStealAlgaeAtTargetPosition()){
+
+    if (m_photonVisionSubsystem.getSingularStealAlgaeAtTargetPosition()) {
       m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
     }
-    if (m_clawSubsystem.getDriveMotorCurrent()>59){
+    if (m_clawSubsystem.getDriveMotorCurrent() > 45) {
       timer.start();
     }
-    if (timer.get()>0.3 && m_clawSubsystem.getDriveMotorCurrent()>59){
+    if (timer.get() > 0.3 && m_clawSubsystem.getDriveMotorCurrent() > 44) {
       grabbedAlgae = true;
       m_clawSubsystem.setHasAlgae(true);
       m_clawSubsystem.singularReefAlgaeDefault();
       m_photonVisionSubsystem.enableAlign(true, 0, 0.45, id);
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
-      
-    }
-    else if (timer.get()>0.4){
+
+    } else if (timer.get() > 0.4) {
       timer.reset();
       timer.stop();
     }
-    if (grabbedAlgae && m_photonVisionSubsystem.getAtTargetPosition()){
+    if (grabbedAlgae && m_photonVisionSubsystem.getAtTargetPosition()) {
       isFinished = true;
     }
-    if (m_photonVisionSubsystem.getAtTargetPosition()){
+    if (m_photonVisionSubsystem.getAtTargetPosition()) {
       timer2.start();
     }
-    if (timer2.get()>3){
+    if (timer2.get() > 3) {
       isFinished = true;
     }
   }
@@ -123,7 +118,7 @@ public class StealReefAlgaeCommand extends Command {
     m_clawSubsystem.setAlgaeRetainPosition();
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
     m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
-    m_photonVisionSubsystem.enableAlign(false,0,0,0);
+    m_photonVisionSubsystem.enableAlign(false, 0, 0, 0);
     m_photonVisionSubsystem.setDriveCommandDisabled(false);
   }
 

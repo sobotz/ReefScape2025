@@ -89,7 +89,7 @@ public class ClawSubsystem extends SubsystemBase {
     // clawController.enableContinuousInput(0,360);
     clawController.setTolerance(0.01);
 
-    retainAlgaeController = new PIDController(0.4, 0, 0);
+    retainAlgaeController = new PIDController(1.5, 0, 0);
 
     clawPositionMap = new HashMap<ClawPosition, Double>() {
       {

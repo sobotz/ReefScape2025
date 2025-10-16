@@ -104,7 +104,7 @@ public final class Constants {
     public static final double DEFAULT = 6;// 6
     public static final double ALGAETEMP = 12;
     public static final double INTAKE = 16.5;
-    public static final double FLOORALGAE = 8.4;// 6.4 ur
+    public static final double FLOORALGAE = 7.4;// 6.4 ur
     public static final double PROCESSOR = 6;
     public static final double CLIMB = 0.5;
     public static final double CLAWRESET = 0.5;
