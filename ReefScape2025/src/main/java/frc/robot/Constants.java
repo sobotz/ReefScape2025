@@ -71,6 +71,7 @@ public final class Constants {
     ALGAETEMP,
     INTAKE,
     CLIMB,
+    CLAWRESET,
     FLOORALGAE,
     PROCESSOR,
     LOWESTALGAE,
@@ -106,6 +107,7 @@ public final class Constants {
     public static final double FLOORALGAE = 8.4;// 6.4 ur
     public static final double PROCESSOR = 6;
     public static final double CLIMB = 0.5;
+    public static final double CLAWRESET = 0.5;
     public static final double LOWESTALGAE = 21.6;
     public static final double LOWERALGAE = 30;
     public static final double MIDALGAE = 36;
