@@ -14,6 +14,7 @@ public class ResetClawCommand extends Command {
   Joystick a1;
   ClawSubsystem m_clawSubsystem;
   boolean once;
+
   public ResetClawCommand(ClawSubsystem clawSubsystem, Joystick stick) {
     m_clawSubsystem = clawSubsystem;
     once = false;
@@ -29,12 +30,11 @@ public class ResetClawCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (a1.getRawAxis(1)!= 0){
+    if (a1.getRawAxis(1) != 0) {
       once = true;
       m_clawSubsystem.setResetClaw(true);
-      m_clawSubsystem.setWristMotor(0.07);
-    }
-    else if (once){
+      m_clawSubsystem.setWristMotor(-0.07);
+    } else if (once) {
       once = false;
       m_clawSubsystem.setResetClaw(false);
       m_clawSubsystem.setWristMotor(0);

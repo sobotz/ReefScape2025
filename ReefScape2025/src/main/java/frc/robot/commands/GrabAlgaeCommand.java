@@ -13,11 +13,10 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
-
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GrabAlgaeCommand extends Command {
   /** Creates a new GrabHigherAlgaeCommand. */
-  
+
   ElevatorSubsystem m_elevatorSubsystem;
   ClawSubsystem m_clawSubsystem;
   PhotonVisionSubsystem m_photonVisionSubsystem;
@@ -28,11 +27,12 @@ public class GrabAlgaeCommand extends Command {
   boolean isFinished;
   int id;
   boolean isAuto;
-  
-  
-  public GrabAlgaeCommand( ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem, ElevatorPosition elevatorPosition, ClawPosition clawPosition, int id, boolean isAuto) {
+
+  public GrabAlgaeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,
+      PhotonVisionSubsystem photonVisionSubsystem, ElevatorPosition elevatorPosition, ClawPosition clawPosition, int id,
+      boolean isAuto) {
     // Use addRequirements() here to declare subsystem dependencies.
-    
+
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
     m_photonVisionSubsystem = photonVisionSubsystem;
@@ -49,35 +49,33 @@ public class GrabAlgaeCommand extends Command {
   @Override
   public void initialize() {
     isFinished = false;
-    //if (!(m_clawSubsystem.getHasCoral() && (!m_clawSubsystem.getReefCoralPlacementButton() && m_clawSubsystem.getReefAlgaeGrabButton()))){
-    if (m_clawSubsystem.getReefAlgaeGrabButton()){
+    // if (!(m_clawSubsystem.getHasCoral() &&
+    // (!m_clawSubsystem.getReefCoralPlacementButton() &&
+    // m_clawSubsystem.getReefAlgaeGrabButton()))){
+    if (m_clawSubsystem.getReefAlgaeGrabButton()) {
       m_photonVisionSubsystem.resetCount();
-      if (m_clawSubsystem.getReefCoralPlacementButton()){
+      if (m_clawSubsystem.getReefCoralPlacementButton()) {
         m_photonVisionSubsystem.enableAlign(true, 0, 0.35, id);
-      }
-      else{
+      } else {
         m_photonVisionSubsystem.enableAlign(true, 0, 0.38, id);
       }
-      
-      if (m_clawSubsystem.getReefCoralPlacementButton()){
-        if (m_elevatorSubsystem.getPositionMap().get(m_elevatorSubsystem.getAutoPlacePosition()) > m_elevatorSubsystem.getPositionMap().get(elevatorPosition)){
+
+      if (m_clawSubsystem.getReefCoralPlacementButton()) {
+        if (m_elevatorSubsystem.getPositionMap().get(m_elevatorSubsystem.getAutoPlacePosition()) > m_elevatorSubsystem
+            .getPositionMap().get(elevatorPosition)) {
           clawPosition = ClawPosition.FACINGDOWNREEFALGAE;
-        }
-        else{
+        } else {
           clawPosition = ClawPosition.FACINGUPREEFALGAE;
-          if (elevatorPosition == ElevatorPosition.HIGHERALGAE){
+          if (elevatorPosition == ElevatorPosition.HIGHERALGAE) {
             elevatorPosition = ElevatorPosition.MIDALGAE;
-          }
-          else if (elevatorPosition == ElevatorPosition.LOWERALGAE){
+          } else if (elevatorPosition == ElevatorPosition.LOWERALGAE) {
             elevatorPosition = ElevatorPosition.LOWESTALGAE;
           }
         }
-      }
-      else if (m_clawSubsystem.getReefAlgaeGrabButton() && !m_clawSubsystem.getReefCoralPlacementButton()){
-        if (elevatorPosition == ElevatorPosition.HIGHERALGAE){
+      } else if (m_clawSubsystem.getReefAlgaeGrabButton() && !m_clawSubsystem.getReefCoralPlacementButton()) {
+        if (elevatorPosition == ElevatorPosition.HIGHERALGAE) {
           elevatorPosition = ElevatorPosition.MIDALGAE;
-        }
-        else if (elevatorPosition == ElevatorPosition.LOWERALGAE){
+        } else if (elevatorPosition == ElevatorPosition.LOWERALGAE) {
           elevatorPosition = ElevatorPosition.LOWESTALGAE;
         }
         clawPosition = ClawPosition.REVERSEFACINGUPALGAE;
@@ -87,52 +85,48 @@ public class GrabAlgaeCommand extends Command {
       timer.start();
     }
     // else if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L1){
-    //   m_photonVisionSubsystem.enableAlign(true, 0, 0.38, id);
+    // m_photonVisionSubsystem.enableAlign(true, 0, 0.38, id);
     // }
-    else{
+    else {
       isFinished = true;
     }
   }
-    //else{
-    //  isFinished = true;
-    //}
-  //}
-  
+  // else{
+  // isFinished = true;
+  // }
+  // }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_clawSubsystem.getReefAlgaeGrabButton()){
-      if (m_clawSubsystem.getReefCoralPlacementButton()){
-        if (m_photonVisionSubsystem.getAlgaeGrabAtTargetPosition()){
+    if (m_clawSubsystem.getReefAlgaeGrabButton()) {
+      if (m_clawSubsystem.getReefCoralPlacementButton()) {
+        if (m_photonVisionSubsystem.getAlgaeGrabAtTargetPosition()) {
+          m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
+        }
+      } else {
+        if (m_photonVisionSubsystem.getSingularStealAlgaeAtTargetPosition()) {
           m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
         }
       }
-      else{
-        if (m_photonVisionSubsystem.getSingularStealAlgaeAtTargetPosition()){
-          m_elevatorSubsystem.setElevatorTargetPosition(elevatorPosition);
-        }
-      }
-      if (m_clawSubsystem.getDriveMotorCurrent()>59){
+      if (m_clawSubsystem.getDriveMotorCurrent() > 54) {
         timer2.start();
       }
-      if (timer.get()>3){
+      if (timer.get() > 3) {
         isFinished = true;
       }
-      if (timer2.get()>0.35 && m_clawSubsystem.getDriveMotorCurrent()>59){
+      if (timer2.get() > 0.35 && m_clawSubsystem.getDriveMotorCurrent() > 54) {
         m_clawSubsystem.setHasAlgae(true);
-        if (!m_clawSubsystem.getReefCoralPlacementButton()){
+        if (!m_clawSubsystem.getReefCoralPlacementButton()) {
           m_clawSubsystem.singularReefAlgaeDefault();
         }
         isFinished = true;
-      }
-      else if (timer2.get()>0.5){
+      } else if (timer2.get() > 0.5) {
         timer2.reset();
         timer2.stop();
       }
-    }
-    else if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L1){
-      if (m_photonVisionSubsystem.getAtTargetPosition()){
+    } else if (m_clawSubsystem.getAutoPlacePosition() == ClawPosition.L1) {
+      if (m_photonVisionSubsystem.getAtTargetPosition()) {
         isFinished = true;
       }
     }
@@ -141,14 +135,14 @@ public class GrabAlgaeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!m_clawSubsystem.getReefCoralPlacementButton() && m_clawSubsystem.getReefAlgaeGrabButton()){
+    if (!m_clawSubsystem.getReefCoralPlacementButton() && m_clawSubsystem.getReefAlgaeGrabButton()) {
       m_clawSubsystem.singularReefAlgaeDefault();
     }
     m_clawSubsystem.setDriveMotor(0);
     m_clawSubsystem.setAlgaeRetainPosition();
     timer.reset();
     timer.stop();
-    if (!isAuto){
+    if (!isAuto) {
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.DEFAULT);
       m_clawSubsystem.setClawTargetPosition(ClawPosition.DEFAULT);
     }

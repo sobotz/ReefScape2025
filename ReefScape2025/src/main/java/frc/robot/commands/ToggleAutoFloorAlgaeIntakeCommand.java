@@ -21,7 +21,9 @@ public class ToggleAutoFloorAlgaeIntakeCommand extends Command {
   boolean isFinished;
   Timer timer;
   Timer timer2;
-  public ToggleAutoFloorAlgaeIntakeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem, PhotonVisionSubsystem photonVisionSubsystem) {
+
+  public ToggleAutoFloorAlgaeIntakeCommand(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem,
+      PhotonVisionSubsystem photonVisionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevatorSubsystem = elevatorSubsystem;
     m_clawSubsystem = clawSubsystem;
@@ -34,7 +36,7 @@ public class ToggleAutoFloorAlgaeIntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //System.out.println("on");
+    // System.out.println("on");
     isFinished = false;
     m_clawSubsystem.setClawTargetPosition(ClawPosition.FLOORALGAE);
     m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
@@ -46,15 +48,15 @@ public class ToggleAutoFloorAlgaeIntakeCommand extends Command {
   @Override
   public void execute() {
     // if (m_clawSubsystem.clawAtTargetPosition()){
-    //   m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
+    // m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.FLOORALGAE);
     // }
-    if (m_photonVisionSubsystem.getAlgaeHasTarget()){
+    if (m_photonVisionSubsystem.getAlgaeHasTarget()) {
       m_photonVisionSubsystem.setAlgaeCapturedTarget(true);
     }
-    if(m_clawSubsystem.getDriveMotorCurrent()>60){
+    if (m_clawSubsystem.getDriveMotorCurrent() > 55) { // 60
       timer.start();
     }
-    if (timer.get()>0.3 && m_clawSubsystem.getDriveMotorCurrent()>53){
+    if (timer.get() > 0.3 && m_clawSubsystem.getDriveMotorCurrent() > 33) {// 53
       m_photonVisionSubsystem.setDriveCommandDisabled(false);
       m_photonVisionSubsystem.setAlgaeAlign(false);
       m_clawSubsystem.setHasAlgae(true);
@@ -62,21 +64,21 @@ public class ToggleAutoFloorAlgaeIntakeCommand extends Command {
       m_clawSubsystem.setAlgaeRetainPosition();
       m_elevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.ALGAETEMP);
       timer2.start();
-    }
-    else if (timer.get()>0.5){
+    } else if (timer.get() > 0.5) {
       timer.reset();
       timer.stop();
     }
-    if (timer2.get()>0.3){
+    if (timer2.get() > 0.3) {
       isFinished = true;
     }
-    
+
   }
+
   // Called once the command ends or is interrupted.
   @Override
-  
+
   public void end(boolean interrupted) {
-    //m_clawSubsystem.setHasAlgae(true)
+    // m_clawSubsystem.setHasAlgae(true)
     m_photonVisionSubsystem.setAlgaeAlign(false);
     m_photonVisionSubsystem.setDriveCommandDisabled(false);
     timer.reset();

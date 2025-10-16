@@ -11,11 +11,11 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vector;
 
 public class DriveCommand extends Command {
-  //SWERVE SUBSYSTEM FROM ROBOT CONTAINER
+  // SWERVE SUBSYSTEM FROM ROBOT CONTAINER
   SwerveSubsystem m_swerveSubsystem;
-  //JOYSTICK FROM ROBOT CONTAINER
+  // JOYSTICK FROM ROBOT CONTAINER
   Joystick m_driverJoystick;
-  //DRIVING VECTORS
+  // DRIVING VECTORS
   Vector strafeVector;
   Vector rotationVector;
   ChassisSpeeds chassisSpeed;
@@ -24,39 +24,43 @@ public class DriveCommand extends Command {
     this.m_swerveSubsystem = swerveSubsystem;
     this.m_driverJoystick = stick;
 
-    //strafeVector = new Vector(0,0);
-    //rotationVector = new Vector(0,0);
+    // strafeVector = new Vector(0,0);
+    // rotationVector = new Vector(0,0);
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   @Override
-  public void execute() { 
-    //JOYSTICK VALUES FROM LEFT JOYSTICK
-    strafeVector = new Vector(m_driverJoystick.getRawAxis(0),-m_driverJoystick.getRawAxis(1));
-    //JOYSTICK VALUES FROM THE RIGHT JOYSTICK
-    rotationVector = new Vector(m_driverJoystick.getRawAxis(4),-m_driverJoystick.getRawAxis(5));
-    //rotationVector = new Vector(1,(rotationVector.getDegrees() + 180) % 360,true);
-    //chassisSpeed = new ChassisSpeeds(0, 1,0);
-    chassisSpeed = new ChassisSpeeds(strafeVector.getX() * 2,strafeVector.getY() * 2,0/*-rotationVector.getX() * 3*/);
-    //m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
-    //strafeVector = new Vector(0, 0);
-    //rotationVector = new Vector(0, 0);
-    //System.out.println("hello");
-    //strafeVector = new Vector(0, 0.2);
-    //rotationVector = new Vector(0,0);
-    //rotationVector= new Vector(0,1);
-    m_swerveSubsystem.driverControlledDrive(strafeVector,rotationVector);
+  public void execute() {
+    // JOYSTICK VALUES FROM LEFT JOYSTICK
+    strafeVector = new Vector(m_driverJoystick.getRawAxis(0), -m_driverJoystick.getRawAxis(1));
+    // JOYSTICK VALUES FROM THE RIGHT JOYSTICK
+    rotationVector = new Vector(m_driverJoystick.getRawAxis(4), -m_driverJoystick.getRawAxis(5));
+    // rotationVector = new Vector(1,(rotationVector.getDegrees() + 180) %
+    // 360,true);
+    // chassisSpeed = new ChassisSpeeds(0, 1,0);
+    chassisSpeed = new ChassisSpeeds(strafeVector.getX() * 2, strafeVector.getY() * 2, 0/*-rotationVector.getX() * 3*/);
+    // m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
+    // strafeVector = new Vector(0, 0);
+    // rotationVector = new Vector(0, 0);
+    // System.out.println("hello");
+    // strafeVector = new Vector(0, 0.2);
+    // rotationVector = new Vector(0,0);
+    // rotationVector= new Vector(0,1);
+    m_swerveSubsystem.driverControlledDrive(strafeVector, rotationVector);
 
-    //m_swerveSubsystem.driverControlledDrive(new Vector(0, 0.1),new Vector(0, 0));
-    //m_swerveSubsystem.driveFieldRelative(chassisSpeed);
-    //m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
+    // m_swerveSubsystem.driverControlledDrive(new Vector(0, 0.1), new Vector(0,
+    // 0));
+    // m_swerveSubsystem.driveFieldRelative(chassisSpeed);
+    // m_swerveSubsystem.velocityControlledDrive(chassisSpeed);
 
   }
-  
+
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   @Override
   public boolean isFinished() {

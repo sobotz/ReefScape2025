@@ -5,25 +5,28 @@
 package frc.robot;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class SwerveConstants{
-    public static final double frontLeftDegreeOffset = 352.96875-180;
-    public static final double frontRightDegreeOffset = 0.966796875+180;
-    public static final double backLeftDegreeOffset = 358.505859375-180;
-    public static final double backRightDegreeOffset = 178.857421875
-    ;
-    public static final double wheelRadius = 0.0508;//in meters;
-    public static final double wheelRotationPerMotorRotation = 1/8.14;
+  public static class SwerveConstants {
+    public static final double frontLeftDegreeOffset = 307.79296875 - 180;
+    public static final double frontRightDegreeOffset = 275.537109375;
+    public static final double backLeftDegreeOffset = 299.267578125 - 180;
+    public static final double backRightDegreeOffset = 50.361328125;
+    public static final double wheelRadius = 0.0508;// in meters;
+    public static final double wheelRotationPerMotorRotation = 1 / 8.14;
   }
 
-  public static class ClawConstants{
+  public static class ClawConstants {
 
     public static final double DEFAULT = -90;
     public static final double HASALGAEDEFAULT = -360;
@@ -39,12 +42,13 @@ public final class Constants {
     public static final double BARGE2 = 34;
     public static final double L1 = 60;
     public static final double L2 = -239;
-    public static final double L3= -239;
+    public static final double L3 = -239;
     public static final double L4 = -228.7;
     public static final double TEMPPOSITION = -180;
 
   }
-  public static enum ClawPosition{
+
+  public static enum ClawPosition {
     DEFAULT,
     INTAKE,
     FLOORALGAE,
@@ -61,7 +65,8 @@ public final class Constants {
     L4,
     TEMPPOSITION
   }
-  public static enum ElevatorPosition{
+
+  public static enum ElevatorPosition {
     DEFAULT,
     ALGAETEMP,
     INTAKE,
@@ -79,25 +84,26 @@ public final class Constants {
     L4,
     TEMPPOSITION
   }
+
   public static final class ElevatorConstants {
-    //I type PID CONTROLLER
+    // I type PID CONTROLLER
     // public static final double kP = 0.10;//.10
     // public static final double kI = 0.334;//.334
     // public static final double kD = 0.01031;//.01031
-    //P type PID Controller
-    public static final double kP = 1.3;//5
+    // P type PID Controller
+    public static final double kP = 1.3;// 5
     public static final double kI = 0;
 
-    public static final double kD = 0.000;//0.006
-    public static final double kG = 0.427;//0.6
-    public static final double kS = 0.12;//0.12
-    public static final double kV = 0.156;//0.13
-    public static final double kA = 0.0022;//0.0023
+    public static final double kD = 0.000;// 0.006
+    public static final double kG = 0.427;// 0.6
+    public static final double kS = 0.12;// 0.12
+    public static final double kV = 0.156;// 0.13
+    public static final double kA = 0.0022;// 0.0023
 
-    public static final double DEFAULT = 6;//6
+    public static final double DEFAULT = 6;// 6
     public static final double ALGAETEMP = 12;
     public static final double INTAKE = 16.5;
-    public static final double FLOORALGAE = 6.4;
+    public static final double FLOORALGAE = 8.4;// 6.4 ur
     public static final double PROCESSOR = 6;
     public static final double CLIMB = 0.5;
     public static final double LOWESTALGAE = 21.6;
@@ -112,13 +118,12 @@ public final class Constants {
     public static final double TEMPPOSITION = 30;
   }
 
-  public static class PhotonVisionConstants{
+  public static class PhotonVisionConstants {
     public static double m4CameraCenterOffset = 50.0;
     public static double m3CameraCenterOffset = -50.0;
     public static String m3CameraName = "Module_3_Arducam_OV2311";
     public static String m4CameraName = "Module_4_Arducam_OV2311";
 
-  
   }
 
 }
