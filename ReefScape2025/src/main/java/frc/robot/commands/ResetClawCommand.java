@@ -45,16 +45,11 @@ public class ResetClawCommand extends Command {
       m_clawSubsystem.setWristMotor(-0.07);
     } else if (once) {
 
-      timer.start();
-      m_ElevatorSubsystem.setElevatorTargetPosition(ElevatorPosition.CLAWRESET);
-      m_clawSubsystem.setWristMotor(
-          0.1);
-      if (timer.get() > 0.25) {
-        timer.stop();
-        once = false;
-        m_clawSubsystem.setResetClaw(false);
-        m_clawSubsystem.setWristMotor(0);
-      }
+      m_clawSubsystem.setWristMotor(0);
+
+      once = false;
+      m_clawSubsystem.setResetClaw(false);
+      m_clawSubsystem.setWristMotor(0);
 
     }
   }
