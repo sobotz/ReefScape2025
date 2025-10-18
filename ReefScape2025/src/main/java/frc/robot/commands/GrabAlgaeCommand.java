@@ -147,10 +147,9 @@ public class GrabAlgaeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // if (!m_clawSubsystem.getReefCoralPlacementButton() &&
-    // m_clawSubsystem.getReefAlgaeGrabButton()) {
-    m_clawSubsystem.singularReefAlgaeDefault();
-    // }
+    if (m_clawSubsystem.getReefAlgaeGrabButton()) {
+      m_clawSubsystem.singularReefAlgaeDefault();
+    }
     m_clawSubsystem.setDriveMotor(0);
     m_clawSubsystem.setAlgaeRetainPosition();
     timer.reset();
